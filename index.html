@@ -29,10 +29,10 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
 
-        // ⚠️ BACKEND FOR EMAILS (OPTIONAL FOR NOW)
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzE2j8DET5LkeW8yFxqdZs4NvJXKUrfFQQ7PZKeFJr0Ag7EDsYMffgBwIn_kNurJYVH/exec"; 
         const UPI_ID = "chyasar2004-2@oksbi";
+        const WA_NUMBER = "918157080825"; 
     </script>
 
     <style>
@@ -44,7 +44,14 @@
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
-        /* VISUAL FX */
+        /* FX */
+        .scanline {
+            position: fixed; left: 0; top: 0; width: 100%; height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
+            animation: scanline 6s linear infinite; pointer-events: none; z-index: 999;
+        }
+        @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+
         .glitch-text { position: relative; }
         .glitch-text::before, .glitch-text::after {
             content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
@@ -53,36 +60,52 @@
         .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
         .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
 
-        .scanline {
-            position: fixed; left: 0; top: 0; width: 100%; height: 100px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
-            animation: scanline 6s linear infinite; pointer-events: none; z-index: 999;
-        }
-        @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+        .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* UI COMPONENTS */
+        /* UI */
         .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
         .btn-primary { background: white; color: black; border: 1px solid white; transition: 0.3s; }
         .btn-primary:hover { background: black; color: white; }
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s; }
         .btn-outline:hover { border-color: white; background: white; color: black; }
+        
         .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
         .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
-        
+
         .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .view-section.active { display: block; opacity: 1; }
         #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* CART & NOTIFICATION */
+        .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); }
+        #cart-bar { transition: transform 0.3s ease; }
+        
+        #notification-toast {
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #notification-toast.show { transform: translateX(0); }
     </style>
 </head>
 <body>
 
     <div class="scanline"></div>
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; opacity: 0.07; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
+
+    <!-- PUSH NOTIFICATION TOAST -->
+    <div id="notification-toast" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-pink-500 p-4 shadow-2xl flex items-start gap-4">
+        <i data-lucide="bell" class="text-pink-500 w-5 h-5 mt-1"></i>
+        <div>
+            <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-1">Incoming Transmission</h4>
+            <p id="toast-message" class="text-gray-400 text-xs font-mono leading-tight">System Update...</p>
+        </div>
+        <button onclick="hideToast()" class="text-gray-500 hover:text-white ml-auto"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
 
     <!-- INTRO -->
     <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center font-mono">
@@ -115,8 +138,8 @@
             <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-pink-500"></i></button></div>
             <div class="flex flex-col gap-6 font-display text-3xl">
                 <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Home</a>
-                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Theme</a>
-                <a href="#passes" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Passes</a>
+                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">About</a>
+                <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
                 <a onclick="switchView('events'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Events</a>
                 <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
             </div>
@@ -124,138 +147,172 @@
         </div>
 
         <main id="view-home" class="view-section active">
+            <!-- 1. HERO -->
             <section class="relative h-screen flex items-center justify-center overflow-hidden">
                 <div class="absolute inset-0 z-0"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-40 grayscale"></div>
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
-                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 • 2026</p></div>
+                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 â¢ 2026</p></div>
                     <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8">SPEC<span class="text-pink-600">TRUM</span></h1>
-                    <div class="flex flex-col md:flex-row gap-4 justify-center">
-                        <a href="#passes" class="btn-primary py-3 px-8 text-xs font-bold uppercase tracking-widest">Get Passes</a>
-                        <button onclick="switchView('events')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">View Lineup</button>
+                    <div class="flex justify-center">
+                        <button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105">Get Tickets</button>
                     </div>
                 </div>
             </section>
 
-            <section id="passes" class="py-24 px-6 bg-zinc-950">
-                <div class="max-w-7xl mx-auto">
-                    <div class="flex justify-between items-end mb-16 reveal"><div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Tickets</span><h2 class="text-4xl font-display text-white">Access</h2></div></div>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <!-- DAY 1 -->
-                        <div class="glass-panel p-8 hover:bg-white/5 transition-colors reveal">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 1</span><h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
-                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-white">₹299</span><button onclick="handlePurchase(299, 'Day 1 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button></div>
-                        </div>
-                        <!-- ALL ACCESS -->
-                        <div class="bg-white p-8 transform md:-translate-y-4 reveal shadow-xl shadow-pink-900/10">
-                            <span class="text-xs font-bold text-pink-600 uppercase tracking-widest">VIP</span><h3 class="text-2xl font-display text-black mt-2 mb-6">All Access</h3>
-                            <div class="border-t border-black/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-black">₹499</span><button onclick="handlePurchase(499, 'All Access Pass')" class="text-[10px] font-bold uppercase tracking-widest text-black hover:text-pink-600 transition-colors">Buy &rarr;</button></div>
-                        </div>
-                        <!-- DAY 2 -->
-                        <div class="glass-panel p-8 hover:bg-white/5 transition-colors reveal">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 2</span><h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
-                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-white">₹299</span><button onclick="handlePurchase(299, 'Day 2 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button></div>
-                        </div>
+            <!-- 2. LIVE UPDATES TICKER -->
+            <section id="live-updates" class="bg-pink-600 text-white py-3 overflow-hidden border-y border-pink-700">
+                <div class="flex items-center gap-4 animate-marquee whitespace-nowrap">
+                    <span class="text-[10px] font-bold uppercase tracking-widest bg-black px-3 py-1">LIVE FEED</span>
+                    <span id="update-text" class="text-xs font-mono uppercase tracking-wide">Welcome to Spectrum '26. Registrations are open. Stay tuned for lineup announcements.</span>
+                </div>
+            </section>
+
+            <!-- 3. ABOUT (3 COLUMNS RESTORED) -->
+            <section id="about" class="py-24 px-6 bg-black border-b border-zinc-900">
+                <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="reveal">
+                        <div class="w-12 h-1 bg-pink-600 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology. Nestled in the Blue City, we are a hub of creativity.</p>
+                    </div>
+                    <div class="reveal md:delay-100">
+                        <div class="w-12 h-1 bg-blue-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza that brings together talent from across the country to compete and celebrate.</p>
+                    </div>
+                    <div class="reveal md:delay-200">
+                        <div class="w-12 h-1 bg-green-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span><br>A fusion of the classical and the digital. We explore how traditional artistry meets algorithmic precision.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Other sections (About, Gallery) remain, abbreviated for length -->
-            <footer class="py-12 bg-black text-center border-t border-zinc-900 reveal"><p class="text-[10px] text-gray-600 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p></footer>
+            <!-- 4. PLANS PREVIEW -->
+            <section class="py-24 px-6 bg-zinc-950 text-center">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono text-gray-400 uppercase tracking-widest mb-12">
+                        <div class="p-4 border border-zinc-800">General</div><div class="p-4 border border-zinc-800 text-pink-500 border-pink-900">Standard</div><div class="p-4 border border-zinc-800">Neon Pulse</div><div class="p-4 border border-zinc-800">Vogue Gala</div>
+                    </div>
+                    <button onclick="switchView('tickets')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">Buy Tickets</button>
+                </div>
+            </section>
+
+            <!-- 5. GALLERY -->
+            <section id="gallery" class="py-24">
+                <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
+                    <div class="col-span-2 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal">
+                <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
+                <div class="flex flex-col md:flex-row justify-center gap-8 mb-8 text-gray-500 text-xs uppercase font-bold tracking-wider">
+                    <a href="mailto:spectrum@nift.ac.in" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> spectrum@nift.ac.in</a>
+                    <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</a>
+                </div>
+                <div class="flex justify-center gap-6 mb-8">
+                    <a href="#" class="text-white hover:text-pink-500"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="text-white hover:text-red-500"><i data-lucide="youtube"></i></a>
+                </div>
+                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">Â© 2026 Spectrum Team</p>
+            </footer>
         </main>
 
-        <section id="view-events" class="view-section min-h-screen pt-32 px-6">
+        <!-- TICKET STORE -->
+        <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
-                    <h2 class="text-4xl md:text-6xl font-display text-white">Lineup</h2>
-                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-[10px]">Back</button>
+                    <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Store</span><h2 class="text-4xl md:text-6xl font-display text-white">Select Pass</h2></div>
+                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-[10px]">Back to Home</button>
                 </div>
-                <!-- FILTER BUTTONS (Same as before) -->
-                <div class="flex flex-wrap gap-3 mb-12 reveal active">
-                    <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
-                    <!-- Add other club buttons here -->
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+                    <!-- GENERAL -->
+                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('General', 299, 'base', 'pass-gen')">
+                        <h3 class="text-xl font-bold uppercase text-white">General</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div>
+                    </div>
+                    <!-- STANDARD -->
+                    <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Standard', 499, 'base', 'pass-std')">
+                        <span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span>
+                        <h3 class="text-xl font-bold uppercase text-white mt-1">Standard</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div>
+                    </div>
+                    <!-- NEON PULSE -->
+                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')">
+                        <h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div>
+                    </div>
+                    <!-- VOGUE GALA -->
+                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')">
+                        <h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div>
+                    </div>
                 </div>
-                <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal active"></div>
+
+                <div id="event-selection-area" class="opacity-50 pointer-events-none transition-opacity duration-300">
+                    <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required)</span></h3>
+                    <div class="flex flex-wrap gap-3 mb-8">
+                        <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
+                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
+                        <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Culture</button>
+                        <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Sports</button>
+                        <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Literary</button>
+                        <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">ESSC</button>
+                    </div>
+                    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                </div>
             </div>
         </section>
 
-        <!-- AUTH / PROFILE / PAYMENT MODAL -->
+        <!-- CART -->
+        <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900 border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
+            <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">â¹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
+            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
+        </div>
+
+        <!-- AUTH MODAL -->
         <div id="auth-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
             <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
                 
-                <!-- 1. PROFILE DASHBOARD (TICKET) -->
                 <div id="view-profile" class="hidden text-center space-y-4">
-                    <h2 class="text-xl font-display text-white">Your Pass</h2>
-                    
-                    <!-- DYNAMIC TICKET AREA -->
+                    <h2 class="text-xl font-display text-white">My Pass</h2>
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
-                        <div id="ticket-loading" class="text-xs font-mono">Fetching status...</div>
-                        
-                        <!-- VERIFIED STATE -->
-                        <div id="ticket-verified" class="hidden">
-                            <div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4">
-                                <h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3>
-                                <p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Admit One</p>
-                            </div>
-                            <img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply">
-                            <p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p>
-                            <p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Verified Entry</p>
-                        </div>
-
-                        <!-- PENDING STATE -->
-                        <div id="ticket-pending" class="hidden py-8">
-                            <i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i>
-                            <h3 class="font-bold uppercase">Payment Review</h3>
-                            <p class="text-xs text-gray-600 mt-2 px-4">Your UTR is being verified by admin. Check back soon.</p>
-                        </div>
-
-                        <!-- NONE STATE -->
-                        <div id="ticket-none" class="hidden py-8">
-                            <p class="text-xs text-gray-600 mb-4">No active pass found.</p>
-                            <button onclick="closeModal(); window.location.href='#passes'" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Pass</button>
-                        </div>
+                        <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
+                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">â Authorized</p></div>
+                        <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
+                        <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
-
-                    <div class="flex justify-between items-center px-2">
-                        <div class="text-left">
-                            <p id="profile-name" class="text-sm font-bold text-white"></p>
-                            <p id="profile-email" class="text-[10px] text-gray-500"></p>
-                        </div>
-                        <button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white">Logout</button>
-                    </div>
+                    <div class="flex justify-between items-center px-2"><div class="text-left"><p id="profile-name" class="text-sm font-bold text-white"></p><p id="profile-email" class="text-[10px] text-gray-500"></p></div><button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white">Logout</button></div>
                 </div>
 
-                <!-- 2. AUTH FORMS -->
                 <div id="view-auth">
-                    <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800">
-                        <div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div>
-                        <div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div>
-                    </div>
-
-                    <!-- LOGIN -->
-                    <div id="form-login" class="space-y-4">
-                        <input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                        <button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button>
-                    </div>
-
-                    <!-- REGISTER -->
-                    <div id="form-register" class="space-y-4 hidden">
-                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white outline-none">
-                        <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white outline-none">
-                        <input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white outline-none">
-                        <input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white outline-none">
-                        <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white outline-none">
-                        <button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button>
-                    </div>
+                    <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
+                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
+                    <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
                 </div>
 
-                <!-- 3. CHECKOUT PAYMENT -->
+                <div id="view-receipt" class="hidden space-y-4">
+                    <h2 class="text-xl font-display text-white text-center">Summary</h2>
+                    <div class="bg-zinc-900 p-4 rounded text-xs space-y-2 font-mono">
+                        <div class="flex justify-between text-white"><span id="rec-pass-name">Pass</span><span id="rec-pass-price">â¹0</span></div>
+                        <div id="rec-events-list" class="space-y-1 text-gray-400 border-t border-zinc-800 pt-2 mt-2"></div>
+                        <div class="flex gap-2 pt-2 border-t border-zinc-800"><input id="promo-code" type="text" placeholder="PROMO CODE" class="bg-black border border-zinc-700 w-full px-2 py-1 text-xs text-white uppercase outline-none"><button onclick="applyPromo()" class="bg-zinc-700 text-white px-3 py-1 text-[10px] font-bold uppercase hover:bg-pink-600">Apply</button></div>
+                        <div id="promo-msg" class="text-[10px] text-green-500 hidden">Code Applied!</div>
+                        <div class="flex justify-between text-pink-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">â¹0</span></div>
+                    </div>
+                    <button onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
+                </div>
+
                 <div id="view-payment" class="hidden text-center space-y-4">
-                    <h2 class="text-xl font-display text-white">Checkout</h2>
-                    <p id="pay-item-name" class="text-pink-500 text-xs font-bold uppercase mb-4"></p>
+                    <h2 class="text-xl font-display text-white">Payment</h2>
                     <div class="bg-white p-2 w-fit mx-auto"><img id="qr-code" src="" class="w-32 h-32"></div>
                     <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Scan & Pay via UPI</p>
                     <input id="input-utr" type="text" placeholder="Enter 12-Digit UTR" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none text-center tracking-widest">
@@ -266,193 +323,210 @@
     </div>
 
     <script>
-        let currentUser = null;
-        let userDataDB = null; // Store full DB profile
-        let pendingPurchase = null;
+        let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null;
+        let cart = { pass: null, events: [] }; 
 
-        // INIT
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             runTerminalIntro();
-            
+            auth.signOut(); 
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     currentUser = user;
-                    // Fetch extended data from Realtime Database
                     const cleanEmail = user.email.replace(/\./g, ',');
                     db.ref('users/' + cleanEmail).on('value', (snapshot) => {
                         userDataDB = snapshot.val();
                         updateNav(userDataDB ? userDataDB.name : "User");
-                        updateTicketUI(); // Refresh ticket view live
                     });
-                } else {
-                    currentUser = null;
-                    userDataDB = null;
-                    updateNav("Login");
+                } else { currentUser = null; userDataDB = null; updateNav("Login"); }
+            });
+            // LIVE UPDATES
+            db.ref('updates').limitToLast(1).on('child_added', (snapshot) => {
+                const update = snapshot.val();
+                if(update) {
+                    document.getElementById('live-updates').classList.remove('hidden');
+                    document.getElementById('update-text').innerText = update.message;
+                    showToast(update.message);
                 }
             });
         });
 
-        // 1. UPDATE TICKET UI (Logic for Dashboard)
-        function updateTicketUI() {
-            if(!userDataDB) return;
+        // 1. SELECT PASS
+        function selectPass(name, price, type, elementId) {
+            ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => {
+                document.getElementById(id).classList.remove('selected-pass');
+                document.getElementById(id).classList.add('glass-panel');
+            });
+            document.getElementById(elementId).classList.remove('glass-panel'); 
+            document.getElementById(elementId).classList.add('selected-pass');
+            cart.pass = { name, price, type };
             
-            document.getElementById('ticket-loading').classList.add('hidden');
-            document.getElementById('ticket-verified').classList.add('hidden');
-            document.getElementById('ticket-pending').classList.add('hidden');
-            document.getElementById('ticket-none').classList.add('hidden');
-
-            const status = userDataDB.paymentStatus || "None"; // None, Pending, Verified
-
-            if (status === "Verified") {
-                document.getElementById('ticket-verified').classList.remove('hidden');
-                // GATE QR: Contains User ID for Security Scanning
-                document.getElementById('ticket-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUser.uid}`;
-                document.getElementById('ticket-id').innerText = `ID: ${userDataDB.collegeId}`;
-            } else if (status === "Pending") {
-                document.getElementById('ticket-pending').classList.remove('hidden');
+            const eventArea = document.getElementById('event-selection-area');
+            if(type === 'special') {
+                cart.events = []; eventArea.classList.add('opacity-50', 'pointer-events-none');
+                alert("Special Passes do not allow add-ons.");
+                const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
+                filterEvents(currentCat === 'all' ? 'all' : currentCat);
+                document.getElementById('checkout-btn').innerText = "Buy Now";
+                document.getElementById('checkout-btn').classList.add('animate-pulse');
             } else {
-                document.getElementById('ticket-none').classList.remove('hidden');
+                eventArea.classList.remove('opacity-50', 'pointer-events-none');
+                document.getElementById('checkout-btn').innerText = "Checkout";
+                document.getElementById('checkout-btn').classList.remove('animate-pulse');
             }
+            updateCartUI();
         }
 
-        // 2. CHECKOUT FLOW
-        function handlePurchase(price, name) {
-            if(currentUser) {
-                // Check if they already bought
-                if(userDataDB && userDataDB.paymentStatus === 'Verified') return alert("You already have a pass!");
-                if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Payment under review.");
+        // 2. TOGGLE EVENT
+        function toggleEvent(id, title, price, isPremium) {
+            if (!cart.pass) return alert("Select a Base Pass First");
+            if (cart.pass.type === 'special') return;
 
-                openModal();
-                document.getElementById('view-auth').classList.add('hidden');
-                document.getElementById('view-profile').classList.add('hidden');
-                document.getElementById('view-payment').classList.remove('hidden');
-                document.getElementById('pay-item-name').innerText = name + " - ₹" + price;
-                document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${price}&cu=INR`;
-            } else {
-                pendingPurchase = {price, name};
-                openModal();
-                alert("Please Login First");
+            const index = cart.events.findIndex(e => e.id === id);
+            if (index > -1) { cart.events.splice(index, 1); } 
+            else { 
+                if (cart.events.length >= 5) return alert("Max 5 events");
+                cart.events.push({ id, title, price, isPremium });
             }
+            const btn = document.getElementById(`btn-event-${id}`);
+            if(index === -1) { btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); } 
+            else { btn.innerText = "Add + â¹" + price; btn.classList.remove('bg-pink-600', 'border-pink-600'); }
+            updateCartUI();
+        }
+
+        // 3. CALCULATION (STANDARD PASS RULES)
+        function updateCartUI() {
+            const bar = document.getElementById('cart-bar');
+            if (cart.pass || cart.events.length > 0) {
+                bar.classList.remove('translate-y-full');
+                let total = cart.pass ? cart.pass.price : 0;
+                let regularEventsCount = 0;
+
+                cart.events.forEach((e) => {
+                    if (cart.pass && cart.pass.name === 'Standard' && !e.isPremium) {
+                        if (regularEventsCount < 2) { /* Free */ regularEventsCount++; } 
+                        else { total += e.price; }
+                    } else { total += e.price; }
+                });
+                document.getElementById('cart-total').innerText = "â¹" + total;
+                let desc = cart.pass ? cart.pass.name : "";
+                if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`;
+                document.getElementById('cart-desc').innerText = desc;
+            } else { bar.classList.add('translate-y-full'); }
+        }
+
+        // 4. CHECKOUT LOGIC & UPSELL
+        function checkUpsell() {
+            if (!cart.pass) return alert("Select a Pass");
+            
+            // Logic: Standard + < 2 Regular Events -> Warn
+            if (cart.pass.name === 'Standard') {
+                const regularCount = cart.events.filter(e => !e.isPremium).length;
+                if (regularCount < 2) {
+                    const remaining = 2 - regularCount;
+                    if (!confirm(`You have ${remaining} FREE event slot(s) remaining with the Standard Pass. Do you want to checkout anyway?`)) return;
+                }
+            } 
+            // Logic: General + No Events -> Warn
+            else if (cart.pass.name === 'General' && cart.events.length === 0) {
+                 if (!confirm("You haven't added any events. You will only have campus entry. Proceed?")) return;
+            }
+            initiateCheckout();
+        }
+
+        function initiateCheckout() {
+            if(currentUser && userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) return alert("You already have a pass!");
+
+            let total = cart.pass.price;
+            let eventHtml = "";
+            let regularEventsCount = 0;
+
+            cart.events.forEach((e) => {
+                let cost = e.price; let label = `â¹${e.price}`;
+                if (cart.pass.name === 'Standard' && !e.isPremium) {
+                    if (regularEventsCount < 2) { cost = 0; label = "FREE (Standard)"; regularEventsCount++; }
+                }
+                total += cost;
+                eventHtml += `<div class="flex justify-between"><span>${e.title}</span><span>${label}</span></div>`;
+            });
+            finalTotal = total;
+            document.getElementById('rec-pass-name').innerText = cart.pass.name;
+            document.getElementById('rec-pass-price').innerText = `â¹${cart.pass.price}`;
+            document.getElementById('rec-events-list').innerHTML = eventHtml;
+            document.getElementById('rec-total').innerText = `â¹${total}`;
+            
+            document.getElementById('promo-code').value = ""; document.getElementById('promo-msg').classList.add('hidden'); promoApplied = null;
+            openModal();
+            document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.add('hidden');
+            document.getElementById('view-receipt').classList.remove('hidden'); document.getElementById('view-payment').classList.add('hidden');
+        }
+
+        function applyPromo() {
+            const code = document.getElementById('promo-code').value.toUpperCase();
+            if(!code) return;
+            db.ref('promos/' + code).once('value').then(snapshot => {
+                const promo = snapshot.val();
+                if(promo) {
+                    if(promo.used >= promo.limit) return alert("Limit reached");
+                    let discount = promo.type === 'flat' ? promo.discount : (finalTotal * promo.discount / 100);
+                    finalTotal -= discount; if(finalTotal < 0) finalTotal = 0;
+                    document.getElementById('rec-total').innerText = `â¹${finalTotal} (Code Applied)`;
+                    document.getElementById('promo-msg').classList.remove('hidden');
+                    promoApplied = { code: code, currentUsed: promo.used };
+                } else alert("Invalid Code");
+            });
+        }
+
+        function showPayment() {
+            if(!currentUser) { alert("Please Login"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; }
+            document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden');
+            document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${finalTotal}&cu=INR`;
         }
 
         function completePayment() {
-            const utr = document.getElementById('input-utr').value;
-            if(utr.length < 8) return alert("Invalid UTR Number");
-            
+            const utr = document.getElementById('input-utr').value; if(utr.length < 8) return alert("Invalid UTR");
             const cleanEmail = currentUser.email.replace(/\./g, ',');
-            db.ref('users/' + cleanEmail).update({
-                paymentStatus: "Pending",
-                utr: utr,
-                passType: document.getElementById('pay-item-name').innerText,
-                purchaseTime: new Date().toISOString()
-            });
-            
-            alert("UTR Submitted! Admin will verify shortly.");
-            // Reset View
-            handleAccountClick(); // Go back to dashboard
+            if(promoApplied) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 });
+            db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", utr: utr, order: { pass: cart.pass.name, events: cart.events, total: finalTotal, promo: promoApplied ? promoApplied.code : "None", timestamp: new Date().toISOString() } });
+            alert("Order Submitted!"); handleAccountClick();
         }
 
-        // 3. AUTH (Register/Login)
-        function userRegister() {
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
-            const name = document.getElementById('reg-name').value;
-            const phone = document.getElementById('reg-phone').value;
-            const college = document.getElementById('reg-college').value;
-            const id = document.getElementById('reg-id').value;
-
-            if(!email || !pass || !name) return alert("Fill all details");
-
-            auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
-                cred.user.sendEmailVerification();
-                const cleanEmail = email.replace(/\./g, ',');
-                db.ref('users/' + cleanEmail).set({
-                    name: name, email: email, phone: phone, 
-                    collegeName: college, collegeId: id, 
-                    uid: cred.user.uid, paymentStatus: "None"
-                });
-                alert("Account Created! Please verify email.");
-                closeModal();
-            }).catch(e => alert(e.message));
-        }
-
-        function userLogin() {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-            auth.signInWithEmailAndPassword(email, pass).then((cred) => {
-                if(!cred.user.emailVerified) {
-                    alert("Email not verified!"); 
-                    // Optional: cred.user.sendEmailVerification();
-                } else {
-                    alert("Welcome!");
-                    closeModal();
-                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
-                }
-            }).catch(e => alert(e.message));
-        }
-
-        function logout() { auth.signOut().then(() => { closeModal(); window.location.reload(); }); }
-
-        // 4. UI HELPERS
-        function handleAccountClick() {
-            if(!currentUser) {
-                openModal();
-                document.getElementById('view-profile').classList.add('hidden');
-                document.getElementById('view-auth').classList.remove('hidden');
-            } else {
-                openModal();
-                document.getElementById('view-auth').classList.add('hidden');
-                document.getElementById('view-profile').classList.remove('hidden');
-                document.getElementById('profile-name').innerText = userDataDB ? userDataDB.name : "User";
-                document.getElementById('profile-email').innerText = currentUser.email;
-                updateTicketUI(); // Force refresh ticket display
-            }
-        }
-
-        function openModal() { document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
-        function closeModal() { document.getElementById('auth-modal').style.display='none'; }
-        function switchAuthMode(mode) {
-            ['form-login', 'form-register'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active');
-            document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById(`form-${mode}`).classList.remove('hidden');
-        }
-        function updateNav(name) { document.getElementById('nav-user-text').innerText = name; }
-
-        // 5. TERMINAL & EVENTS (Standard)
-        function runTerminalIntro() {
-            const t = document.getElementById('terminal-output'); if(!t) return;
-            setTimeout(() => document.getElementById('enter-btn').classList.remove('opacity-0'), 3500);
-            const logs = ["> SYSTEM_INIT...", "> SECURE_CONN...", "> LOADING_ASSETS...", "> READY."];
-            let delay=0; logs.forEach(l => { setTimeout(() => { t.innerHTML += `<div class="mb-1">${l}</div>`; t.scrollTop = t.scrollHeight; }, delay); delay += 300; });
-            setTimeout(() => document.getElementById('intro-title').classList.remove('opacity-0'), 1800);
-            setInterval(() => { const h = document.getElementById('hero-title'); if(h) { h.classList.add('glitching'); setTimeout(() => h.classList.remove('glitching'), 200); } }, 3000);
-            filterEvents('all');
-        }
-        function enterSite() {
-            const i = document.getElementById('intro-screen'); i.style.transition = "opacity 0.8s ease-out"; i.style.opacity = '0';
-            setTimeout(() => { i.style.display = 'none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); 
-            const obs = new IntersectionObserver((e) => { e.forEach(x => { if (x.isIntersecting) x.target.classList.add('active'); }); }, { threshold: 0.1 });
-            document.querySelectorAll('.reveal').forEach(el => obs.observe(el)); }, 800);
-        }
-        function switchView(id) { document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display='none';}, 500); }); const t = document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(() => { t.classList.add('active'); window.scrollTo(0,0); }, 50); }
-        function toggleSidebar() { const s = document.getElementById('sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')) { s.classList.remove('-translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); } else { s.classList.add('-translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
+        // --- AUTH & UI HELPERS ---
+        function userRegister(){ const e=document.getElementById('reg-email').value,p=document.getElementById('reg-pass').value,n=document.getElementById('reg-name').value,ph=document.getElementById('reg-phone').value,c=document.getElementById('reg-college').value,i=document.getElementById('reg-id').value; if(!e||!p||!n)return alert("Fill all"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); db.ref('users/'+e.replace(/\./g,',')).set({name:n,email:e,phone:ph,collegeName:c,collegeId:i,uid:crd.user.uid,paymentStatus:"None"}); alert("Registered! Check Email."); closeModal(); }).catch(err=>alert(err.message)); }
+        function userLogin(){ const e=document.getElementById('login-email').value,p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified)alert("Verify Email"); else{ alert("Welcome"); closeModal(); } }).catch(err=>alert(err.message)); }
+        function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
+        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
+        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUser.uid}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.collegeId}`; } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); else document.getElementById('ticket-none').classList.remove('hidden'); }
+        function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
+        function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
+        function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
+        function forgotPass(){ window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Pass`, '_blank'); }
+        function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 5000); }
+        function hideToast() { document.getElementById('notification-toast').classList.remove('show'); }
+        
+        function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); filterEvents('all'); }
+        function enterSite(){ const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); },800); }
+        function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
+        function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
 
         const eventsData = [
-            { club: 'culture', title: 'Street Battle', date: 'Feb 25', time: '4 PM', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
-            { club: 'culture', title: 'Solo Singing', date: 'Feb 24', time: '11 AM', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
-            { club: 'culture', title: 'Runway Rivals', date: 'Feb 24', time: '7 PM', img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
-            { club: 'entertainment', title: 'Battle of Bands', date: 'Feb 24', time: '5 PM', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600' },
-            { club: 'entertainment', title: 'EDM Night', date: 'Feb 25', time: '8 PM', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
-            { club: 'sports', title: 'Valorant', date: 'Feb 24', time: '10 AM', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600' },
-            { club: 'sports', title: 'FIFA 26', date: 'Feb 25', time: '1 PM', img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' },
-            { club: 'sports', title: 'Box Cricket', date: 'Feb 24', time: '9 AM', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600' },
-            { club: 'photo', title: 'Photo Walk', date: 'Feb 24', time: '8 AM', img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600' },
-            { club: 'photo', title: 'Treasure Hunt', date: 'Feb 25', time: '2 PM', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600' },
-            { club: 'lit', title: 'Debate War', date: 'Feb 24', time: '12 PM', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600' },
-            { club: 'lit', title: 'Open Mic', date: 'Feb 25', time: '3 PM', img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600' },
-            { club: 'essc', title: 'Eco Drive', date: 'Feb 24', time: '9 AM', img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600' }
+            { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
+            
+            { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
+            { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
+            { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
+            { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600' },
+            { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600' },
+            { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' },
+            { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600' },
+            { id: 9, club: 'photo', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600' },
+            { id: 10, club: 'photo', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600' },
+            { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600' },
+            { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600' },
+            { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600' }
         ];
+
         function filterEvents(cat) {
             const grid = document.getElementById('events-grid'); grid.innerHTML='';
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -461,13 +535,17 @@
             });
             const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat);
             filtered.forEach(e => {
-                grid.innerHTML += `<div class="bg-zinc-900 border border-zinc-800"><div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"></div><div class="p-4"><h3 class="text-white font-bold uppercase">${e.title}</h3><p class="text-xs text-gray-500 mt-1">${e.date} • ${e.time}</p></div></div>`;
+                grid.innerHTML += `
+                <div class="bg-zinc-900 border border-zinc-800">
+                    <div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"></div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold uppercase">${e.title} ${e.isPremium ? '<span class="text-pink-500 text-[10px]">(Premium)</span>' : ''}</h3>
+                        <p class="text-xs text-gray-500 mt-1">Fee: â¹${e.price}</p>
+                        <button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>
+                    </div>
+                </div>`;
             });
         }
     </script>
 </body>
 </html>
-
-
-
-
