@@ -9,9 +9,27 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
     <script>
-        // ⚠️ YOUR CONNECTED BACKEND URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbzE2j8DET5LkeW8yFxqdZs4NvJXKUrfFQQ7PZKeFJr0Ag7EDsYMffgBwIn_kNurJYVH/exec"; 
+        const firebaseConfig = {
+            apiKey: "AIzaSyATPWBVx5bqqIrbgaXm44KDAy29b4ru6NY",
+            authDomain: "spectram-234f7.firebaseapp.com",
+            projectId: "spectram-234f7",
+            storageBucket: "spectram-234f7.firebasestorage.app",
+            messagingSenderId: "192476382126",
+            appId: "1:192476382126:web:26422db3e948165933be3f",
+            measurementId: "G-SK3RN0FDZK",
+            databaseURL: "https://spectram-234f7-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
         const UPI_ID = "chyasar2004-2@oksbi";
         const WA_NUMBER = "918157080825"; 
     </script>
@@ -25,7 +43,7 @@
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
-        /* --- VISUAL FX --- */
+        /* VISUAL FX */
         .glitch-text { position: relative; }
         .glitch-text::before, .glitch-text::after {
             content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
@@ -47,21 +65,16 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* --- UI COMPONENTS --- */
+        /* UI COMPONENTS */
         .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
-        
         .btn-primary { background: white; color: black; border: 1px solid white; transition: 0.3s; }
         .btn-primary:hover { background: black; color: white; }
-        
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s; }
         .btn-outline:hover { border-color: white; background: white; color: black; }
-
         .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
         .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
-
         .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .view-section.active { display: block; opacity: 1; }
-        
         #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -72,25 +85,19 @@
     <div class="scanline"></div>
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; opacity: 0.07; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
 
-    <!-- ==================== INTRO ==================== -->
+    <!-- INTRO -->
     <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center font-mono">
         <div class="relative z-10 w-full max-w-2xl px-6">
             <div id="terminal-output" class="text-left text-xs md:text-sm text-green-500 mb-8 h-32 border-l-2 border-green-500 pl-4 font-bold overflow-hidden"></div>
-            
             <div id="intro-title" class="opacity-0 transition-opacity duration-1000">
-                <h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">
-                    SPEC<span class="text-pink-600">TRUM</span>
-                </h1>
+                <h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">SPEC<span class="text-pink-600">TRUM</span></h1>
                 <p class="text-xs font-bold tracking-[0.8em] text-gray-500 uppercase mt-4 animate-pulse">'26 SYSTEM ONLINE</p>
             </div>
-            
-            <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-green-500 border-green-500 hover:bg-green-500 hover:text-black hover:border-green-500 uppercase tracking-widest text-xs py-4 px-8">
-                [ Enter System ]
-            </button>
+            <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-green-500 border-green-500 hover:bg-green-500 hover:text-black hover:border-green-500 uppercase tracking-widest text-xs py-4 px-8">[ Enter System ]</button>
         </div>
     </div>
 
-    <!-- ==================== APP ==================== -->
+    <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
         
         <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
@@ -99,8 +106,8 @@
                 <span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span>
             </button>
             <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
-            <button onclick="handleLoginClick()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">
-                <i data-lucide="user" class="w-4 h-4"></i><span id="nav-login-text">Account</span>
+            <button onclick="handleAccountClick()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">
+                <i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text">Login</span>
             </button>
         </nav>
 
@@ -139,42 +146,24 @@
 
             <section id="passes" class="py-24 px-6 bg-zinc-950">
                 <div class="max-w-7xl mx-auto">
-                    <div class="flex justify-between items-end mb-16 reveal">
-                        <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Tickets</span><h2 class="text-4xl font-display text-white">Access</h2></div>
-                    </div>
+                    <div class="flex justify-between items-end mb-16 reveal"><div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Tickets</span><h2 class="text-4xl font-display text-white">Access</h2></div></div>
                     <div class="grid md:grid-cols-3 gap-6">
-                        <!-- Day 1 -->
                         <div class="glass-panel p-8 hover:bg-white/5 transition-colors reveal">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 1</span>
-                            <h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
-                            <div class="border-t border-white/10 pt-6 flex justify-between items-center">
-                                <span class="text-xl font-bold text-white">₹299</span>
-                                <button onclick="handlePurchase(299, 'Day 1 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button>
-                            </div>
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 1</span><h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
+                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-white">₹299</span><button onclick="handlePurchase(299, 'Day 1 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button></div>
                         </div>
-                        <!-- All Access -->
                         <div class="bg-white p-8 transform md:-translate-y-4 reveal shadow-xl shadow-pink-900/10">
-                            <span class="text-xs font-bold text-pink-600 uppercase tracking-widest">VIP</span>
-                            <h3 class="text-2xl font-display text-black mt-2 mb-6">All Access</h3>
-                            <div class="border-t border-black/10 pt-6 flex justify-between items-center">
-                                <span class="text-xl font-bold text-black">₹499</span>
-                                <button onclick="handlePurchase(499, 'All Access Pass')" class="text-[10px] font-bold uppercase tracking-widest text-black hover:text-pink-600 transition-colors">Buy &rarr;</button>
-                            </div>
+                            <span class="text-xs font-bold text-pink-600 uppercase tracking-widest">VIP</span><h3 class="text-2xl font-display text-black mt-2 mb-6">All Access</h3>
+                            <div class="border-t border-black/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-black">₹499</span><button onclick="handlePurchase(499, 'All Access Pass')" class="text-[10px] font-bold uppercase tracking-widest text-black hover:text-pink-600 transition-colors">Buy &rarr;</button></div>
                         </div>
-                        <!-- Day 2 -->
                         <div class="glass-panel p-8 hover:bg-white/5 transition-colors reveal">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 2</span>
-                            <h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
-                            <div class="border-t border-white/10 pt-6 flex justify-between items-center">
-                                <span class="text-xl font-bold text-white">₹299</span>
-                                <button onclick="handlePurchase(299, 'Day 2 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button>
-                            </div>
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Day 2</span><h3 class="text-2xl font-display text-white mt-2 mb-6">Standard</h3>
+                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-xl font-bold text-white">₹299</span><button onclick="handlePurchase(299, 'Day 2 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Buy &rarr;</button></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- FULL GALLERY RESTORED -->
             <section id="gallery" class="py-24">
                 <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
@@ -213,42 +202,42 @@
             <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
                 
-                <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800">
-                    <div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div>
-                    <div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div>
+                <!-- PROFILE (LOGGED IN) -->
+                <div id="view-profile" class="hidden text-center space-y-4">
+                    <h2 class="text-xl font-display text-white">Profile</h2>
+                    <div class="w-16 h-16 bg-zinc-800 rounded-full mx-auto flex items-center justify-center"><i data-lucide="user" class="w-8 h-8"></i></div>
+                    <p id="profile-name" class="text-lg font-bold text-white"></p>
+                    <p id="profile-email" class="text-xs text-gray-500"></p>
+                    <button onclick="logout()" class="w-full bg-red-900/30 text-red-500 font-bold uppercase py-3 text-xs border border-red-900 hover:bg-red-900 hover:text-white">Logout</button>
                 </div>
 
-                <!-- LOGIN -->
-                <div id="form-login" class="space-y-4">
-                    <input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div>
-                    <button onclick="handleLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button>
+                <!-- AUTH FORMS (LOGGED OUT) -->
+                <div id="view-auth">
+                    <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800">
+                        <div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div>
+                        <div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div>
+                    </div>
+
+                    <!-- LOGIN -->
+                    <div id="form-login" class="space-y-4">
+                        <input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div>
+                        <button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button>
+                    </div>
+
+                    <!-- REGISTER -->
+                    <div id="form-register" class="space-y-4 hidden">
+                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
+                        <button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button>
+                    </div>
                 </div>
 
-                <!-- REGISTER -->
-                <div id="form-register" class="space-y-4 hidden">
-                    <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase focus:border-pink-500 outline-none">
-                    <button onclick="sendOTP()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Next</button>
-                </div>
-
-                <!-- OTP & PAYMENT & PASSWORD -->
-                <div id="view-otp" class="hidden text-center space-y-4">
-                    <h2 class="text-xl font-display text-white">Verify</h2>
-                    <input id="input-otp" type="text" placeholder="######" class="w-full bg-black border border-zinc-800 p-3 text-center text-xl text-white tracking-[0.5em] outline-none">
-                    <button onclick="verifyOTP()" class="w-full bg-pink-600 text-white font-bold uppercase py-3 text-xs">Confirm</button>
-                </div>
-                
-                <div id="view-set-password" class="hidden text-center space-y-4">
-                    <h2 class="text-xl font-display text-white">Set Password</h2>
-                    <input id="new-pass" type="password" placeholder="New Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white">
-                    <input id="confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white">
-                    <button onclick="savePassword()" class="w-full bg-pink-600 text-white font-bold uppercase py-3 text-xs">Finish</button>
-                </div>
-
+                <!-- PAYMENT -->
                 <div id="view-payment" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">Checkout</h2>
                     <p id="pay-item-name" class="text-pink-500 text-xs font-bold uppercase mb-4"></p>
@@ -261,167 +250,164 @@
     </div>
 
     <script>
-        // --- LOGIC ---
-        let isLoggedIn = false;
-        let currentUserEmail = "";
-        let serverOTP = 0;
+        let currentUser = null;
         let pendingPurchase = null;
 
-        // INIT
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             runTerminalIntro();
+            
+            // Listen for Auth Changes
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    // Force Email Verification Check
+                    if (!user.emailVerified) {
+                        // Optional: Force logout if not verified, or show warning
+                        // For now we just show name
+                        updateNav(user.displayName || "User");
+                    } else {
+                        updateNav(user.displayName || "User");
+                    }
+                } else {
+                    currentUser = null;
+                    updateNav("Login");
+                }
+            });
         });
 
-        // CORE API FUNCTION (CORS FIX)
-        async function apiCall(data) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    redirect: 'follow', 
-                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-                    body: JSON.stringify(data)
-                });
-                return await response.json();
-            } catch (error) {
-                console.error(error);
-                alert("Connection Error. Please try again.");
-                return { status: "error" };
+        // 1. REGISTER
+        function userRegister() {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const name = document.getElementById('reg-name').value;
+            const phone = document.getElementById('reg-phone').value;
+            const id = document.getElementById('reg-id').value;
+
+            if(!email || !pass || !name) return alert("Fill all details");
+
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    user.updateProfile({ displayName: name });
+                    user.sendEmailVerification();
+                    
+                    // Save to DB
+                    const cleanEmail = email.replace(/\./g, ',');
+                    db.ref('users/' + cleanEmail).set({
+                        name: name, email: email, phone: phone, collegeId: id, uid: user.uid
+                    });
+
+                    alert("Registration Successful! Verification link sent to email.");
+                    closeModal();
+                })
+                .catch((error) => alert(error.message));
+        }
+
+        // 2. LOGIN
+        function userLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            
+            auth.signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    if(!user.emailVerified) {
+                        alert("Please verify your email first. Sending new link...");
+                        user.sendEmailVerification();
+                        // Optional: auth.signOut(); return; // To force logout
+                    }
+                    alert("Login Successful!");
+                    closeModal();
+                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+                })
+                .catch((error) => alert(error.message));
+        }
+
+        // 3. LOGOUT
+        function logout() {
+            auth.signOut().then(() => {
+                alert("Logged Out");
+                closeModal();
+                updateNav("Login");
+            });
+        }
+
+        // 4. UI HANDLERS
+        function handleAccountClick() {
+            if(!currentUser) {
+                openModal();
+                document.getElementById('view-profile').classList.add('hidden');
+                document.getElementById('view-auth').classList.remove('hidden');
+            } else {
+                openModal();
+                document.getElementById('view-auth').classList.add('hidden');
+                document.getElementById('view-profile').classList.remove('hidden');
+                document.getElementById('profile-name').innerText = currentUser.displayName;
+                document.getElementById('profile-email').innerText = currentUser.email;
             }
         }
 
-        // TERMINAL
-        function runTerminalIntro() {
-            const terminal = document.getElementById('terminal-output');
-            if(!terminal) return;
-            setTimeout(() => document.getElementById('enter-btn').classList.remove('opacity-0'), 3500);
-
-            const logs = ["> BOOT_SEQUENCE...", "> ENCRYPTING...", "> CONNECTING...", "> 100% DONE.", "> READY."];
-            let delay = 0;
-            logs.forEach(log => {
-                setTimeout(() => { 
-                    terminal.innerHTML += `<div class="mb-1">${log}</div>`; 
-                    terminal.scrollTop = terminal.scrollHeight; 
-                }, delay);
-                delay += 300;
-            });
-            setTimeout(() => document.getElementById('intro-title').classList.remove('opacity-0'), 1800);
-            
-            setInterval(() => {
-                const t = document.getElementById('hero-title');
-                if(t) { t.classList.add('glitching'); setTimeout(() => t.classList.remove('glitching'), 200); }
-            }, 3000);
-            filterEvents('all');
-        }
-
-        function enterSite() {
-            const intro = document.getElementById('intro-screen');
-            intro.style.transition = "opacity 0.8s ease-out";
-            intro.style.opacity = '0';
-            setTimeout(() => {
-                intro.style.display = 'none';
-                document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('main-content').classList.add('fade-in');
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
-                }, { threshold: 0.1 });
-                document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-            }, 800);
-        }
-
-        // NAVIGATION
-        function switchView(id) {
-            document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display='none';}, 500); });
-            const t = document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(() => { t.classList.add('active'); window.scrollTo(0,0); }, 50);
-        }
-        function toggleSidebar() {
-            const s = document.getElementById('sidebar'); const o = document.getElementById('sidebar-overlay');
-            if(s.classList.contains('-translate-x-full')) { s.classList.remove('-translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); }
-            else { s.classList.add('-translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); }
-        }
-
-        // AUTH & API
-        function handleLoginClick() { if(isLoggedIn) alert("Already Logged In"); else openModal(); }
-        function openModal() { document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; switchAuthMode('login'); }
-        function closeModal() { document.getElementById('auth-modal').style.display='none'; }
-        function forgotPass() { window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Password`, '_blank'); }
-
-        function switchAuthMode(mode) {
-            document.getElementById('auth-tabs').classList.remove('hidden');
-            ['form-login', 'form-register', 'view-otp', 'view-set-password', 'view-payment'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active');
-            document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById(`form-${mode}`).classList.remove('hidden');
-        }
-
-        // BACKEND CALLS
-        async function sendOTP() {
-            const email = document.getElementById('reg-email').value;
-            const phone = document.getElementById('reg-phone').value;
-            if(!email || !phone) { alert("Fill all fields"); return; }
-            const btn = event.target; btn.innerText = "Sending...";
-            
-            const res = await apiCall({ action: "send_otp", email: email });
-            if(res.status === "success") {
-                serverOTP = res.otp; currentUserEmail = email; 
-                document.getElementById('auth-tabs').classList.add('hidden');
-                document.getElementById('form-register').classList.add('hidden');
-                document.getElementById('view-otp').classList.remove('hidden');
-            } else { alert("Error"); btn.innerText = "Retry"; }
-        }
-
-        function verifyOTP() {
-            if(String(document.getElementById('input-otp').value) === String(serverOTP)) {
-                document.getElementById('view-otp').classList.add('hidden'); document.getElementById('view-set-password').classList.remove('hidden');
-            } else alert("Invalid Code");
-        }
-
-        async function savePassword() {
-            const p1 = document.getElementById('new-pass').value;
-            if(p1 !== document.getElementById('confirm-pass').value) { alert("Mismatch"); return; }
-            
-            const userData = {
-                action: "register",
-                name: document.getElementById('reg-name').value,
-                email: currentUserEmail,
-                phone: document.getElementById('reg-phone').value,
-                collegeId: document.getElementById('reg-id').value,
-                password: p1
-            };
-            
-            const res = await apiCall(userData);
-            if(res.status === "success") {
-                isLoggedIn = true; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Created!");
-                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
-            } else alert(res.message);
-        }
-
-        async function handleLogin() {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-            const res = await apiCall({ action: "login", email: email, password: pass });
-            if(res.status === "success") {
-                isLoggedIn = true; currentUserEmail = email; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Welcome!");
-                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
-            } else alert("Invalid");
-        }
+        function updateNav(name) { document.getElementById('nav-user-text').innerText = name; }
 
         function handlePurchase(price, name) {
-            if(isLoggedIn) {
-                openModal(); ['auth-tabs', 'form-login', 'form-register'].forEach(v=>document.getElementById(v).classList.add('hidden'));
+            if(currentUser && currentUser.emailVerified) {
+                openModal();
+                document.getElementById('view-auth').classList.add('hidden');
+                document.getElementById('view-profile').classList.add('hidden');
                 document.getElementById('view-payment').classList.remove('hidden');
                 document.getElementById('pay-item-name').innerText = name + " - ₹" + price;
                 document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum&am=${price}`;
-            } else { pendingPurchase={price,name}; openModal(); alert("Login First"); }
+            } else {
+                pendingPurchase = {price, name};
+                openModal();
+                if(currentUser && !currentUser.emailVerified) alert("Please verify your email first.");
+                else alert("Please Login First");
+            }
         }
 
-        async function completePayment() {
+        function completePayment() {
             const utr = document.getElementById('input-utr').value;
-            if(utr.length < 4) { alert("Invalid UTR"); return; }
-            const res = await apiCall({ action: "payment", email: currentUserEmail, utr: utr });
-            if(res.status === "success") { closeModal(); alert("Submitted!"); } else alert("Error");
+            if(utr.length < 4) return alert("Invalid UTR");
+            
+            const cleanEmail = currentUser.email.replace(/\./g, ',');
+            db.ref('users/' + cleanEmail).update({
+                paymentStatus: "Pending",
+                utr: utr,
+                item: document.getElementById('pay-item-name').innerText
+            });
+            alert("Payment Submitted!");
+            closeModal();
         }
 
-        // FULL EVENTS LIST
+        function openModal() { document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
+        function closeModal() { document.getElementById('auth-modal').style.display='none'; }
+        function switchAuthMode(mode) {
+            document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active');
+            document.getElementById('form-login').classList.add('hidden'); document.getElementById('form-register').classList.add('hidden');
+            document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById(`form-${mode}`).classList.remove('hidden');
+        }
+        function forgotPass() { window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Password`, '_blank'); }
+
+        // TERMINAL & EVENTS
+        function runTerminalIntro() {
+            const t = document.getElementById('terminal-output'); if(!t) return;
+            setTimeout(() => document.getElementById('enter-btn').classList.remove('opacity-0'), 3500);
+            const logs = ["> BOOT_SEQUENCE...", "> ENCRYPTING...", "> CONNECTING...", "> 100% DONE.", "> READY."];
+            let delay=0; logs.forEach(l => { setTimeout(() => { t.innerHTML += `<div class="mb-1">${l}</div>`; t.scrollTop = t.scrollHeight; }, delay); delay += 300; });
+            setTimeout(() => document.getElementById('intro-title').classList.remove('opacity-0'), 1800);
+            setInterval(() => { const h = document.getElementById('hero-title'); if(h) { h.classList.add('glitching'); setTimeout(() => h.classList.remove('glitching'), 200); } }, 3000);
+            filterEvents('all');
+        }
+        function enterSite() {
+            const i = document.getElementById('intro-screen'); i.style.transition = "opacity 0.8s ease-out"; i.style.opacity = '0';
+            setTimeout(() => { i.style.display = 'none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); 
+            const obs = new IntersectionObserver((e) => { e.forEach(x => { if (x.isIntersecting) x.target.classList.add('active'); }); }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el)); }, 800);
+        }
+        function switchView(id) { document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display='none';}, 500); }); const t = document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(() => { t.classList.add('active'); window.scrollTo(0,0); }, 50); }
+        function toggleSidebar() { const s = document.getElementById('sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')) { s.classList.remove('-translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); } else { s.classList.add('-translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
+        
         const eventsData = [
             { club: 'culture', title: 'Street Battle', date: 'Feb 25', time: '4 PM', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
             { club: 'culture', title: 'Solo Singing', date: 'Feb 24', time: '11 AM', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
