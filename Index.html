@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTRUM '26 | NIFT Jodhpur</title>
+    
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CONFIGURATION -->
+    <script>
+        // ⚠️ YOUR CONNECTED BACKEND URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbzc5Mr69t4SZxhUNUFmDSX_FsP8ZSXf3B13I8kUWnX1DiHhl-nORA6O4IMu5BdyKru3/exec"; 
+        
+        const UPI_ID = "chyasar2004-2@oksbi";
+        const WA_NUMBER = "918157080825"; 
+    </script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        :root { --accent: #db2777; --terminal-green: #0f0; }
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            background-color: #050505; 
+            color: #f3f3f3; 
+            font-family: 'Manrope', sans-serif; 
+            overflow-x: hidden; 
+        }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
+        .font-serif { font-family: 'Italiana', serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+        .scanline {
+            position: fixed; left: 0; top: 0; width: 100%; height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 0, 0.1), transparent);
+            animation: scanline 4s linear infinite; pointer-events: none; z-index: 999;
+        }
+
+        /* Glitch Effect */
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050505; opacity: 0;
+        }
+        .glitch-text.glitching::before {
+            opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0);
+        }
+        .glitch-text.glitching::after {
+            opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0);
+        }
+
+        /* Hero Zoom */
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
+
+        /* Scroll Reveal */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* --- UI COMPONENTS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-primary {
+            background: white; color: black; padding: 14px 36px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em;
+            transition: all 0.3s ease; border: 1px solid white; cursor: pointer;
+        }
+        .btn-primary:hover { background: black; color: white; }
+
+        .btn-outline {
+            background: transparent; color: white; padding: 14px 36px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em;
+            transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.3); cursor: pointer;
+        }
+        .btn-outline:hover { border-color: white; background: white; color: black; }
+
+        .auth-tab { padding-bottom: 10px; color: #666; cursor: pointer; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+        .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
+
+        /* Transitions */
+        .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .view-section.active { display: block; opacity: 1; }
+        #sidebar { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in { animation: fadeIn 1s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body onload="runTerminalIntro()">
+
+    <!-- OVERLAYS -->
+    <div class="scanline"></div>
+    <!-- Noise texture -->
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; opacity: 0.05; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
+
+    <!-- ==================== 0. INTRO ==================== -->
+    <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center select-none font-mono">
+        <div class="relative z-10 w-full max-w-2xl px-6">
+            <div id="terminal-output" class="text-left text-xs md:text-sm text-green-500 mb-8 h-32 overflow-hidden border-l-2 border-green-500 pl-4"></div>
+            <div id="intro-title" class="opacity-0 transition-opacity duration-1000">
+                <h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">
+                    SPEC<span class="text-pink-600">TRUM</span>
+                </h1>
+                <p class="text-xs font-bold tracking-[0.8em] text-gray-500 uppercase mt-4">'26 SYSTEM READY</p>
+            </div>
+            <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-green-500 border-green-500 hover:bg-green-500 hover:text-black hover:border-green-500 transition-all">
+                > INITIALIZE
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div id="main-content" class="hidden opacity-0">
+        
+        <!-- NAV -->
+        <nav class="fixed top-0 left-0 w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference text-white">
+            <button onclick="toggleSidebar()" class="group flex items-center gap-3">
+                <div class="flex flex-col gap-1.5">
+                    <span class="w-6 h-[1px] bg-white group-hover:w-8 transition-all"></span>
+                    <span class="w-4 h-[1px] bg-white group-hover:w-8 transition-all"></span>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span>
+            </button>
+            <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
+            <button onclick="handleLoginClick()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">
+                <i data-lucide="user" class="w-4 h-4"></i><span id="nav-login-text">Account</span>
+            </button>
+        </nav>
+
+        <!-- SIDEBAR -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden transition-opacity duration-300 opacity-0"></div>
+        <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[400px] bg-[#0a0a0a] border-r border-white/10 z-[60] transform -translate-x-full flex flex-col p-12 justify-between">
+            <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span>
+                <button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-pink-500 transition-colors"></i></button>
+            </div>
+            <div class="flex flex-col gap-6">
+                <a onclick="switchView('home'); toggleSidebar()" class="text-4xl font-display text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Home</a>
+                <a href="#about" onclick="toggleSidebar()" class="text-4xl font-display text-white hover:text-pink-600 hover:pl-4 transition-all">Theme</a>
+                <a href="#passes" onclick="toggleSidebar()" class="text-4xl font-display text-white hover:text-pink-600 hover:pl-4 transition-all">Passes</a>
+                <a onclick="switchView('events'); toggleSidebar()" class="text-4xl font-display text-pink-500 italic hover:text-white hover:pl-4 transition-all cursor-pointer">Event Lineup</a>
+                <a href="#gallery" onclick="toggleSidebar()" class="text-4xl font-display text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
+            </div>
+            <div class="border-t border-white/10 pt-8">
+                <p class="text-xs text-gray-500 mb-2">Socials</p>
+                <div class="flex gap-4">
+                    <i data-lucide="instagram" class="w-5 h-5 text-white hover:text-pink-500 cursor-pointer"></i>
+                    <i data-lucide="twitter" class="w-5 h-5 text-white hover:text-pink-500 cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 1: HOME -->
+        <main id="view-home" class="view-section active">
+            <!-- HERO -->
+            <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-50 filter grayscale contrast-125">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent"></div>
+                </div>
+                <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
+                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full">
+                        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-white">Feb 24 - 25 • 2026</p>
+                    </div>
+                    <h1 class="text-7xl md:text-[10rem] font-display font-bold text-white leading-[0.8] mb-8">
+                        SPEC<span class="text-pink-600">TRUM</span>
+                    </h1>
+                    <p class="text-lg md:text-xl font-serif italic text-gray-300 mb-12">"Where elegance meets the digital frontier."</p>
+                    <div class="flex flex-col md:flex-row gap-6 justify-center">
+                        <a href="#passes" class="btn-primary">Acquire Passes</a>
+                        <button onclick="switchView('events')" class="btn-outline">View Lineup</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about" class="py-32 px-6 md:px-20 border-b border-white/5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center max-w-7xl mx-auto">
+                    <div class="reveal">
+                        <span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-4 block">The Concept</span>
+                        <h2 class="text-5xl md:text-7xl font-display text-white mb-8">Cyber <br> Renaissance</h2>
+                        <p class="text-gray-400 leading-loose font-light text-lg mb-8">Spectrum '26 is an exploration of the synthesis between classical artistry and algorithmic precision.</p>
+                    </div>
+                    <div class="relative h-[600px] w-full reveal reveal-delay-2">
+                        <div class="absolute inset-0 border border-white/10 transform translate-x-4 translate-y-4"></div>
+                        <img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800" class="w-full h-full object-cover grayscale relative z-10">
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASSES -->
+            <section id="passes" class="py-32 px-6 bg-[#0a0a0a]">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
+                        <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Admittance</span><h2 class="text-5xl font-display text-white">Secure Access</h2></div>
+                        <p class="text-gray-500 text-xs uppercase tracking-widest mt-4 md:mt-0">Login required to proceed</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glass-panel p-10 flex flex-col hover:bg-white/5 transition-colors group reveal reveal-delay-1">
+                            <div class="mb-8"><span class="text-xs font-bold uppercase tracking-widest text-gray-500">Standard</span><h3 class="text-3xl font-display text-white mt-2">Day 1 Access</h3></div>
+                            <ul class="space-y-4 mb-12 flex-grow text-sm text-gray-400 font-light"><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-white rounded-full"></span> Cultural & Arts</li><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-white rounded-full"></span> Photography Exhibition</li></ul>
+                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-2xl font-display text-white">₹299</span><button onclick="handlePurchase(299, 'Day 1 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Purchase &rarr;</button></div>
+                        </div>
+                        <div class="bg-white p-10 flex flex-col transform md:-translate-y-8 relative reveal reveal-delay-2 shadow-2xl shadow-pink-900/20">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black text-white px-4 py-1 text-[10px] font-bold uppercase tracking-widest">Best Value</div>
+                            <div class="mb-8"><span class="text-xs font-bold uppercase tracking-widest text-pink-600">VIP</span><h3 class="text-3xl font-display text-black mt-2">All Access</h3></div>
+                            <ul class="space-y-4 mb-12 flex-grow text-sm text-gray-800 font-medium"><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-pink-600 rounded-full"></span> Both Days Entry</li><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-pink-600 rounded-full"></span> Star Night VIP</li></ul>
+                            <div class="border-t border-black/10 pt-6 flex justify-between items-center"><span class="text-2xl font-display text-black">₹499</span><button onclick="handlePurchase(499, 'All Access Pass')" class="text-[10px] font-bold uppercase tracking-widest text-black hover:text-pink-600 transition-colors">Purchase &rarr;</button></div>
+                        </div>
+                        <div class="glass-panel p-10 flex flex-col hover:bg-white/5 transition-colors group reveal reveal-delay-3">
+                            <div class="mb-8"><span class="text-xs font-bold uppercase tracking-widest text-gray-500">Standard</span><h3 class="text-3xl font-display text-white mt-2">Day 2 Access</h3></div>
+                            <ul class="space-y-4 mb-12 flex-grow text-sm text-gray-400 font-light"><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-white rounded-full"></span> Star Night Concert</li><li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-white rounded-full"></span> Sports Finals</li></ul>
+                            <div class="border-t border-white/10 pt-6 flex justify-between items-center"><span class="text-2xl font-display text-white">₹299</span><button onclick="handlePurchase(299, 'Day 2 Pass')" class="text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors">Purchase &rarr;</button></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GALLERY -->
+            <section id="gallery" class="py-20">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
+                    <div class="col-span-2 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                </div>
+            </section>
+
+            <footer class="py-16 bg-[#050505] text-center border-t border-white/5 reveal">
+                <h2 class="font-display text-4xl text-white mb-8">SPECTRUM '26</h2>
+                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">NIFT Jodhpur • All Rights Reserved</p>
+            </footer>
+        </main>
+
+        <!-- VIEW 2: EVENTS -->
+        <section id="view-events" class="view-section min-h-screen bg-[#080808] pt-32 pb-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-16 border-b border-white/10 pb-8 reveal active">
+                    <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Schedule</span><h2 class="text-5xl md:text-7xl font-display text-white">Event Lineup</h2></div>
+                    <button onclick="switchView('home')" class="hidden md:block btn-outline">Back to Home</button>
+                </div>
+                <div class="flex flex-wrap gap-4 mb-12 reveal active reveal-delay-1">
+                    <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white bg-white text-black transition-all">All</button>
+                    <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">Culture</button>
+                    <button onclick="filterEvents('photo')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">Photo & Adv.</button>
+                    <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">Sports</button>
+                    <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">Literary</button>
+                    <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">Entertainment</button>
+                    <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all">ESSC</button>
+                </div>
+                <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal active reveal-delay-2"></div>
+                <div class="mt-20 text-center md:hidden"><button onclick="switchView('home')" class="btn-outline">Back to Home</button></div>
+            </div>
+        </section>
+
+        <!-- MODAL: AUTH -->
+        <div id="auth-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="closeModal()"></div>
+            <div class="relative z-10 w-full max-w-md bg-[#111] border border-white/10 p-10 shadow-2xl animate-fadeIn">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
+
+                <div id="auth-tabs" class="flex gap-8 mb-8 border-b border-white/10">
+                    <div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-sm font-bold uppercase tracking-widest pb-4">Log In</div>
+                    <div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-sm font-bold uppercase tracking-widest pb-4">Register</div>
+                </div>
+
+                <!-- LOGIN -->
+                <div id="form-login" class="space-y-6">
+                    <div class="space-y-4">
+                        <input id="login-email" type="email" placeholder="Email Address" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none transition-colors">
+                        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none transition-colors">
+                    </div>
+                    <div class="text-right">
+                        <a href="https://wa.me/918157080825?text=Hey%20I%20forgot%20my%20password" target="_blank" class="text-[10px] text-gray-500 hover:text-pink-500 transition-colors uppercase tracking-wider font-bold cursor-pointer">Forgot Password?</a>
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-white text-black font-bold uppercase py-4 text-xs tracking-widest hover:bg-gray-200 transition-colors">Access Account</button>
+                </div>
+
+                <!-- REGISTER -->
+                <div id="form-register" class="space-y-4 hidden">
+                    <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <input id="reg-email" type="email" placeholder="Email Address" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <input id="reg-phone" type="tel" placeholder="Phone Number" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <button onclick="sendOTP()" class="w-full bg-white text-black font-bold uppercase py-4 text-xs tracking-widest hover:bg-gray-200 transition-colors mt-2">Create Account</button>
+                </div>
+
+                <!-- OTP -->
+                <div id="view-otp" class="space-y-6 hidden text-center">
+                    <h2 class="text-2xl font-display text-white">Verify Email</h2>
+                    <p class="text-xs text-gray-400 font-mono">Code sent to your inbox</p>
+                    <input id="input-otp" type="text" placeholder="######" class="w-full bg-black border border-white/20 p-4 text-center text-xl text-white tracking-[0.5em] focus:border-pink-500 outline-none">
+                    <button onclick="verifyOTP()" class="w-full bg-pink-600 text-white font-bold uppercase py-4 text-xs tracking-widest hover:bg-pink-700 transition-colors">Confirm</button>
+                </div>
+
+                <!-- SET PASSWORD -->
+                <div id="view-set-password" class="space-y-6 hidden text-center">
+                    <h2 class="text-2xl font-display text-white">Set Password</h2>
+                    <input id="new-pass" type="password" placeholder="New Password" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <input id="confirm-pass" type="password" placeholder="Confirm Password" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-pink-500 outline-none">
+                    <button onclick="savePassword()" class="w-full bg-pink-600 text-white font-bold uppercase py-4 text-xs tracking-widest hover:bg-pink-700 transition-colors">Finish Registration</button>
+                </div>
+
+                <!-- PAYMENT -->
+                <div id="view-payment" class="space-y-6 hidden text-center">
+                    <h2 class="text-2xl font-display text-white">Checkout</h2>
+                    <p id="pay-item-name" class="text-pink-500 text-xs font-bold uppercase tracking-widest mb-6"></p>
+                    <div class="bg-white p-4 w-fit mx-auto"><img id="qr-code" src="" class="w-32 h-32 mix-blend-multiply"></div>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-4 mb-2">Scan via UPI</p>
+                    <input id="input-utr" type="text" placeholder="Enter UTR Number" class="w-full bg-black border border-white/20 p-4 text-xs text-white uppercase tracking-widest focus:border-green-500 outline-none">
+                    <button onclick="completePayment()" class="w-full bg-green-600 text-white font-bold uppercase py-4 text-xs tracking-widest hover:bg-green-700 transition-colors">Complete Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // --- CONFIG ---
+        // ⚠️ BACKEND CONNECTED
+        const API_URL = "https://script.google.com/macros/s/AKfycbzc5Mr69t4SZxhUNUFmDSX_FsP8ZSXf3B13I8kUWnX1DiHhl-nORA6O4IMu5BdyKru3/exec"; 
+        const UPI_ID = "chyasar2004-2@oksbi";
+        const WA_NUMBER = "918157080825";
+
+        // --- STATE ---
+        let isLoggedIn = false;
+        let currentUserEmail = "";
+        let serverOTP = 0;
+        let pendingPurchase = null;
+
+        // --- INTRO & INIT ---
+        function runTerminalIntro() {
+            lucide.createIcons();
+            const terminal = document.getElementById('terminal-output');
+            const logs = ["> BOOT_SEQUENCE_INIT...", "> VERIFYING_KEYS...", "> CONNECTING_SERVER...", "> LOADING... 100%", "> SYSTEM_READY."];
+            let delay = 0;
+            logs.forEach(log => {
+                setTimeout(() => { terminal.innerHTML += `<div class="mb-1">${log}</div>`; terminal.scrollTop = terminal.scrollHeight; }, delay);
+                delay += 300;
+            });
+            setTimeout(() => document.getElementById('intro-title').classList.remove('opacity-0'), 2000);
+            setTimeout(() => document.getElementById('enter-btn').classList.remove('opacity-0'), 3000);
+            
+            // Random Glitch
+            setInterval(() => {
+                const title = document.getElementById('hero-title');
+                if(title) { title.classList.add('glitching'); setTimeout(() => title.classList.remove('glitching'), 200); }
+            }, 3000);
+            filterEvents('all');
+        }
+
+        function enterSite() {
+            const intro = document.getElementById('intro-screen');
+            intro.style.transition = "opacity 0.8s ease-out";
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('main-content').classList.add('fade-in');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+            }, 800);
+        }
+
+        // --- NAVIGATION ---
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 500); });
+            const target = document.getElementById(`view-${viewName}`); target.style.display = 'block'; setTimeout(() => { target.classList.add('active'); window.scrollTo(0,0); }, 50);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function handleLoginClick() { if(isLoggedIn) alert("Already logged in."); else openModal(); }
+
+        function openModal() {
+            document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display = 'flex';
+            document.getElementById('auth-tabs').classList.remove('hidden');
+            ['view-otp', 'view-set-password', 'view-payment'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            switchAuthMode('login');
+        }
+        function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+
+        function switchAuthMode(mode) {
+            document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active');
+            document.getElementById('form-login').classList.add('hidden'); document.getElementById('form-register').classList.add('hidden');
+            document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById(`form-${mode}`).classList.remove('hidden');
+        }
+
+        // --- BACKEND LOGIC ---
+        function sendOTP() {
+            const email = document.getElementById('reg-email').value;
+            if(!email) { alert("Enter Email"); return; }
+            const btn = event.target; btn.innerText = "Sending...";
+            
+            fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "send_otp", email: email }) })
+            .then(res => res.json()).then(data => {
+                if(data.status === "success") {
+                    serverOTP = data.otp; currentUserEmail = email; alert("OTP Sent!");
+                    document.getElementById('auth-tabs').classList.add('hidden'); document.getElementById('form-register').classList.add('hidden'); document.getElementById('view-otp').classList.remove('hidden');
+                } else { alert("Error sending OTP"); btn.innerText = "Try Again"; }
+            });
+        }
+
+        function verifyOTP() {
+            if(String(document.getElementById('input-otp').value) === String(serverOTP)) {
+                document.getElementById('view-otp').classList.add('hidden'); document.getElementById('view-set-password').classList.remove('hidden');
+            } else alert("Invalid Code");
+        }
+
+        function savePassword() {
+            const p1 = document.getElementById('new-pass').value;
+            const p2 = document.getElementById('confirm-pass').value;
+            if(p1 !== p2) { alert("Mismatch"); return; }
+            
+            const userData = {
+                action: "register",
+                name: document.getElementById('reg-name').value,
+                email: currentUserEmail,
+                phone: document.getElementById('reg-phone').value,
+                collegeId: document.getElementById('reg-id').value,
+                password: p1
+            };
+            
+            fetch(API_URL, { method: 'POST', body: JSON.stringify(userData) }).then(res => res.json()).then(data => {
+                if(data.status === "success") {
+                    isLoggedIn = true; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Registered!");
+                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+                } else alert(data.message);
+            });
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "login", email: email, password: pass }) })
+            .then(res => res.json()).then(data => {
+                if(data.status === "success") {
+                    isLoggedIn = true; currentUserEmail = email; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Welcome!");
+                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+                } else alert("Invalid Credentials");
+            });
+        }
+
+        function handlePurchase(price, name) {
+            if (isLoggedIn) {
+                openModal();
+                ['auth-tabs', 'form-login', 'form-register'].forEach(v => document.getElementById(v).classList.add('hidden'));
+                document.getElementById('view-payment').classList.remove('hidden');
+                document.getElementById('pay-item-name').innerText = name + " - ₹" + price;
+                document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${price}&cu=INR`;
+            } else {
+                pendingPurchase = { price, name }; openModal(); alert("Login First");
+            }
+        }
+
+        function completePayment() {
+            const utr = document.getElementById('input-utr').value;
+            if(utr.length < 4) { alert("Invalid UTR"); return; }
+            fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "payment", email: currentUserEmail, utr: utr }) })
+            .then(res => res.json()).then(data => { closeModal(); alert("Payment Submitted!"); });
+        }
+
+        // --- EVENTS ---
+        const eventsData = [
+            { club: 'culture', title: 'Street Battle', date: 'Feb 25', time: '4:00 PM', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
+            { club: 'culture', title: 'Solo Singing', date: 'Feb 24', time: '11:00 AM', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
+            { club: 'culture', title: 'Runway Rivals', date: 'Feb 24', time: '7:00 PM', img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
+            { club: 'entertainment', title: 'Battle of Bands', date: 'Feb 24', time: '5:00 PM', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600' },
+            { club: 'entertainment', title: 'EDM Night', date: 'Feb 25', time: '8:00 PM', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
+            { club: 'sports', title: 'Valorant Cup', date: 'Feb 24', time: '10:00 AM', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600' },
+            { club: 'sports', title: 'FIFA 26', date: 'Feb 25', time: '1:00 PM', img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' },
+            { club: 'photo', title: 'Photo Walk', date: 'Feb 24', time: '8:00 AM', img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600' },
+            { club: 'lit', title: 'Debate War', date: 'Feb 24', time: '12:00 PM', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600' },
+            { club: 'essc', title: 'Eco Drive', date: 'Feb 24', time: '9:00 AM', img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600' }
+        ];
+
+        function filterEvents(category) {
+            const grid = document.getElementById('events-grid'); grid.innerHTML = ''; 
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.innerText.toLowerCase().includes(category) || (category === 'all' && btn.innerText === 'All')) {
+                    btn.className = "filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white bg-white text-black transition-all";
+                } else {
+                    btn.className = "filter-btn text-[10px] font-bold uppercase tracking-widest px-6 py-3 border border-white/20 text-white hover:border-white transition-all";
+                }
+            });
+            const filtered = category === 'all' ? eventsData : eventsData.filter(e => e.club === category);
+            filtered.forEach(event => {
+                const card = `<div class="group border border-white/10 bg-[#111] hover:border-pink-600 transition-colors reveal active"><div class="h-64 overflow-hidden relative"><img src="${event.img}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"><div class="absolute top-4 left-4 bg-white text-black px-2 py-1 text-[9px] font-bold uppercase tracking-widest">${event.club}</div></div><div class="p-6"><h3 class="text-xl font-display text-white mb-2 group-hover:text-pink-500 transition-colors">${event.title}</h3><div class="flex justify-between items-center text-xs text-gray-500 font-mono border-t border-white/10 pt-4 mt-2"><span>${event.date}</span><span>${event.time}</span></div></div></div>`;
+                grid.innerHTML += card;
+            });
+        }
+    </script>
+</body>
+</html>
+
+
