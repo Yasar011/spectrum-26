@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
-        // ⚠️ YOUR BACKEND URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbzc5Mr69t4SZxhUNUFmDSX_FsP8ZSXf3B13I8kUWnX1DiHhl-nORA6O4IMu5BdyKru3/exec"; 
+        // ⚠️ YOUR CONNECTED BACKEND URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbzE2j8DET5LkeW8yFxqdZs4NvJXKUrfFQQ7PZKeFJr0Ag7EDsYMffgBwIn_kNurJYVH/exec"; 
         const UPI_ID = "chyasar2004-2@oksbi";
         const WA_NUMBER = "918157080825"; 
     </script>
@@ -25,17 +25,15 @@
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
-        /* --- GLITCH FIX: BACKGROUND MATCHING --- */
+        /* --- VISUAL FX --- */
         .glitch-text { position: relative; }
         .glitch-text::before, .glitch-text::after {
             content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000000; /* FIXED: Now matches body background */
-            opacity: 0;
+            background: #000000; opacity: 0;
         }
         .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
         .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
 
-        /* --- SCANLINE --- */
         .scanline {
             position: fixed; left: 0; top: 0; width: 100%; height: 100px;
             background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
@@ -43,13 +41,13 @@
         }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
 
-        /* --- UTILS --- */
         .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
         @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* --- UI COMPONENTS --- */
         .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
         
         .btn-primary { background: white; color: black; border: 1px solid white; transition: 0.3s; }
@@ -61,7 +59,6 @@
         .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
         .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
 
-        /* View Switching */
         .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .view-section.active { display: block; opacity: 1; }
         
@@ -177,6 +174,16 @@
                 </div>
             </section>
 
+            <section id="gallery" class="py-24">
+                <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
+                    <div class="col-span-2 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                </div>
+            </section>
+
             <footer class="py-12 bg-black text-center border-t border-zinc-900 reveal"><p class="text-[10px] text-gray-600 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p></footer>
         </main>
 
@@ -189,8 +196,11 @@
                 <div class="flex flex-wrap gap-3 mb-12 reveal active">
                     <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
                     <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">Culture</button>
+                    <button onclick="filterEvents('photo')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">Photo</button>
                     <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">Sports</button>
                     <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">Entertainment</button>
+                    <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">Literary</button>
+                    <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white">ESSC</button>
                 </div>
                 <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal active"></div>
             </div>
@@ -262,11 +272,27 @@
             runTerminalIntro();
         });
 
+        // CORE API FUNCTION (CORS FIX)
+        async function apiCall(data) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    redirect: 'follow', 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                alert("Connection Error. Please try again.");
+                return { status: "error" };
+            }
+        }
+
         // TERMINAL
         function runTerminalIntro() {
             const terminal = document.getElementById('terminal-output');
             if(!terminal) return;
-            // Force Enter btn safety
             setTimeout(() => document.getElementById('enter-btn').classList.remove('opacity-0'), 3500);
 
             const logs = ["> BOOT_SEQUENCE...", "> ENCRYPTING...", "> CONNECTING...", "> 100% DONE.", "> READY."];
@@ -280,7 +306,6 @@
             });
             setTimeout(() => document.getElementById('intro-title').classList.remove('opacity-0'), 1800);
             
-            // Random Glitch
             setInterval(() => {
                 const t = document.getElementById('hero-title');
                 if(t) { t.classList.add('glitching'); setTimeout(() => t.classList.remove('glitching'), 200); }
@@ -324,34 +349,59 @@
             document.getElementById('auth-tabs').classList.remove('hidden');
             ['form-login', 'form-register', 'view-otp', 'view-set-password', 'view-payment'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active');
-            document.getElementById(`tab-${mode}`).classList.add('active');
-            document.getElementById(`form-${mode}`).classList.remove('hidden');
+            document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById(`form-${mode}`).classList.remove('hidden');
         }
 
-        // MOCK BACKEND FOR DEMO (REPLACE WITH FETCH FOR REAL)
-        function sendOTP() {
+        // BACKEND CALLS
+        async function sendOTP() {
             const email = document.getElementById('reg-email').value;
-            if(!email) { alert("Enter Email"); return; }
-            alert("OTP Sent: 123456"); 
-            serverOTP = 123456; currentUserEmail = email;
-            document.getElementById('auth-tabs').classList.add('hidden'); document.getElementById('form-register').classList.add('hidden'); document.getElementById('view-otp').classList.remove('hidden');
+            const phone = document.getElementById('reg-phone').value;
+            if(!email || !phone) { alert("Fill all fields"); return; }
+            const btn = event.target; btn.innerText = "Sending...";
+            
+            const res = await apiCall({ action: "send_otp", email: email });
+            if(res.status === "success") {
+                serverOTP = res.otp; currentUserEmail = email; 
+                document.getElementById('auth-tabs').classList.add('hidden');
+                document.getElementById('form-register').classList.add('hidden');
+                document.getElementById('view-otp').classList.remove('hidden');
+            } else { alert("Error"); btn.innerText = "Retry"; }
         }
+
         function verifyOTP() {
-            if(document.getElementById('input-otp').value == serverOTP) {
+            if(String(document.getElementById('input-otp').value) === String(serverOTP)) {
                 document.getElementById('view-otp').classList.add('hidden'); document.getElementById('view-set-password').classList.remove('hidden');
+            } else alert("Invalid Code");
+        }
+
+        async function savePassword() {
+            const p1 = document.getElementById('new-pass').value;
+            if(p1 !== document.getElementById('confirm-pass').value) { alert("Mismatch"); return; }
+            
+            const userData = {
+                action: "register",
+                name: document.getElementById('reg-name').value,
+                email: currentUserEmail,
+                phone: document.getElementById('reg-phone').value,
+                collegeId: document.getElementById('reg-id').value,
+                password: p1
+            };
+            
+            const res = await apiCall(userData);
+            if(res.status === "success") {
+                isLoggedIn = true; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Created!");
+                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+            } else alert(res.message);
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const res = await apiCall({ action: "login", email: email, password: pass });
+            if(res.status === "success") {
+                isLoggedIn = true; currentUserEmail = email; document.getElementById('nav-login-text').innerText = "Verified"; closeModal(); alert("Welcome!");
+                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
             } else alert("Invalid");
-        }
-        function savePassword() {
-            if(document.getElementById('new-pass').value == document.getElementById('confirm-pass').value) {
-                isLoggedIn=true; document.getElementById('nav-login-text').innerText="Verified"; closeModal(); alert("Account Created!");
-                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
-            } else alert("Mismatch");
-        }
-        function handleLogin() {
-            if(document.getElementById('login-email').value && document.getElementById('login-pass').value) {
-                isLoggedIn=true; document.getElementById('nav-login-text').innerText="Verified"; closeModal(); alert("Welcome!");
-                if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
-            } else alert("Enter details");
         }
 
         function handlePurchase(price, name) {
@@ -362,17 +412,29 @@
                 document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum&am=${price}`;
             } else { pendingPurchase={price,name}; openModal(); alert("Login First"); }
         }
-        function completePayment() {
-            if(document.getElementById('input-utr').value.length > 4) { closeModal(); alert("Submitted!"); } else alert("Invalid UTR");
+
+        async function completePayment() {
+            const utr = document.getElementById('input-utr').value;
+            if(utr.length < 4) { alert("Invalid UTR"); return; }
+            const res = await apiCall({ action: "payment", email: currentUserEmail, utr: utr });
+            if(res.status === "success") { closeModal(); alert("Submitted!"); } else alert("Error");
         }
 
-        // EVENTS
+        // FULL EVENTS LIST
         const eventsData = [
             { club: 'culture', title: 'Street Battle', date: 'Feb 25', time: '4 PM', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
             { club: 'culture', title: 'Solo Singing', date: 'Feb 24', time: '11 AM', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
+            { club: 'culture', title: 'Runway Rivals', date: 'Feb 24', time: '7 PM', img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
+            { club: 'entertainment', title: 'Battle of Bands', date: 'Feb 24', time: '5 PM', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600' },
             { club: 'entertainment', title: 'EDM Night', date: 'Feb 25', time: '8 PM', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
             { club: 'sports', title: 'Valorant', date: 'Feb 24', time: '10 AM', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600' },
-            { club: 'sports', title: 'FIFA 26', date: 'Feb 25', time: '1 PM', img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' }
+            { club: 'sports', title: 'FIFA 26', date: 'Feb 25', time: '1 PM', img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' },
+            { club: 'sports', title: 'Box Cricket', date: 'Feb 24', time: '9 AM', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600' },
+            { club: 'photo', title: 'Photo Walk', date: 'Feb 24', time: '8 AM', img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600' },
+            { club: 'photo', title: 'Treasure Hunt', date: 'Feb 25', time: '2 PM', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600' },
+            { club: 'lit', title: 'Debate War', date: 'Feb 24', time: '12 PM', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600' },
+            { club: 'lit', title: 'Open Mic', date: 'Feb 25', time: '3 PM', img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600' },
+            { club: 'essc', title: 'Eco Drive', date: 'Feb 24', time: '9 AM', img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600' }
         ];
         function filterEvents(cat) {
             const grid = document.getElementById('events-grid'); grid.innerHTML='';
@@ -388,6 +450,5 @@
     </script>
 </body>
 </html>
-
 
 
