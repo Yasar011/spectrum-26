@@ -44,21 +44,36 @@
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
-        /* FX */
+        /* --- ADVANCED GLITCH FX --- */
+        .glitch-text { position: relative; color: white; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; opacity: 0.8;
+        }
+        .glitch-text::before {
+            left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 50% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(80% 0 5% 0); } 40% { clip-path: inset(30% 0 10% 0); }
+            60% { clip-path: inset(10% 0 80% 0); } 80% { clip-path: inset(40% 0 20% 0); } 100% { clip-path: inset(20% 0 60% 0); }
+        }
+
+        /* --- SCANLINE & CRT --- */
         .scanline {
             position: fixed; left: 0; top: 0; width: 100%; height: 100px;
             background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
             animation: scanline 6s linear infinite; pointer-events: none; z-index: 999;
         }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
-
-        .glitch-text { position: relative; }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000000; opacity: 0;
-        }
-        .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
-        .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
 
         .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
         @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
@@ -82,7 +97,6 @@
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CART & NOTIFICATION */
         .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); }
         #cart-bar { transition: transform 0.3s ease; }
         
@@ -138,7 +152,7 @@
             <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-pink-500"></i></button></div>
             <div class="flex flex-col gap-6 font-display text-3xl">
                 <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Home</a>
-                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">About</a>
+                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Theme</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
                 <a onclick="switchView('events'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Events</a>
                 <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
@@ -151,8 +165,8 @@
             <section class="relative h-screen flex items-center justify-center overflow-hidden">
                 <div class="absolute inset-0 z-0"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-40 grayscale"></div>
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
-                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 â¢ 2026</p></div>
-                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8">SPEC<span class="text-pink-600">TRUM</span></h1>
+                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 • 2026</p></div>
+                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8 glitch-text" data-text="SPECTRUM">SPEC<span class="text-pink-600">TRUM</span></h1>
                     <div class="flex justify-center">
                         <button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105">Get Tickets</button>
                     </div>
@@ -167,7 +181,7 @@
                 </div>
             </section>
 
-            <!-- 3. ABOUT (3 COLUMNS RESTORED) -->
+            <!-- 3. ABOUT -->
             <section id="about" class="py-24 px-6 bg-black border-b border-zinc-900">
                 <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
                     <div class="reveal">
@@ -215,7 +229,7 @@
                     <a href="#" class="text-white hover:text-pink-500"><i data-lucide="instagram"></i></a>
                     <a href="#" class="text-white hover:text-red-500"><i data-lucide="youtube"></i></a>
                 </div>
-                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">Â© 2026 Spectrum Team</p>
+                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p>
             </footer>
         </main>
 
@@ -232,26 +246,26 @@
                     <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('General', 299, 'base', 'pass-gen')">
                         <h3 class="text-xl font-bold uppercase text-white">General</h3>
                         <p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div>
                     </div>
                     <!-- STANDARD -->
                     <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Standard', 499, 'base', 'pass-std')">
                         <span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span>
                         <h3 class="text-xl font-bold uppercase text-white mt-1">Standard</h3>
                         <p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div>
                     </div>
                     <!-- NEON PULSE -->
                     <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')">
                         <h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3>
                         <p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div>
                     </div>
                     <!-- VOGUE GALA -->
                     <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')">
                         <h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3>
                         <p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">â¹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div>
                     </div>
                 </div>
 
@@ -272,7 +286,7 @@
 
         <!-- CART -->
         <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900 border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
-            <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">â¹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
+            <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
             <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
         </div>
 
@@ -286,7 +300,7 @@
                     <h2 class="text-xl font-display text-white">My Pass</h2>
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
                         <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
-                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">â Authorized</p></div>
+                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p></div>
                         <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
                         <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
@@ -296,17 +310,30 @@
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
                     <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
-                    <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
+                    <!-- REGISTER FORM -->
+                    <div id="form-register" class="space-y-4 hidden">
+                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        <!-- PASSWORD & CONFIRM PASSWORD -->
+                        <div class="flex gap-2">
+                            <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                            <input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        </div>
+                        <input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        <input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                        <button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button>
+                    </div>
                 </div>
 
                 <div id="view-receipt" class="hidden space-y-4">
                     <h2 class="text-xl font-display text-white text-center">Summary</h2>
                     <div class="bg-zinc-900 p-4 rounded text-xs space-y-2 font-mono">
-                        <div class="flex justify-between text-white"><span id="rec-pass-name">Pass</span><span id="rec-pass-price">â¹0</span></div>
+                        <div class="flex justify-between text-white"><span id="rec-pass-name">Pass</span><span id="rec-pass-price">₹0</span></div>
                         <div id="rec-events-list" class="space-y-1 text-gray-400 border-t border-zinc-800 pt-2 mt-2"></div>
                         <div class="flex gap-2 pt-2 border-t border-zinc-800"><input id="promo-code" type="text" placeholder="PROMO CODE" class="bg-black border border-zinc-700 w-full px-2 py-1 text-xs text-white uppercase outline-none"><button onclick="applyPromo()" class="bg-zinc-700 text-white px-3 py-1 text-[10px] font-bold uppercase hover:bg-pink-600">Apply</button></div>
                         <div id="promo-msg" class="text-[10px] text-green-500 hidden">Code Applied!</div>
-                        <div class="flex justify-between text-pink-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">â¹0</span></div>
+                        <div class="flex justify-between text-pink-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">₹0</span></div>
                     </div>
                     <button onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
                 </div>
@@ -363,8 +390,9 @@
             
             const eventArea = document.getElementById('event-selection-area');
             if(type === 'special') {
-                cart.events = []; eventArea.classList.add('opacity-50', 'pointer-events-none');
-                alert("Special Passes do not allow add-ons.");
+                cart.events = [];
+                eventArea.classList.add('opacity-50', 'pointer-events-none');
+                
                 const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
                 filterEvents(currentCat === 'all' ? 'all' : currentCat);
                 document.getElementById('checkout-btn').innerText = "Buy Now";
@@ -390,46 +418,43 @@
             }
             const btn = document.getElementById(`btn-event-${id}`);
             if(index === -1) { btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); } 
-            else { btn.innerText = "Add + â¹" + price; btn.classList.remove('bg-pink-600', 'border-pink-600'); }
+            else { btn.innerText = "Add + ₹" + price; btn.classList.remove('bg-pink-600', 'border-pink-600'); }
             updateCartUI();
         }
 
-        // 3. CALCULATION (STANDARD PASS RULES)
+        // 3. CALCULATION
         function updateCartUI() {
             const bar = document.getElementById('cart-bar');
             if (cart.pass || cart.events.length > 0) {
                 bar.classList.remove('translate-y-full');
                 let total = cart.pass ? cart.pass.price : 0;
                 let regularEventsCount = 0;
-
                 cart.events.forEach((e) => {
                     if (cart.pass && cart.pass.name === 'Standard' && !e.isPremium) {
                         if (regularEventsCount < 2) { /* Free */ regularEventsCount++; } 
                         else { total += e.price; }
                     } else { total += e.price; }
                 });
-                document.getElementById('cart-total').innerText = "â¹" + total;
+                document.getElementById('cart-total').innerText = "₹" + total;
                 let desc = cart.pass ? cart.pass.name : "";
                 if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`;
                 document.getElementById('cart-desc').innerText = desc;
             } else { bar.classList.add('translate-y-full'); }
         }
 
-        // 4. CHECKOUT LOGIC & UPSELL
         function checkUpsell() {
             if (!cart.pass) return alert("Select a Pass");
-            
-            // Logic: Standard + < 2 Regular Events -> Warn
+            // Standard Pass: Warn if free slots unused
             if (cart.pass.name === 'Standard') {
                 const regularCount = cart.events.filter(e => !e.isPremium).length;
                 if (regularCount < 2) {
                     const remaining = 2 - regularCount;
-                    if (!confirm(`You have ${remaining} FREE event slot(s) remaining with the Standard Pass. Do you want to checkout anyway?`)) return;
+                    if (!confirm(`You have ${remaining} FREE event slot(s) remaining. Continue anyway?`)) return;
                 }
             } 
-            // Logic: General + No Events -> Warn
+            // General Pass: Warn if no events
             else if (cart.pass.name === 'General' && cart.events.length === 0) {
-                 if (!confirm("You haven't added any events. You will only have campus entry. Proceed?")) return;
+                 if (!confirm("You haven't added any events. Proceed with just Entry Pass?")) return;
             }
             initiateCheckout();
         }
@@ -442,7 +467,7 @@
             let regularEventsCount = 0;
 
             cart.events.forEach((e) => {
-                let cost = e.price; let label = `â¹${e.price}`;
+                let cost = e.price; let label = `₹${e.price}`;
                 if (cart.pass.name === 'Standard' && !e.isPremium) {
                     if (regularEventsCount < 2) { cost = 0; label = "FREE (Standard)"; regularEventsCount++; }
                 }
@@ -451,11 +476,12 @@
             });
             finalTotal = total;
             document.getElementById('rec-pass-name').innerText = cart.pass.name;
-            document.getElementById('rec-pass-price').innerText = `â¹${cart.pass.price}`;
+            document.getElementById('rec-pass-price').innerText = `₹${cart.pass.price}`;
             document.getElementById('rec-events-list').innerHTML = eventHtml;
-            document.getElementById('rec-total').innerText = `â¹${total}`;
+            document.getElementById('rec-total').innerText = `₹${total}`;
             
             document.getElementById('promo-code').value = ""; document.getElementById('promo-msg').classList.add('hidden'); promoApplied = null;
+
             openModal();
             document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.add('hidden');
             document.getElementById('view-receipt').classList.remove('hidden'); document.getElementById('view-payment').classList.add('hidden');
@@ -470,7 +496,7 @@
                     if(promo.used >= promo.limit) return alert("Limit reached");
                     let discount = promo.type === 'flat' ? promo.discount : (finalTotal * promo.discount / 100);
                     finalTotal -= discount; if(finalTotal < 0) finalTotal = 0;
-                    document.getElementById('rec-total').innerText = `â¹${finalTotal} (Code Applied)`;
+                    document.getElementById('rec-total').innerText = `₹${finalTotal} (Code Applied)`;
                     document.getElementById('promo-msg').classList.remove('hidden');
                     promoApplied = { code: code, currentUsed: promo.used };
                 } else alert("Invalid Code");
@@ -478,7 +504,7 @@
         }
 
         function showPayment() {
-            if(!currentUser) { alert("Please Login"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; }
+            if(!currentUser) { alert("Please Login to Pay"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; }
             document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden');
             document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${finalTotal}&cu=INR`;
         }
@@ -491,12 +517,46 @@
             alert("Order Submitted!"); handleAccountClick();
         }
 
+        // --- GENERATE CUSTOM SPECTRUM ID ---
+        function generateSpectrumID(name, phone) {
+            const namePart = name.substring(0, 2).toUpperCase();
+            const phonePart = phone.slice(-3);
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length));
+            return `NIFT${namePart}${phonePart}${randPart}`;
+        }
+
         // --- AUTH & UI HELPERS ---
-        function userRegister(){ const e=document.getElementById('reg-email').value,p=document.getElementById('reg-pass').value,n=document.getElementById('reg-name').value,ph=document.getElementById('reg-phone').value,c=document.getElementById('reg-college').value,i=document.getElementById('reg-id').value; if(!e||!p||!n)return alert("Fill all"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); db.ref('users/'+e.replace(/\./g,',')).set({name:n,email:e,phone:ph,collegeName:c,collegeId:i,uid:crd.user.uid,paymentStatus:"None"}); alert("Registered! Check Email."); closeModal(); }).catch(err=>alert(err.message)); }
+        function userRegister(){ 
+            const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
+            if(!e||!p||!n||!ph) return alert("Fill all details");
+            if(p !== cp) return alert("Passwords do not match");
+            
+            auth.createUserWithEmailAndPassword(e,p).then(crd=>{ 
+                crd.user.sendEmailVerification(); 
+                const sID = generateSpectrumID(n, ph);
+                db.ref('users/'+e.replace(/\./g,',')).set({
+                    name:n, email:e, phone:ph, collegeName:c, collegeId:i, 
+                    uid:crd.user.uid, spectrumId: sID, paymentStatus:"None"
+                }); 
+                alert("Registered! Check Email."); closeModal(); 
+            }).catch(err=>alert(err.message)); 
+        }
+
         function userLogin(){ const e=document.getElementById('login-email').value,p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified)alert("Verify Email"); else{ alert("Welcome"); closeModal(); } }).catch(err=>alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
         function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
-        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUser.uid}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.collegeId}`; } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); else document.getElementById('ticket-none').classList.remove('hidden'); }
+        function updateTicketUI(){ 
+            if(!userDataDB) return; 
+            ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); 
+            if(userDataDB.paymentStatus==="Verified"){ 
+                document.getElementById('ticket-verified').classList.remove('hidden'); 
+                // QR NOW USES SPECTRUM ID
+                document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
+                document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
+            } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); 
+            else document.getElementById('ticket-none').classList.remove('hidden'); 
+        }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
         function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
@@ -540,7 +600,7 @@
                     <div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"></div>
                     <div class="p-4">
                         <h3 class="text-white font-bold uppercase">${e.title} ${e.isPremium ? '<span class="text-pink-500 text-[10px]">(Premium)</span>' : ''}</h3>
-                        <p class="text-xs text-gray-500 mt-1">Fee: â¹${e.price}</p>
+                        <p class="text-xs text-gray-500 mt-1">Fee: ₹${e.price}</p>
                         <button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>
                     </div>
                 </div>`;
@@ -549,3 +609,5 @@
     </script>
 </body>
 </html>
+
+
