@@ -29,10 +29,8 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
 
         const UPI_ID = "chyasar2004-2@oksbi";
-        const WA_NUMBER = "918157080825"; 
     </script>
 
     <style>
@@ -44,36 +42,21 @@
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
-        /* --- ADVANCED GLITCH FX --- */
-        .glitch-text { position: relative; color: white; }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; opacity: 0.8;
-        }
-        .glitch-text::before {
-            left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0);
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-        }
-        .glitch-text::after {
-            left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 50% 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(80% 0 5% 0); } 40% { clip-path: inset(30% 0 10% 0); }
-            60% { clip-path: inset(10% 0 80% 0); } 80% { clip-path: inset(40% 0 20% 0); } 100% { clip-path: inset(20% 0 60% 0); }
-        }
-
-        /* --- SCANLINE & CRT --- */
+        /* FX */
         .scanline {
             position: fixed; left: 0; top: 0; width: 100%; height: 100px;
             background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
             animation: scanline 6s linear infinite; pointer-events: none; z-index: 999;
         }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000000; opacity: 0;
+        }
+        .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
+        .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
 
         .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
         @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
@@ -97,6 +80,7 @@
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* CART STYLES */
         .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); }
         #cart-bar { transition: transform 0.3s ease; }
         
@@ -136,7 +120,8 @@
     <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
         
-        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
+        <!-- FIXED NAVIGATION BAR -->
+        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-zinc-900 text-white">
             <button onclick="toggleSidebar()" class="flex items-center gap-3">
                 <div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div>
                 <span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span>
@@ -166,7 +151,7 @@
                 <div class="absolute inset-0 z-0"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-40 grayscale"></div>
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
                     <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 • 2026</p></div>
-                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8 glitch-text" data-text="SPECTRUM">SPEC<span class="text-pink-600">TRUM</span></h1>
+                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8">SPEC<span class="text-pink-600">TRUM</span></h1>
                     <div class="flex justify-center">
                         <button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105">Get Tickets</button>
                     </div>
@@ -310,20 +295,15 @@
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
                     <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
-                    <!-- REGISTER FORM -->
-                    <div id="form-register" class="space-y-4 hidden">
-                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <!-- PASSWORD & CONFIRM PASSWORD -->
-                        <div class="flex gap-2">
-                            <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                            <input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        </div>
-                        <input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                        <button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button>
-                    </div>
+                    <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
+                </div>
+                
+                <!-- FORGOT PASSWORD -->
+                <div id="view-forgot" class="hidden space-y-4">
+                    <h2 class="text-xl font-display text-white mb-4">Reset Password</h2>
+                    <input id="forgot-email" type="email" placeholder="Enter Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
+                    <button onclick="handlePasswordReset()" class="w-full bg-pink-600 text-white font-bold uppercase py-3 text-xs">Send Link</button>
+                    <button onclick="switchAuthMode('login')" class="w-full text-gray-500 text-xs uppercase hover:text-white">Cancel</button>
                 </div>
 
                 <div id="view-receipt" class="hidden space-y-4">
@@ -356,18 +336,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             runTerminalIntro();
-            auth.signOut(); 
+            // auth.signOut(); // Removed auto logout
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    currentUser = user;
-                    const cleanEmail = user.email.replace(/\./g, ',');
-                    db.ref('users/' + cleanEmail).on('value', (snapshot) => {
-                        userDataDB = snapshot.val();
-                        updateNav(userDataDB ? userDataDB.name : "User");
-                    });
+                    if(!user.emailVerified) {
+                        currentUser = null;
+                        updateNav("Login");
+                        // Don't show dashboard if not verified
+                    } else {
+                        currentUser = user;
+                        const cleanEmail = user.email.replace(/\./g, ',');
+                        db.ref('users/' + cleanEmail).on('value', (snapshot) => {
+                            userDataDB = snapshot.val();
+                            updateNav(userDataDB ? userDataDB.name : "User");
+                        });
+                    }
                 } else { currentUser = null; userDataDB = null; updateNav("Login"); }
             });
-            // LIVE UPDATES
             db.ref('updates').limitToLast(1).on('child_added', (snapshot) => {
                 const update = snapshot.val();
                 if(update) {
@@ -444,7 +429,8 @@
 
         function checkUpsell() {
             if (!cart.pass) return alert("Select a Pass");
-            // Standard Pass: Warn if free slots unused
+            
+            // Standard Pass Warning
             if (cart.pass.name === 'Standard') {
                 const regularCount = cart.events.filter(e => !e.isPremium).length;
                 if (regularCount < 2) {
@@ -452,9 +438,9 @@
                     if (!confirm(`You have ${remaining} FREE event slot(s) remaining. Continue anyway?`)) return;
                 }
             } 
-            // General Pass: Warn if no events
+            // General Pass Warning
             else if (cart.pass.name === 'General' && cart.events.length === 0) {
-                 if (!confirm("You haven't added any events. Proceed with just Entry Pass?")) return;
+                 if (!confirm("No events selected. Proceed with just Entry Pass?")) return;
             }
             initiateCheckout();
         }
@@ -517,7 +503,7 @@
             alert("Order Submitted!"); handleAccountClick();
         }
 
-        // --- GENERATE CUSTOM SPECTRUM ID ---
+        // --- AUTH ---
         function generateSpectrumID(name, phone) {
             const namePart = name.substring(0, 2).toUpperCase();
             const phonePart = phone.slice(-3);
@@ -526,7 +512,6 @@
             return `NIFT${namePart}${phonePart}${randPart}`;
         }
 
-        // --- AUTH & UI HELPERS ---
         function userRegister(){ 
             const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
             if(!e||!p||!n||!ph) return alert("Fill all details");
@@ -539,28 +524,50 @@
                     name:n, email:e, phone:ph, collegeName:c, collegeId:i, 
                     uid:crd.user.uid, spectrumId: sID, paymentStatus:"None"
                 }); 
-                alert("Registered! Check Email."); closeModal(); 
+                alert("Registered! Check Email to Verify.");
+                auth.signOut(); 
+                closeModal(); 
             }).catch(err=>alert(err.message)); 
         }
 
-        function userLogin(){ const e=document.getElementById('login-email').value,p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified)alert("Verify Email"); else{ alert("Welcome"); closeModal(); } }).catch(err=>alert(err.message)); }
-        function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
-        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
-        function updateTicketUI(){ 
-            if(!userDataDB) return; 
-            ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); 
-            if(userDataDB.paymentStatus==="Verified"){ 
-                document.getElementById('ticket-verified').classList.remove('hidden'); 
-                // QR NOW USES SPECTRUM ID
-                document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
-                document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
-            } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); 
-            else document.getElementById('ticket-none').classList.remove('hidden'); 
+        function userLogin(){ 
+            const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
+            auth.signInWithEmailAndPassword(e,p).then(c=>{ 
+                if(!c.user.emailVerified) {
+                    alert("Email not verified! Check your inbox.");
+                    auth.signOut();
+                } else { 
+                    alert("Welcome back!"); 
+                    closeModal(); 
+                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+                } 
+            }).catch(err=>alert(err.message)); 
         }
+
+        function handlePasswordReset() {
+            const email = document.getElementById('forgot-email').value;
+            if(!email) return alert("Please enter email");
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert("Password reset email sent!");
+                    switchAuthMode('login');
+                })
+                .catch((error) => alert(error.message));
+        }
+
+        function forgotPass() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-forgot').classList.remove('hidden');
+        }
+
+        function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
+        
+        // --- UI ---
+        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
+        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); else document.getElementById('ticket-none').classList.remove('hidden'); }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
         function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
-        function forgotPass(){ window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Pass`, '_blank'); }
         function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 5000); }
         function hideToast() { document.getElementById('notification-toast').classList.remove('show'); }
         
