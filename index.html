@@ -29,8 +29,10 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
 
         const UPI_ID = "chyasar2004-2@oksbi";
+        const WA_NUMBER = "918157080825"; 
     </script>
 
     <style>
@@ -120,8 +122,7 @@
     <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
         
-        <!-- FIXED NAVIGATION BAR -->
-        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-zinc-900 text-white">
+        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
             <button onclick="toggleSidebar()" class="flex items-center gap-3">
                 <div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div>
                 <span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span>
@@ -141,6 +142,7 @@
                 <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
                 <a onclick="switchView('events'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Events</a>
                 <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
+                <a href="#sponsors" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Sponsors</a>
             </div>
             <div class="border-t border-zinc-800 pt-6"><p class="text-xs text-gray-500 mb-2">Connect</p><div class="flex gap-4"><i data-lucide="instagram" class="w-5 h-5 text-gray-400 hover:text-white"></i><i data-lucide="twitter" class="w-5 h-5 text-gray-400 hover:text-white"></i></div></div>
         </div>
@@ -203,6 +205,16 @@
                 </div>
             </section>
 
+            <!-- 6. SPONSORS -->
+            <section id="sponsors" class="py-16 bg-white text-black text-center reveal">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold uppercase mb-12 tracking-widest">Sponsors & Partners</h2>
+                    <div class="flex flex-wrap justify-center items-center gap-12 font-bold text-gray-400 text-3xl">
+                         <span class="hover:text-black">RED BULL</span> <span class="hover:text-black">SPOTIFY</span> <span class="hover:text-black">CANON</span> <span class="hover:text-black">SONY</span> <span class="hover:text-black">NVIDIA</span>
+                    </div>
+                </div>
+            </section>
+
             <!-- FOOTER -->
             <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal">
                 <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
@@ -227,40 +239,19 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
-                    <!-- GENERAL -->
-                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('General', 299, 'base', 'pass-gen')">
-                        <h3 class="text-xl font-bold uppercase text-white">General</h3>
-                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div>
-                    </div>
-                    <!-- STANDARD -->
-                    <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Standard', 499, 'base', 'pass-std')">
-                        <span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span>
-                        <h3 class="text-xl font-bold uppercase text-white mt-1">Standard</h3>
-                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div>
-                    </div>
-                    <!-- NEON PULSE -->
-                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')">
-                        <h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3>
-                        <p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div>
-                    </div>
-                    <!-- VOGUE GALA -->
-                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')">
-                        <h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3>
-                        <p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p>
-                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div>
-                    </div>
+                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('General', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">General</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
+                    <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Standard', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Standard</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div></div>
+                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')"><h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3><p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div></div>
+                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
                 </div>
 
                 <div id="event-selection-area" class="opacity-50 pointer-events-none transition-opacity duration-300">
                     <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required)</span></h3>
                     <div class="flex flex-wrap gap-3 mb-8">
                         <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
-                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
                         <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Culture</button>
                         <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Sports</button>
+                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
                         <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Literary</button>
                         <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">ESSC</button>
                     </div>
@@ -285,7 +276,7 @@
                     <h2 class="text-xl font-display text-white">My Pass</h2>
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
                         <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
-                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p></div>
+                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p><p class="text-[10px] font-bold" id="ticket-plan"></p><p class="text-[10px]" id="ticket-events"></p></div>
                         <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
                         <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
@@ -296,14 +287,6 @@
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
                     <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
                     <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
-                </div>
-                
-                <!-- FORGOT PASSWORD -->
-                <div id="view-forgot" class="hidden space-y-4">
-                    <h2 class="text-xl font-display text-white mb-4">Reset Password</h2>
-                    <input id="forgot-email" type="email" placeholder="Enter Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none">
-                    <button onclick="handlePasswordReset()" class="w-full bg-pink-600 text-white font-bold uppercase py-3 text-xs">Send Link</button>
-                    <button onclick="switchAuthMode('login')" class="w-full text-gray-500 text-xs uppercase hover:text-white">Cancel</button>
                 </div>
 
                 <div id="view-receipt" class="hidden space-y-4">
@@ -336,21 +319,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             runTerminalIntro();
-            // auth.signOut(); // Removed auto logout
+            auth.signOut(); 
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    if(!user.emailVerified) {
-                        currentUser = null;
-                        updateNav("Login");
-                        // Don't show dashboard if not verified
-                    } else {
-                        currentUser = user;
-                        const cleanEmail = user.email.replace(/\./g, ',');
-                        db.ref('users/' + cleanEmail).on('value', (snapshot) => {
-                            userDataDB = snapshot.val();
-                            updateNav(userDataDB ? userDataDB.name : "User");
-                        });
-                    }
+                    currentUser = user;
+                    const cleanEmail = user.email.replace(/\./g, ',');
+                    db.ref('users/' + cleanEmail).on('value', (snapshot) => {
+                        userDataDB = snapshot.val();
+                        updateNav(userDataDB ? userDataDB.name : "User");
+                    });
                 } else { currentUser = null; userDataDB = null; updateNav("Login"); }
             });
             db.ref('updates').limitToLast(1).on('child_added', (snapshot) => {
@@ -362,6 +339,20 @@
                 }
             });
         });
+
+        // NIFT AUTO-VERIFY & STANDARD PASS
+        function checkNiftStudent(email) {
+            if (email.endsWith('@nift.ac.in')) {
+                // Auto Grant Standard Pass
+                return {
+                    pass: "Standard (NIFT)",
+                    events: [],
+                    total: 0,
+                    status: "Verified"
+                };
+            }
+            return null;
+        }
 
         // 1. SELECT PASS
         function selectPass(name, price, type, elementId) {
@@ -375,17 +366,13 @@
             
             const eventArea = document.getElementById('event-selection-area');
             if(type === 'special') {
-                cart.events = [];
-                eventArea.classList.add('opacity-50', 'pointer-events-none');
-                
+                cart.events = []; eventArea.classList.add('opacity-50', 'pointer-events-none');
                 const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
                 filterEvents(currentCat === 'all' ? 'all' : currentCat);
                 document.getElementById('checkout-btn').innerText = "Buy Now";
-                document.getElementById('checkout-btn').classList.add('animate-pulse');
             } else {
                 eventArea.classList.remove('opacity-50', 'pointer-events-none');
                 document.getElementById('checkout-btn').innerText = "Checkout";
-                document.getElementById('checkout-btn').classList.remove('animate-pulse');
             }
             updateCartUI();
         }
@@ -429,24 +416,41 @@
 
         function checkUpsell() {
             if (!cart.pass) return alert("Select a Pass");
-            
-            // Standard Pass Warning
             if (cart.pass.name === 'Standard') {
                 const regularCount = cart.events.filter(e => !e.isPremium).length;
                 if (regularCount < 2) {
                     const remaining = 2 - regularCount;
-                    if (!confirm(`You have ${remaining} FREE event slot(s) remaining. Continue anyway?`)) return;
+                    if (!confirm(`You have ${remaining} FREE event slot(s). Continue?`)) return;
                 }
             } 
-            // General Pass Warning
             else if (cart.pass.name === 'General' && cart.events.length === 0) {
-                 if (!confirm("No events selected. Proceed with just Entry Pass?")) return;
+                 if (!confirm("No events selected. Continue?")) return;
             }
             initiateCheckout();
         }
 
         function initiateCheckout() {
             if(currentUser && userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) return alert("You already have a pass!");
+
+            // NIFT CHECK
+            if (currentUser && currentUser.email.endsWith('@nift.ac.in')) {
+                // Bypass Payment for NIFT
+                const cleanEmail = currentUser.email.replace(/\./g, ',');
+                db.ref('users/' + cleanEmail).update({
+                    paymentStatus: "Verified",
+                    utr: "NIFT-STUDENT",
+                    order: {
+                        pass: "Standard (NIFT)",
+                        events: cart.events,
+                        total: 0,
+                        promo: "NIFT",
+                        timestamp: new Date().toISOString()
+                    }
+                });
+                alert("NIFT Student Verified! Pass Issued.");
+                handleAccountClick();
+                return;
+            }
 
             let total = cart.pass.price;
             let eventHtml = "";
@@ -503,7 +507,6 @@
             alert("Order Submitted!"); handleAccountClick();
         }
 
-        // --- AUTH ---
         function generateSpectrumID(name, phone) {
             const namePart = name.substring(0, 2).toUpperCase();
             const phonePart = phone.slice(-3);
@@ -512,6 +515,7 @@
             return `NIFT${namePart}${phonePart}${randPart}`;
         }
 
+        // --- AUTH & UI HELPERS ---
         function userRegister(){ 
             const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
             if(!e||!p||!n||!ph) return alert("Fill all details");
@@ -534,37 +538,57 @@
             const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
             auth.signInWithEmailAndPassword(e,p).then(c=>{ 
                 if(!c.user.emailVerified) {
-                    alert("Email not verified! Check your inbox.");
-                    auth.signOut();
+                    // Check if NIFT email (Auto-Verify Logic for NIFT)
+                    if (e.endsWith('@nift.ac.in')) {
+                         // Still require verification for security, but we treat them as verified for payment
+                         // However, firebase enforces emailVerified flag for security.
+                         // Best practice: Let them verify email first.
+                         alert("Email not verified! Check your inbox.");
+                         auth.signOut();
+                    } else {
+                        alert("Email not verified! Check your inbox.");
+                        auth.signOut();
+                    }
                 } else { 
                     alert("Welcome back!"); 
                     closeModal(); 
-                    if(pendingPurchase) handlePurchase(pendingPurchase.price, pendingPurchase.name);
+                    // NIFT Special Handling on Login
+                    if (c.user.email.endsWith('@nift.ac.in')) {
+                        // Check if they have a pass, if not, auto-assign
+                        const cleanEmail = c.user.email.replace(/\./g, ',');
+                        db.ref('users/' + cleanEmail).once('value').then(snap => {
+                            const u = snap.val();
+                            if (!u.paymentStatus || u.paymentStatus === 'None') {
+                                db.ref('users/' + cleanEmail).update({
+                                    paymentStatus: 'Verified',
+                                    utr: 'NIFT-ID',
+                                    order: { pass: 'Standard (NIFT)', total: 0, events: [] }
+                                });
+                                alert("NIFT Student Detected: Standard Pass Activated for Free!");
+                            }
+                        });
+                    }
                 } 
             }).catch(err=>alert(err.message)); 
         }
 
-        function handlePasswordReset() {
-            const email = document.getElementById('forgot-email').value;
-            if(!email) return alert("Please enter email");
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    alert("Password reset email sent!");
-                    switchAuthMode('login');
-                })
-                .catch((error) => alert(error.message));
-        }
-
-        function forgotPass() {
-            document.getElementById('view-auth').classList.add('hidden');
-            document.getElementById('view-forgot').classList.remove('hidden');
-        }
-
+        function forgotPass(){ window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Pass`, '_blank'); }
         function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
         
-        // --- UI ---
         function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
-        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); else document.getElementById('ticket-none').classList.remove('hidden'); }
+        function updateTicketUI(){ 
+            if(!userDataDB) return; 
+            ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); 
+            if(userDataDB.paymentStatus==="Verified"){ 
+                document.getElementById('ticket-verified').classList.remove('hidden'); 
+                document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
+                document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
+                document.getElementById('ticket-plan').innerText = userDataDB.order.pass;
+                const evs = userDataDB.order.events ? userDataDB.order.events.map(e=>e.title).join(", ") : "No Events";
+                document.getElementById('ticket-events').innerText = evs.substring(0, 30) + "...";
+            } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); 
+            else document.getElementById('ticket-none').classList.remove('hidden'); 
+        }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
         function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
