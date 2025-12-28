@@ -29,7 +29,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Keep logged in
 
         const UPI_ID = "chyasar2004-2@oksbi";
         const WA_NUMBER = "918157080825"; 
@@ -183,18 +183,7 @@
                 </div>
             </section>
 
-            <!-- 4. PLANS PREVIEW -->
-            <section class="py-24 px-6 bg-zinc-950 text-center">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono text-gray-400 uppercase tracking-widest mb-12">
-                        <div class="p-4 border border-zinc-800">General</div><div class="p-4 border border-zinc-800 text-pink-500 border-pink-900">Standard</div><div class="p-4 border border-zinc-800">Neon Pulse</div><div class="p-4 border border-zinc-800">Vogue Gala</div>
-                    </div>
-                    <button onclick="switchView('tickets')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">Buy Tickets</button>
-                </div>
-            </section>
-
-            <!-- 5. GALLERY -->
+            <!-- 4. GALLERY -->
             <section id="gallery" class="py-24">
                 <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
@@ -204,8 +193,8 @@
                     <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
                 </div>
             </section>
-
-            <!-- 6. SPONSORS -->
+            
+            <!-- 5. SPONSORS -->
             <section id="sponsors" class="py-16 bg-white text-black text-center reveal">
                 <div class="max-w-6xl mx-auto">
                     <h2 class="text-2xl font-bold uppercase mb-12 tracking-widest">Sponsors & Partners</h2>
@@ -230,7 +219,7 @@
             </footer>
         </main>
 
-        <!-- TICKET STORE -->
+        <!-- TICKET STORE (DEDICATED PAGE) -->
         <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
@@ -238,20 +227,48 @@
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-[10px]">Back to Home</button>
                 </div>
 
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
-                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('General', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">General</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
-                    <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Standard', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Standard</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div></div>
-                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')"><h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3><p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div></div>
-                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
+                <!-- PASSES GRID (Hidden for NIFT Students) -->
+                <div id="pass-selection-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+                    <!-- GENERAL -->
+                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')">
+                        <h3 class="text-xl font-bold uppercase text-white">Cyber Entry</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div>
+                    </div>
+                    <!-- STANDARD -->
+                    <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')">
+                        <span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span>
+                        <h3 class="text-xl font-bold uppercase text-white mt-1">Nexus Prime</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div>
+                    </div>
+                    <!-- NEON PULSE -->
+                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')">
+                        <h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div>
+                    </div>
+                    <!-- VOGUE GALA -->
+                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')">
+                        <h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3>
+                        <p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div>
+                    </div>
+                </div>
+                
+                <!-- NIFT STUDENT MESSAGE (Hidden by default) -->
+                <div id="nift-message" class="hidden text-center mb-10 p-6 bg-green-900/30 border border-green-500 rounded">
+                    <h3 class="text-xl font-bold text-green-400">NIFT STUDENT ACCESS</h3>
+                    <p class="text-gray-300 text-sm">Your Nexus Prime Pass is Active. Select any events you wish to participate in.</p>
                 </div>
 
                 <div id="event-selection-area" class="opacity-50 pointer-events-none transition-opacity duration-300">
                     <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required)</span></h3>
                     <div class="flex flex-wrap gap-3 mb-8">
                         <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
+                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
                         <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Culture</button>
                         <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Sports</button>
-                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
                         <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Literary</button>
                         <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">ESSC</button>
                     </div>
@@ -272,11 +289,12 @@
             <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
                 
+                <!-- PROFILE -->
                 <div id="view-profile" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">My Pass</h2>
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
                         <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
-                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p><p class="text-[10px] font-bold" id="ticket-plan"></p><p class="text-[10px]" id="ticket-events"></p></div>
+                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p><p class="text-[10px] font-bold text-gray-500" id="ticket-info-plan"></p><p class="text-[9px] text-gray-500" id="ticket-info-events"></p></div>
                         <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
                         <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
@@ -298,7 +316,7 @@
                         <div id="promo-msg" class="text-[10px] text-green-500 hidden">Code Applied!</div>
                         <div class="flex justify-between text-pink-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">₹0</span></div>
                     </div>
-                    <button onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
+                    <button id="btn-proceed" onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
                 </div>
 
                 <div id="view-payment" class="hidden text-center space-y-4">
@@ -313,7 +331,7 @@
     </div>
 
     <script>
-        let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null;
+        let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false;
         let cart = { pass: null, events: [] }; 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -327,34 +345,28 @@
                     db.ref('users/' + cleanEmail).on('value', (snapshot) => {
                         userDataDB = snapshot.val();
                         updateNav(userDataDB ? userDataDB.name : "User");
+                        
+                        // NIFT CHECK
+                        if(user.email.endsWith('@nift.ac.in')) {
+                            isNift = true;
+                            // Setup NIFT View
+                            document.getElementById('pass-selection-container').classList.add('hidden');
+                            document.getElementById('nift-message').classList.remove('hidden');
+                            document.getElementById('event-selection-area').classList.remove('opacity-50', 'pointer-events-none');
+                            
+                            // Auto Set Pass
+                            cart.pass = { name: "Nexus Prime (NIFT)", price: 0, type: "base" };
+                            updateCartUI();
+                        } else {
+                            isNift = false;
+                        }
                     });
-                } else { currentUser = null; userDataDB = null; updateNav("Login"); }
+                } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift = false; }
             });
-            db.ref('updates').limitToLast(1).on('child_added', (snapshot) => {
-                const update = snapshot.val();
-                if(update) {
-                    document.getElementById('live-updates').classList.remove('hidden');
-                    document.getElementById('update-text').innerText = update.message;
-                    showToast(update.message);
-                }
-            });
+            db.ref('updates').limitToLast(1).on('child_added', (snapshot) => { const update = snapshot.val(); if(update) { document.getElementById('live-updates').classList.remove('hidden'); document.getElementById('update-text').innerText = update.message; showToast(update.message); } });
         });
 
-        // NIFT AUTO-VERIFY & STANDARD PASS
-        function checkNiftStudent(email) {
-            if (email.endsWith('@nift.ac.in')) {
-                // Auto Grant Standard Pass
-                return {
-                    pass: "Standard (NIFT)",
-                    events: [],
-                    total: 0,
-                    status: "Verified"
-                };
-            }
-            return null;
-        }
-
-        // 1. SELECT PASS
+        // 1. SELECT PASS (Base vs Special)
         function selectPass(name, price, type, elementId) {
             ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => {
                 document.getElementById(id).classList.remove('selected-pass');
@@ -367,6 +379,7 @@
             const eventArea = document.getElementById('event-selection-area');
             if(type === 'special') {
                 cart.events = []; eventArea.classList.add('opacity-50', 'pointer-events-none');
+                alert("Special Passes do not allow add-ons.");
                 const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
                 filterEvents(currentCat === 'all' ? 'all' : currentCat);
                 document.getElementById('checkout-btn').innerText = "Buy Now";
@@ -379,8 +392,8 @@
 
         // 2. TOGGLE EVENT
         function toggleEvent(id, title, price, isPremium) {
-            if (!cart.pass) return alert("Select a Base Pass First");
-            if (cart.pass.type === 'special') return;
+            if (!cart.pass && !isNift) return alert("Select a Base Pass First");
+            if (cart.pass && cart.pass.type === 'special') return;
 
             const index = cart.events.findIndex(e => e.id === id);
             if (index > -1) { cart.events.splice(index, 1); } 
@@ -390,7 +403,12 @@
             }
             const btn = document.getElementById(`btn-event-${id}`);
             if(index === -1) { btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); } 
-            else { btn.innerText = "Add + ₹" + price; btn.classList.remove('bg-pink-600', 'border-pink-600'); }
+            else { 
+                // Show Free for NIFT
+                if(isNift) btn.innerText = "Add + ₹0";
+                else btn.innerText = "Add + ₹" + price; 
+                btn.classList.remove('bg-pink-600', 'border-pink-600'); 
+            }
             updateCartUI();
         }
 
@@ -401,8 +419,12 @@
                 bar.classList.remove('translate-y-full');
                 let total = cart.pass ? cart.pass.price : 0;
                 let regularEventsCount = 0;
+
                 cart.events.forEach((e) => {
-                    if (cart.pass && cart.pass.name === 'Standard' && !e.isPremium) {
+                    // NIFT LOGIC: ALL EVENTS FREE
+                    if (isNift) return; // total stays 0
+
+                    if (cart.pass && cart.pass.name === 'Nexus Prime' && !e.isPremium) {
                         if (regularEventsCount < 2) { /* Free */ regularEventsCount++; } 
                         else { total += e.price; }
                     } else { total += e.price; }
@@ -415,62 +437,59 @@
         }
 
         function checkUpsell() {
-            if (!cart.pass) return alert("Select a Pass");
-            if (cart.pass.name === 'Standard') {
-                const regularCount = cart.events.filter(e => !e.isPremium).length;
-                if (regularCount < 2) {
-                    const remaining = 2 - regularCount;
-                    if (!confirm(`You have ${remaining} FREE event slot(s). Continue?`)) return;
+            if (!cart.pass && !isNift) return alert("Select a Pass");
+            // Warnings for Normal Users
+            if (!isNift) {
+                if (cart.pass.name === 'Nexus Prime') {
+                    const regularCount = cart.events.filter(e => !e.isPremium).length;
+                    if (regularCount < 2) {
+                        const remaining = 2 - regularCount;
+                        if (!confirm(`You have ${remaining} FREE event slot(s) remaining. Continue anyway?`)) return;
+                    }
+                } 
+                else if (cart.pass.name === 'Cyber Entry' && cart.events.length === 0) {
+                     if (!confirm("No events selected. Continue?")) return;
                 }
-            } 
-            else if (cart.pass.name === 'General' && cart.events.length === 0) {
-                 if (!confirm("No events selected. Continue?")) return;
             }
             initiateCheckout();
         }
 
         function initiateCheckout() {
-            if(currentUser && userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) return alert("You already have a pass!");
-
-            // NIFT CHECK
-            if (currentUser && currentUser.email.endsWith('@nift.ac.in')) {
-                // Bypass Payment for NIFT
-                const cleanEmail = currentUser.email.replace(/\./g, ',');
-                db.ref('users/' + cleanEmail).update({
-                    paymentStatus: "Verified",
-                    utr: "NIFT-STUDENT",
-                    order: {
-                        pass: "Standard (NIFT)",
-                        events: cart.events,
-                        total: 0,
-                        promo: "NIFT",
-                        timestamp: new Date().toISOString()
-                    }
-                });
-                alert("NIFT Student Verified! Pass Issued.");
-                handleAccountClick();
-                return;
+            // If already bought
+            if(currentUser && userDataDB && !isNift && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) {
+                 // Allow buying events if verified? For now, block to keep simple
+                 return alert("You already have a pass!");
             }
 
-            let total = cart.pass.price;
+            let total = isNift ? 0 : cart.pass.price;
             let eventHtml = "";
             let regularEventsCount = 0;
 
             cart.events.forEach((e) => {
                 let cost = e.price; let label = `₹${e.price}`;
-                if (cart.pass.name === 'Standard' && !e.isPremium) {
-                    if (regularEventsCount < 2) { cost = 0; label = "FREE (Standard)"; regularEventsCount++; }
+                // Logic for NIFT
+                if(isNift) { cost = 0; label = "FREE (NIFT)"; }
+                // Logic for Nexus Prime
+                else if (cart.pass.name === 'Nexus Prime' && !e.isPremium) {
+                    if (regularEventsCount < 2) { cost = 0; label = "FREE (Prime)"; regularEventsCount++; }
                 }
                 total += cost;
                 eventHtml += `<div class="flex justify-between"><span>${e.title}</span><span>${label}</span></div>`;
             });
             finalTotal = total;
             document.getElementById('rec-pass-name').innerText = cart.pass.name;
-            document.getElementById('rec-pass-price').innerText = `₹${cart.pass.price}`;
+            document.getElementById('rec-pass-price').innerText = isNift ? "₹0" : `₹${cart.pass.price}`;
             document.getElementById('rec-events-list').innerHTML = eventHtml;
             document.getElementById('rec-total').innerText = `₹${total}`;
             
-            document.getElementById('promo-code').value = ""; document.getElementById('promo-msg').classList.add('hidden'); promoApplied = null;
+            // NIFT Changes
+            if(isNift) {
+                document.getElementById('btn-proceed').innerText = "Confirm Free Registration";
+                document.getElementById('promo-code').parentElement.classList.add('hidden');
+            } else {
+                document.getElementById('btn-proceed').innerText = "Proceed to Pay";
+                document.getElementById('promo-code').parentElement.classList.remove('hidden');
+            }
 
             openModal();
             document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.add('hidden');
@@ -495,16 +514,36 @@
 
         function showPayment() {
             if(!currentUser) { alert("Please Login to Pay"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; }
+            
+            // IF NIFT OR FREE -> SKIP PAYMENT
+            if (finalTotal === 0) {
+                 completePayment(true); // Bypass UTR
+                 return;
+            }
+
             document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden');
             document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${finalTotal}&cu=INR`;
         }
 
-        function completePayment() {
-            const utr = document.getElementById('input-utr').value; if(utr.length < 8) return alert("Invalid UTR");
+        function completePayment(isFree = false) {
+            let utr = "FREE/NIFT";
+            if(!isFree) {
+                utr = document.getElementById('input-utr').value; 
+                if(utr.length < 8) return alert("Invalid UTR");
+            }
+            
             const cleanEmail = currentUser.email.replace(/\./g, ',');
-            if(promoApplied) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 });
-            db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", utr: utr, order: { pass: cart.pass.name, events: cart.events, total: finalTotal, promo: promoApplied ? promoApplied.code : "None", timestamp: new Date().toISOString() } });
-            alert("Order Submitted!"); handleAccountClick();
+            if(promoApplied && !isFree) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 });
+            
+            const status = isFree ? "Verified" : "Pending";
+
+            db.ref('users/' + cleanEmail).update({ 
+                paymentStatus: status, 
+                utr: utr, 
+                order: { pass: cart.pass.name, events: cart.events, total: finalTotal, promo: promoApplied ? promoApplied.code : "None", timestamp: new Date().toISOString() } 
+            });
+            alert(isFree ? "Registration Confirmed!" : "Order Submitted!"); 
+            handleAccountClick();
         }
 
         function generateSpectrumID(name, phone) {
@@ -538,36 +577,11 @@
             const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
             auth.signInWithEmailAndPassword(e,p).then(c=>{ 
                 if(!c.user.emailVerified) {
-                    // Check if NIFT email (Auto-Verify Logic for NIFT)
-                    if (e.endsWith('@nift.ac.in')) {
-                         // Still require verification for security, but we treat them as verified for payment
-                         // However, firebase enforces emailVerified flag for security.
-                         // Best practice: Let them verify email first.
-                         alert("Email not verified! Check your inbox.");
-                         auth.signOut();
-                    } else {
-                        alert("Email not verified! Check your inbox.");
-                        auth.signOut();
-                    }
+                    if (e.endsWith('@nift.ac.in')) { /* NIFT Allow but warn */ }
+                    else { alert("Email not verified! Check inbox."); auth.signOut(); }
                 } else { 
                     alert("Welcome back!"); 
                     closeModal(); 
-                    // NIFT Special Handling on Login
-                    if (c.user.email.endsWith('@nift.ac.in')) {
-                        // Check if they have a pass, if not, auto-assign
-                        const cleanEmail = c.user.email.replace(/\./g, ',');
-                        db.ref('users/' + cleanEmail).once('value').then(snap => {
-                            const u = snap.val();
-                            if (!u.paymentStatus || u.paymentStatus === 'None') {
-                                db.ref('users/' + cleanEmail).update({
-                                    paymentStatus: 'Verified',
-                                    utr: 'NIFT-ID',
-                                    order: { pass: 'Standard (NIFT)', total: 0, events: [] }
-                                });
-                                alert("NIFT Student Detected: Standard Pass Activated for Free!");
-                            }
-                        });
-                    }
                 } 
             }).catch(err=>alert(err.message)); 
         }
@@ -579,13 +593,18 @@
         function updateTicketUI(){ 
             if(!userDataDB) return; 
             ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); 
+            
+            // SHOW PASS AND EVENTS
+            if (userDataDB.order) {
+                document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass;
+                const evList = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "None";
+                document.getElementById('ticket-info-events').innerText = evList.length > 50 ? evList.substring(0, 50) + "..." : evList;
+            }
+
             if(userDataDB.paymentStatus==="Verified"){ 
                 document.getElementById('ticket-verified').classList.remove('hidden'); 
                 document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
                 document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
-                document.getElementById('ticket-plan').innerText = userDataDB.order.pass;
-                const evs = userDataDB.order.events ? userDataDB.order.events.map(e=>e.title).join(", ") : "No Events";
-                document.getElementById('ticket-events').innerText = evs.substring(0, 30) + "...";
             } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); 
             else document.getElementById('ticket-none').classList.remove('hidden'); 
         }
@@ -626,12 +645,15 @@
             });
             const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat);
             filtered.forEach(e => {
+                let priceText = `Fee: ₹${e.price}`;
+                if(isNift) priceText = `Fee: ₹0 (NIFT)`;
+                
                 grid.innerHTML += `
                 <div class="bg-zinc-900 border border-zinc-800">
                     <div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"></div>
                     <div class="p-4">
                         <h3 class="text-white font-bold uppercase">${e.title} ${e.isPremium ? '<span class="text-pink-500 text-[10px]">(Premium)</span>' : ''}</h3>
-                        <p class="text-xs text-gray-500 mt-1">Fee: ₹${e.price}</p>
+                        <p class="text-xs text-gray-500 mt-1">${priceText}</p>
                         <button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>
                     </div>
                 </div>`;
