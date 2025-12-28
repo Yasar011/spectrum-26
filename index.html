@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- FIREBASE -->
+    <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
@@ -25,6 +25,7 @@
             measurementId: "G-SK3RN0FDZK",
             databaseURL: "https://spectram-234f7-default-rtdb.firebaseio.com"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
@@ -35,37 +36,58 @@
     </script>
 
     <style>
-        :root { --accent: #db2777; }
+        :root { --accent: #db2777; --terminal-green: #00ff41; }
         html { scroll-behavior: smooth; }
-        body { background-color: #000; color: #f3f3f3; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
-        .font-display { font-family: 'Oswald', sans-serif; letter-spacing: 0.1em; }
+        body { background-color: #000000; color: #f3f3f3; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
+        .font-serif { font-family: 'Italiana', serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* FX */
         .scanline { position: fixed; left: 0; top: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent); animation: scanline 6s linear infinite; pointer-events: none; z-index: 999; }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
         .glitch-text { position: relative; }
-        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: 0; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; opacity: 0; }
         .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
         .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
+        .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* UI */
         .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
         .btn-primary { background: white; color: black; border: 1px solid white; transition: 0.3s; }
         .btn-primary:hover { background: black; color: white; }
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s; }
         .btn-outline:hover { border-color: white; background: white; color: black; }
+        .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
+        .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
         .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .view-section.active { display: block; opacity: 1; }
-        .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); box-shadow: 0 0 20px rgba(219, 39, 119, 0.3); }
-        #cart-bar { transition: transform 0.3s ease; }
-        .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; cursor: pointer; }
-        .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
+        #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* CART STYLES */
+        .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); }
+        #cart-bar { transition: transform 0.3s ease; }
+        #notification-toast { transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        #notification-toast.show { transform: translateX(0); }
     </style>
 </head>
 <body>
 
     <div class="scanline"></div>
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; opacity: 0.07; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
+
+    <!-- PUSH NOTIFICATION TOAST -->
+    <div id="notification-toast" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-pink-500 p-4 shadow-2xl flex items-start gap-4">
+        <i data-lucide="bell" class="text-pink-500 w-5 h-5 mt-1"></i>
+        <div><h4 class="text-white font-bold uppercase text-xs tracking-widest mb-1">Incoming Transmission</h4><p id="toast-message" class="text-gray-400 text-xs font-mono leading-tight">System Update...</p></div>
+        <button onclick="hideToast()" class="text-gray-500 hover:text-white ml-auto"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
 
     <!-- INTRO -->
     <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center font-mono">
@@ -78,6 +100,7 @@
 
     <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
+        
         <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
             <button onclick="toggleSidebar()" class="flex items-center gap-3"><div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div><span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span></button>
             <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
@@ -99,6 +122,7 @@
         </div>
 
         <main id="view-home" class="view-section active">
+            <!-- HERO -->
             <section class="relative h-screen flex items-center justify-center overflow-hidden">
                 <div class="absolute inset-0 z-0"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-40 grayscale"></div>
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
@@ -108,18 +132,21 @@
                 </div>
             </section>
 
+            <!-- LIVE UPDATES -->
             <section id="live-updates" class="bg-pink-600 text-white py-3 overflow-hidden border-y border-pink-700">
-                <div class="flex items-center gap-4 animate-marquee whitespace-nowrap"><span class="text-[10px] font-bold uppercase tracking-widest bg-black px-3 py-1">LIVE</span><span id="update-text" class="text-xs font-mono uppercase tracking-wide">Welcome to Spectrum '26. Registrations are open.</span></div>
+                <div class="flex items-center gap-4 animate-marquee whitespace-nowrap"><span class="text-[10px] font-bold uppercase tracking-widest bg-black px-3 py-1">LIVE FEED</span><span id="update-text" class="text-xs font-mono uppercase tracking-wide">Welcome to Spectrum '26. Registrations are open. Stay tuned for lineup announcements.</span></div>
             </section>
 
-            <section id="about" class="py-24 px-6 md:px-20 border-b border-zinc-900">
+            <!-- ABOUT -->
+            <section id="about" class="py-24 px-6 bg-black border-b border-zinc-900">
                 <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="reveal"><div class="w-12 h-1 bg-pink-600 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design.</p></div>
-                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-blue-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest.</p></div>
-                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span></p></div>
+                    <div class="reveal"><div class="w-12 h-1 bg-pink-600 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology. Nestled in the Blue City, we are a hub of creativity.</p></div>
+                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-blue-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza that brings together talent from across the country to compete and celebrate.</p></div>
+                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span><br>A fusion of the classical and the digital. We explore how traditional artistry meets algorithmic precision.</p></div>
                 </div>
             </section>
 
+            <!-- PLANS PREVIEW -->
             <section class="py-24 px-6 bg-zinc-950 text-center">
                 <div class="max-w-4xl mx-auto">
                     <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
@@ -130,6 +157,7 @@
                 </div>
             </section>
 
+            <!-- GALLERY -->
             <section id="gallery" class="py-24">
                 <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
@@ -140,14 +168,29 @@
                 </div>
             </section>
 
+            <!-- SPONSORS -->
             <section id="sponsors" class="py-16 bg-white text-black text-center reveal">
                 <div class="max-w-6xl mx-auto">
-                    <h2 class="text-2xl font-bold uppercase mb-12 tracking-widest">Sponsors</h2>
-                    <div class="flex flex-wrap justify-center items-center gap-12 font-bold text-gray-400 text-3xl"><span class="hover:text-black">RED BULL</span> <span class="hover:text-black">SPOTIFY</span> <span class="hover:text-black">CANON</span> <span class="hover:text-black">SONY</span> <span class="hover:text-black">NVIDIA</span></div>
+                    <h2 class="text-2xl font-bold uppercase mb-12 tracking-widest">Sponsors & Partners</h2>
+                    <div class="flex flex-wrap justify-center items-center gap-12 font-bold text-gray-400 text-3xl">
+                         <span class="hover:text-black">RED BULL</span> <span class="hover:text-black">SPOTIFY</span> <span class="hover:text-black">CANON</span> <span class="hover:text-black">SONY</span> <span class="hover:text-black">NVIDIA</span>
+                    </div>
                 </div>
             </section>
 
-            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal"><p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p></footer>
+            <!-- FOOTER -->
+            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal">
+                <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
+                <div class="flex flex-col md:flex-row justify-center gap-8 mb-8 text-gray-500 text-xs uppercase font-bold tracking-wider">
+                    <a href="mailto:spectrum@nift.ac.in" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> spectrum@nift.ac.in</a>
+                    <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</a>
+                </div>
+                <div class="flex justify-center gap-6 mb-8">
+                    <a href="#" class="text-white hover:text-pink-500"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="text-white hover:text-red-500"><i data-lucide="youtube"></i></a>
+                </div>
+                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p>
+            </footer>
         </main>
 
         <!-- TICKET STORE -->
@@ -158,7 +201,7 @@
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-[10px]">Back to Home</button>
                 </div>
 
-                <!-- PASS SELECTION -->
+                <!-- PASSES GRID (Hidden if NIFT or Existing Pass) -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20" id="pass-selection-container">
                     <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">Cyber Entry</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
                     <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Nexus Prime</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div></div>
@@ -166,10 +209,12 @@
                     <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
                 </div>
 
-                <div id="nift-message" class="hidden text-center mb-10 p-6 bg-green-900/30 border border-green-500 rounded"><h3 class="text-xl font-bold text-green-400">NIFT STUDENT ACCESS</h3><p class="text-gray-300 text-sm">Nexus Prime Pass Active. Select events freely.</p></div>
+                <!-- SPECIAL MESSAGES -->
+                <div id="nift-message" class="hidden text-center mb-10 p-6 bg-green-900/30 border border-green-500 rounded"><h3 class="text-xl font-bold text-green-400">NIFT STUDENT ACCESS</h3><p class="text-gray-300 text-sm">Nexus Prime Pass Active (Free). Select your events.</p></div>
+                <div id="existing-user-message" class="hidden text-center mb-10 p-6 bg-blue-900/30 border border-blue-500 rounded"><h3 class="text-xl font-bold text-blue-400">PASS ACTIVE</h3><p class="text-gray-300 text-sm">You already have a pass. You can add more events below.</p></div>
 
                 <!-- EVENT LIST -->
-                <div id="event-selection-area" class="transition-opacity duration-300">
+                <div id="event-selection-area" class="opacity-50 pointer-events-none transition-opacity duration-300">
                     <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required)</span></h3>
                     <div class="flex flex-wrap gap-3 mb-8">
                         <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
@@ -184,7 +229,7 @@
             </div>
         </section>
 
-        <!-- CART BAR -->
+        <!-- CART -->
         <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900 border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
             <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
             <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
@@ -196,7 +241,6 @@
             <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
                 
-                <!-- PROFILE -->
                 <div id="view-profile" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">My Pass</h2>
                     <div id="upgrade-container" class="hidden mb-4"><button onclick="upgradePass()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-3 rounded animate-pulse">UPGRADE TO NEXUS PRIME (+₹200)</button></div>
@@ -209,14 +253,12 @@
                     <div class="flex justify-between items-center px-2"><div class="text-left"><p id="profile-name" class="text-sm font-bold text-white"></p><p id="profile-email" class="text-[10px] text-gray-500"></p></div><button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white">Logout</button></div>
                 </div>
 
-                <!-- AUTH FORMS -->
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
                     <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
                     <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
                 </div>
 
-                <!-- RECEIPT -->
                 <div id="view-receipt" class="hidden space-y-4">
                     <h2 class="text-xl font-display text-white text-center">Summary</h2>
                     <div class="bg-zinc-900 p-4 rounded text-xs space-y-2 font-mono">
@@ -229,7 +271,6 @@
                     <button id="btn-proceed" onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
                 </div>
 
-                <!-- PAYMENT -->
                 <div id="view-payment" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">Payment</h2>
                     <div class="bg-white p-2 w-fit mx-auto"><img id="qr-code" src="" class="w-32 h-32"></div>
@@ -242,7 +283,7 @@
     </div>
 
     <script>
-        let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false;
+        let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false, hasExistingPass=false;
         let cart = { pass: null, events: [] }; 
         let isUpgrade = false;
 
@@ -257,13 +298,22 @@
                     db.ref('users/' + cleanEmail).on('value', (snapshot) => {
                         userDataDB = snapshot.val();
                         updateNav(userDataDB ? userDataDB.name : "User");
-                        if(user.email.toLowerCase().endsWith('@nift.ac.in')) { isNift = true; activateNiftMode(); } else isNift = false;
+                        
+                        // LOGIC: Check NIFT or Existing Pass
+                        if(user.email.toLowerCase().endsWith('@nift.ac.in')) { 
+                            isNift = true; activateNiftMode(); 
+                        } else if (userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) {
+                            hasExistingPass = true; activateAddOnMode(userDataDB);
+                        } else {
+                            isNift = false; hasExistingPass = false;
+                        }
                     });
-                } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift=false; }
+                } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift=false; hasExistingPass=false; }
             });
             db.ref('updates').limitToLast(1).on('child_added', (snapshot) => { const update = snapshot.val(); if(update) { document.getElementById('live-updates').classList.remove('hidden'); document.getElementById('update-text').innerText = update.message; showToast(update.message); } });
         });
 
+        // MODES
         function activateNiftMode() {
             document.getElementById('pass-selection-container').classList.add('hidden');
             document.getElementById('nift-message').classList.remove('hidden');
@@ -272,7 +322,16 @@
             updateCartUI();
         }
 
-        // SELECT PASS
+        function activateAddOnMode(user) {
+            document.getElementById('pass-selection-container').classList.add('hidden');
+            document.getElementById('existing-user-message').classList.remove('hidden'); // Need to create this DIV if not exists
+            document.getElementById('event-selection-area').classList.remove('opacity-50', 'pointer-events-none');
+            // Auto-fill pass info for logic, but price 0 since already paid
+            cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' };
+            updateCartUI();
+        }
+
+        // 1. SELECT PASS
         function selectPass(name, price, type, elementId) {
             ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => {
                 document.getElementById(id).classList.remove('selected-pass');
@@ -282,60 +341,65 @@
             document.getElementById(elementId).classList.add('selected-pass');
             cart.pass = { name, price, type };
             
-            // SPECIAL PASS LOGIC
             const eventArea = document.getElementById('event-selection-area');
             if(type === 'special') {
                 cart.events = [];
-                // Allow adding NO other events, but keeping UI visible so they know what they are missing?
-                // Request was: "They are pass, some user like they only wants to come to see fashion show"
-                // This means they BUY the pass and they are done.
-                document.getElementById('checkout-btn').innerText = "Buy Now";
-                document.getElementById('checkout-btn').classList.add('animate-pulse');
                 eventArea.classList.add('opacity-50', 'pointer-events-none');
+                const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
+                filterEvents(currentCat === 'all' ? 'all' : currentCat);
+                document.getElementById('checkout-btn').innerText = "Buy Now";
             } else {
                 eventArea.classList.remove('opacity-50', 'pointer-events-none');
                 document.getElementById('checkout-btn').innerText = "Checkout";
-                document.getElementById('checkout-btn').classList.remove('animate-pulse');
             }
             updateCartUI();
         }
 
-        // TOGGLE EVENT
+        // 2. TOGGLE EVENT
         function toggleEvent(id, title, price, isPremium) {
-            if (!cart.pass && !isNift) return alert("Select a Base Pass First");
+            if (!cart.pass && !isNift && !hasExistingPass) return alert("Select a Base Pass First");
             
-            // SPECIAL PASS BLOCKER: Show Alert
-            if (cart.pass && cart.pass.type === 'special') {
-                return alert(`The ${cart.pass.name} pass includes entry for that event only. You cannot add other events.`);
-            }
+            // Allow Special Passes to only have empty events (they cant add more)
+            if (cart.pass && cart.pass.type === 'special' && !hasExistingPass) return alert("Special Passes cannot add extra events.");
+
+            // Check if already bought
+            if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("You already own this event ticket.");
 
             const index = cart.events.findIndex(e => e.id === id);
             if (index > -1) { cart.events.splice(index, 1); } 
             else { 
-                if (cart.events.length >= 5) return alert("Max 5 events");
+                if (cart.events.length >= 5) return alert("Max 5 events per transaction");
                 cart.events.push({ id, title, price, isPremium });
             }
             const btn = document.getElementById(`btn-event-${id}`);
-            if(index === -1) { 
-                btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); 
-            } else { 
+            if(index === -1) { btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); } 
+            else { 
                 if(isNift) btn.innerText = "Add + ₹0"; else btn.innerText = "Add + ₹" + price; 
                 btn.classList.remove('bg-pink-600', 'border-pink-600'); 
             }
             updateCartUI();
         }
 
-        // CALCULATION
+        // 3. CALCULATION
         function updateCartUI() {
             const bar = document.getElementById('cart-bar');
             if (cart.pass || cart.events.length > 0) {
                 bar.classList.remove('translate-y-full');
-                let total = cart.pass ? cart.pass.price : 0;
-                let regularEventsCount = 0;
+                let total = cart.pass ? cart.pass.price : 0; // If existing pass, price is 0
+                
+                // If user has existing pass, we calculate slots based on DB history
+                let usedFreeSlots = 0;
+                if(hasExistingPass && userDataDB.order.events) {
+                     // Count how many non-premium events they already have
+                     usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length;
+                }
+
                 cart.events.forEach((e) => {
-                    if (isNift) return;
-                    if (cart.pass && (cart.pass.name === 'Nexus Prime' || cart.pass.name === 'Nexus Prime (NIFT)') && !e.isPremium) {
-                        if (regularEventsCount < 2) { /* Free */ regularEventsCount++; } 
+                    if (isNift) return; // Free
+                    
+                    // Logic: If Nexus Prime, and event is NOT premium
+                    if (cart.pass && (cart.pass.name.includes('Nexus Prime')) && !e.isPremium) {
+                        if (usedFreeSlots < 2) { /* Free */ usedFreeSlots++; } 
                         else { total += e.price; }
                     } else { total += e.price; }
                 });
@@ -347,50 +411,52 @@
         }
 
         function checkUpsell() {
-            if (!cart.pass && !isNift) return alert("Select a Pass");
-            if (!isNift) {
-                if (cart.pass.name === 'Nexus Prime') {
-                    const regularCount = cart.events.filter(e => !e.isPremium).length;
-                    if (regularCount < 2) {
-                        const remaining = 2 - regularCount;
-                        if (!confirm(`You have ${remaining} FREE event slot(s) remaining. Continue anyway?`)) return;
-                    }
-                } 
-                else if (cart.pass.name === 'Cyber Entry' && cart.events.length === 0) {
-                     if (!confirm("No events selected. Continue?")) return;
-                }
+            if (!cart.pass && !isNift && !hasExistingPass) return alert("Select a Pass");
+            
+            // Warn if General Pass has no events
+            if (!hasExistingPass && !isNift && cart.pass.name === 'Cyber Entry' && cart.events.length === 0) {
+                 if (!confirm("No events selected. Continue?")) return;
             }
             initiateCheckout();
         }
 
         function initiateCheckout() {
-            if(currentUser && userDataDB && !isNift && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) return alert("You already have a pass!");
-
-            let total = isNift ? 0 : cart.pass.price;
+            let total = isNift ? 0 : (hasExistingPass ? 0 : cart.pass.price);
             let eventHtml = "";
-            let regularEventsCount = 0;
+            
+            // Calculate existing slots again for receipt display
+            let usedFreeSlots = 0;
+            if(hasExistingPass && userDataDB.order.events) usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length;
 
             cart.events.forEach((e) => {
                 let cost = e.price; let label = `₹${e.price}`;
                 if(isNift) { cost = 0; label = "FREE (NIFT)"; }
-                else if (cart.pass.name === 'Nexus Prime' && !e.isPremium) {
-                    if (regularEventsCount < 2) { cost = 0; label = "FREE (Prime)"; regularEventsCount++; }
+                else if (cart.pass && cart.pass.name.includes('Nexus Prime') && !e.isPremium) {
+                    if (usedFreeSlots < 2) { cost = 0; label = "FREE (Prime)"; usedFreeSlots++; }
                 }
                 total += cost;
                 eventHtml += `<div class="flex justify-between"><span>${e.title}</span><span>${label}</span></div>`;
             });
             finalTotal = total;
-            document.getElementById('rec-pass-name').innerText = cart.pass.name;
-            document.getElementById('rec-pass-price').innerText = isNift ? "₹0" : `₹${cart.pass.price}`;
+            document.getElementById('rec-pass-name').innerText = cart.pass.name + (hasExistingPass ? " (Owned)" : "");
+            document.getElementById('rec-pass-price').innerText = hasExistingPass ? "₹0" : (isNift ? "₹0" : `₹${cart.pass.price}`);
             document.getElementById('rec-events-list').innerHTML = eventHtml;
             document.getElementById('rec-total').innerText = `₹${total}`;
             
-            if(isNift) { document.getElementById('btn-proceed').innerText = "Confirm Free Registration"; document.getElementById('promo-code').parentElement.classList.add('hidden'); } 
+            if(isNift || total === 0) { document.getElementById('btn-proceed').innerText = "Confirm Update"; document.getElementById('promo-code').parentElement.classList.add('hidden'); } 
             else { document.getElementById('btn-proceed').innerText = "Proceed to Pay"; document.getElementById('promo-code').parentElement.classList.remove('hidden'); }
 
             openModal();
             document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.add('hidden');
             document.getElementById('view-receipt').classList.remove('hidden'); document.getElementById('view-payment').classList.add('hidden');
+        }
+
+        // UPGRADE
+        function upgradePass() {
+            isUpgrade = true; finalTotal = 200;
+            openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden');
+            document.getElementById('pay-item-name').innerText = "Upgrade: Nexus Prime - ₹200";
+            document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=SpectrumUpgrade&am=200&cu=INR`;
         }
 
         function applyPromo() {
@@ -423,12 +489,32 @@
             const cleanEmail = currentUser.email.replace(/\./g, ',');
             if(promoApplied && !isFree) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 });
             
+            // Merge Events if existing
+            let finalEvents = cart.events;
+            if(hasExistingPass && userDataDB.order.events) {
+                finalEvents = [...userDataDB.order.events, ...cart.events];
+            }
+
             if (isUpgrade) {
                 db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", utr: utr, "order/pass": "Nexus Prime" });
                 alert("Upgrade Submitted!"); isUpgrade = false;
             } else {
-                db.ref('users/' + cleanEmail).update({ paymentStatus: isFree ? "Verified" : "Pending", utr: utr, order: { pass: cart.pass.name, events: cart.events, total: finalTotal, promo: promoApplied ? promoApplied.code : "None", timestamp: new Date().toISOString() } });
-                alert(isFree ? "Registration Confirmed!" : "Order Submitted!"); 
+                // Determine Status: If Add-on with payment, set to Pending. If NIFT/Free, keep Verified.
+                let status = isFree ? "Verified" : "Pending";
+                if(hasExistingPass && !isFree) status = "Pending"; // Re-verify for new payment
+
+                db.ref('users/' + cleanEmail).update({ 
+                    paymentStatus: status, 
+                    utr: utr, 
+                    order: { 
+                        pass: cart.pass.name, 
+                        events: finalEvents, 
+                        total: (userDataDB?.order?.total || 0) + finalTotal, // Accumulate total
+                        promo: promoApplied ? promoApplied.code : "None", 
+                        timestamp: new Date().toISOString() 
+                    } 
+                });
+                alert("Updated Successfully!"); 
             }
             handleAccountClick();
         }
@@ -467,12 +553,9 @@
         function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
         function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
 
-        function upgradePass() { isUpgrade = true; finalTotal = 200; openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden'); document.getElementById('pay-item-name').innerText = "Upgrade: Nexus Prime - ₹200"; document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=SpectrumUpgrade&am=200&cu=INR`; }
-
         const eventsData = [
             { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
             { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
-            
             { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
             { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
             { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
@@ -497,6 +580,11 @@
             filtered.forEach(e => {
                 let priceText = `Fee: ₹${e.price}`;
                 if(isNift) priceText = `Fee: ₹0 (NIFT)`;
+                // Button Logic: Check if already owned
+                let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`;
+                if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) {
+                    btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-2 text-[10px] font-bold uppercase cursor-default">Owned</button>`;
+                }
                 
                 grid.innerHTML += `
                 <div class="bg-zinc-900 border border-zinc-800">
@@ -504,7 +592,7 @@
                     <div class="p-4">
                         <h3 class="text-white font-bold uppercase">${e.title} ${e.isPremium ? '<span class="text-pink-500 text-[10px]">(Premium)</span>' : ''}</h3>
                         <p class="text-xs text-gray-500 mt-1">${priceText}</p>
-                        <button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>
+                        ${btnHtml}
                     </div>
                 </div>`;
             });
