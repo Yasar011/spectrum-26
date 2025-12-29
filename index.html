@@ -7,6 +7,9 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Add html2canvas for ID Card Download -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- FIREBASE SDK -->
@@ -26,61 +29,95 @@
             databaseURL: "https://spectram-234f7-default-rtdb.firebaseio.com"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
         const db = firebase.database();
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         const UPI_ID = "chyasar2004-2@oksbi";
-        const WA_NUMBER = "918157080825"; 
     </script>
 
     <style>
         :root { --accent: #db2777; --terminal-green: #00ff41; }
         html { scroll-behavior: smooth; }
-        body { background-color: #000000; color: #f3f3f3; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        body { background-color: #050505; color: #f3f3f3; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
         
         .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
         .font-serif { font-family: 'Italiana', serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
 
         /* FX */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; pointer-events: none; }
+        
         .scanline { position: fixed; left: 0; top: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent); animation: scanline 6s linear infinite; pointer-events: none; z-index: 999; }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+        
         .glitch-text { position: relative; }
         .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; opacity: 0; }
         .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
         .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
-        .hero-img { animation: slowZoom 20s alternate infinite ease-in-out; }
-        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* UI */
-        .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
-        .btn-primary { background: white; color: black; border: 1px solid white; transition: 0.3s; }
-        .btn-primary:hover { background: black; color: white; }
+        .glass-panel { background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s; }
-        .btn-outline:hover { border-color: white; background: white; color: black; }
+        .btn-outline:hover { border-color: var(--accent); background: rgba(219, 39, 119, 0.1); color: white; box-shadow: 0 0 15px var(--accent); }
+        
         .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
         .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
-        .view-section { display: none; opacity: 0; transition: opacity 0.5s ease; }
-        .view-section.active { display: block; opacity: 1; }
+        
+        /* View Transitions */
+        .view-section { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); }
+        
         #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* CART STYLES */
-        .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); }
+        .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3); }
         #cart-bar { transition: transform 0.3s ease; }
         #notification-toast { transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         #notification-toast.show { transform: translateX(0); }
+        
+        button { touch-action: manipulation; }
+        
+        /* INFO EXPAND */
+        .info-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #111; }
+        .info-content.open { max-height: 200px; padding: 10px; border-top: 1px solid #333; }
+
+        /* SCHEDULE STYLES */
+        .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); z-index: 0; }
+        .timeline-item:last-child .timeline-line { display: none; }
+        .timeline-dot { width: 12px; height: 12px; background: #000; border: 2px solid var(--accent); border-radius: 50%; z-index: 10; position: relative; }
+        .timeline-active .timeline-dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        
+        /* ID CARD HOLOGRAPHIC */
+        .holo-card {
+            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .holo-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg); animation: holo 3s infinite; pointer-events: none;
+        }
+        @keyframes holo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
     </style>
 </head>
 <body>
 
+    <!-- 3D BACKGROUND -->
+    <canvas id="bg-canvas"></canvas>
+
     <div class="scanline"></div>
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; opacity: 0.07; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 800; opacity: 0.05; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
 
     <!-- PUSH NOTIFICATION TOAST -->
     <div id="notification-toast" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-pink-500 p-4 shadow-2xl flex items-start gap-4">
@@ -101,20 +138,21 @@
     <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
         
-        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
+        <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white backdrop-blur-sm bg-black/30 border-b border-white/5">
             <button onclick="toggleSidebar()" class="flex items-center gap-3"><div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div><span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span></button>
             <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
-            <button onclick="handleAccountClick()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-pink-500 transition-colors"><i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text">Login</span></button>
+            <button onclick="handleAccountClick()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-pink-500 transition-colors p-2"><i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text">Login</span></button>
         </nav>
 
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[55] hidden transition-opacity duration-300 opacity-0"></div>
-        <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[400px] bg-black border-r border-zinc-800 z-[60] transform -translate-x-full flex flex-col p-10 justify-between">
+        <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[400px] bg-black/90 border-r border-zinc-800 z-[60] transform -translate-x-full flex flex-col p-10 justify-between backdrop-blur-xl">
             <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-pink-500"></i></button></div>
             <div class="flex flex-col gap-6 font-display text-3xl">
                 <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Home</a>
+                <a onclick="switchView('schedule'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Schedule <span class="text-xs align-top border border-pink-500 px-1 ml-2">NEW</span></a>
                 <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Theme</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
-                <a onclick="switchView('events'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Events</a>
+                <a onclick="switchView('events'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Events</a>
                 <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
                 <a href="#sponsors" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Sponsors</a>
             </div>
@@ -123,42 +161,50 @@
 
         <main id="view-home" class="view-section active">
             <!-- HERO -->
-            <section class="relative h-screen flex items-center justify-center overflow-hidden">
-                <div class="absolute inset-0 z-0"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" class="hero-img w-full h-full object-cover opacity-40 grayscale"></div>
+            <section class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
-                    <div class="mb-6 inline-block border border-white/30 px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-white">Feb 24 - 25 • 2026</p></div>
-                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-8">SPEC<span class="text-pink-600">TRUM</span></h1>
-                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105">Get Tickets</button></div>
+                    <div class="mb-6 inline-block border border-pink-500/50 bg-pink-500/10 backdrop-blur-md px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-pink-200">Feb 24 - 25 • 2026</p></div>
+                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-4 drop-shadow-[0_0_15px_rgba(219,39,119,0.5)]">SPEC<span class="text-pink-600">TRUM</span></h1>
+                    
+                    <!-- COUNTDOWN -->
+                    <div class="flex justify-center gap-6 mb-12 font-mono text-gray-400 text-xs md:text-sm">
+                        <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-days">00</span>DAYS</div>
+                        <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-hours">00</span>HRS</div>
+                        <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-mins">00</span>MINS</div>
+                        <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-secs">00</span>SECS</div>
+                    </div>
+
+                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]">Get Tickets</button></div>
                 </div>
             </section>
 
             <!-- LIVE UPDATES -->
-            <section id="live-updates" class="bg-pink-600 text-white py-3 overflow-hidden border-y border-pink-700">
+            <section id="live-updates" class="bg-pink-600 text-white py-3 overflow-hidden border-y border-pink-700 relative z-20">
                 <div class="flex items-center gap-4 animate-marquee whitespace-nowrap"><span class="text-[10px] font-bold uppercase tracking-widest bg-black px-3 py-1">LIVE FEED</span><span id="update-text" class="text-xs font-mono uppercase tracking-wide">Welcome to Spectrum '26. Registrations are open. Stay tuned for lineup announcements.</span></div>
             </section>
 
             <!-- ABOUT -->
-            <section id="about" class="py-24 px-6 bg-black border-b border-zinc-900">
+            <section id="about" class="py-24 px-6 bg-black/80 backdrop-blur-md border-b border-zinc-900 relative z-20">
                 <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="reveal"><div class="w-12 h-1 bg-pink-600 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology. Nestled in the Blue City, we are a hub of creativity.</p></div>
-                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-blue-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza that brings together talent from across the country to compete and celebrate.</p></div>
-                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span><br>A fusion of the classical and the digital. We explore how traditional artistry meets algorithmic precision.</p></div>
+                    <div class="reveal"><div class="w-12 h-1 bg-pink-600 mb-6 shadow-[0_0_10px_#db2777]"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology. Nestled in the Blue City, we are a hub of creativity.</p></div>
+                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-blue-500 mb-6 shadow-[0_0_10px_#3b82f6]"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza that brings together talent from across the country to compete and celebrate.</p></div>
+                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6 shadow-[0_0_10px_#22c55e]"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span><br>A fusion of the classical and the digital. We explore how traditional artistry meets algorithmic precision.</p></div>
                 </div>
             </section>
 
             <!-- PLANS PREVIEW -->
-            <section class="py-24 px-6 bg-zinc-950 text-center">
+            <section class="py-24 px-6 bg-zinc-950/90 text-center relative z-20">
                 <div class="max-w-4xl mx-auto">
                     <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono text-gray-400 uppercase tracking-widest mb-12">
-                        <div class="p-4 border border-zinc-800">Cyber Entry</div><div class="p-4 border border-zinc-800 text-pink-500 border-pink-900">Nexus Prime</div><div class="p-4 border border-zinc-800">Neon Pulse</div><div class="p-4 border border-zinc-800">Vogue Gala</div>
+                        <div class="p-4 border border-zinc-800 hover:border-white transition-colors">Cyber Entry</div><div class="p-4 border border-zinc-800 text-pink-500 border-pink-900 hover:bg-pink-900/20">Nexus Prime</div><div class="p-4 border border-zinc-800 hover:border-blue-500">Neon Pulse</div><div class="p-4 border border-zinc-800 hover:border-purple-500">Vogue Gala</div>
                     </div>
                     <button onclick="switchView('tickets')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">Buy Tickets</button>
                 </div>
             </section>
 
             <!-- GALLERY -->
-            <section id="gallery" class="py-24">
+            <section id="gallery" class="py-24 relative z-20">
                 <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
                     <div class="col-span-2 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
@@ -169,36 +215,57 @@
             </section>
 
             <!-- SPONSORS -->
-            <section id="sponsors" class="py-16 bg-white text-black text-center reveal">
+            <section id="sponsors" class="py-16 bg-white text-black text-center reveal relative z-20">
                 <div class="max-w-6xl mx-auto">
                     <h2 class="text-2xl font-bold uppercase mb-12 tracking-widest">Sponsors & Partners</h2>
                     <div class="flex flex-wrap justify-center items-center gap-12 font-bold text-gray-400 text-3xl">
-                         <span class="hover:text-black">RED BULL</span> <span class="hover:text-black">SPOTIFY</span> <span class="hover:text-black">CANON</span> <span class="hover:text-black">SONY</span> <span class="hover:text-black">NVIDIA</span>
+                         <span class="hover:text-black transition-colors cursor-pointer">RED BULL</span> <span class="hover:text-black transition-colors cursor-pointer">SPOTIFY</span> <span class="hover:text-black transition-colors cursor-pointer">CANON</span> <span class="hover:text-black transition-colors cursor-pointer">SONY</span> <span class="hover:text-black transition-colors cursor-pointer">NVIDIA</span>
                     </div>
                 </div>
             </section>
 
             <!-- FOOTER -->
-            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal">
+            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal relative z-20">
                 <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
                 <div class="flex flex-col md:flex-row justify-center gap-8 mb-8 text-gray-500 text-xs uppercase font-bold tracking-wider">
                     <a href="mailto:spectrum@nift.ac.in" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> spectrum@nift.ac.in</a>
                     <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</a>
                 </div>
                 <div class="flex justify-center gap-6 mb-8">
-                    <a href="#" class="text-white hover:text-pink-500"><i data-lucide="instagram"></i></a>
-                    <a href="#" class="text-white hover:text-red-500"><i data-lucide="youtube"></i></a>
+                    <a href="#" class="text-white hover:text-pink-500 transition-transform hover:scale-110"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="text-white hover:text-red-500 transition-transform hover:scale-110"><i data-lucide="youtube"></i></a>
                 </div>
                 <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p>
             </footer>
         </main>
 
+        <!-- SCHEDULE VIEW (NEW) -->
+        <section id="view-schedule" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
+                    <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Timeline</span><h2 class="text-4xl md:text-6xl font-display text-white">Event Schedule</h2></div>
+                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back</button>
+                </div>
+
+                <!-- TABS -->
+                <div class="flex gap-4 mb-12">
+                    <button onclick="renderSchedule('day1')" id="tab-day1" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-pink-500 text-white transition-colors">Day 1 (Feb 24)</button>
+                    <button onclick="renderSchedule('day2')" id="tab-day2" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-transparent text-gray-500 hover:text-white transition-colors">Day 2 (Feb 25)</button>
+                </div>
+
+                <!-- TIMELINE CONTAINER -->
+                <div id="schedule-container" class="relative pl-6 space-y-8">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </section>
+
         <!-- TICKET STORE -->
-        <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950">
+        <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
                     <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Store</span><h2 class="text-4xl md:text-6xl font-display text-white">Select Pass</h2></div>
-                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-[10px]">Back to Home</button>
+                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back to Home</button>
                 </div>
 
                 <!-- PASSES GRID (Hidden if NIFT or Existing Pass) -->
@@ -214,15 +281,15 @@
                 <div id="existing-user-message" class="hidden text-center mb-10 p-6 bg-blue-900/30 border border-blue-500 rounded"><h3 class="text-xl font-bold text-blue-400">PASS ACTIVE</h3><p class="text-gray-300 text-sm">You already have a pass. You can add more events below.</p></div>
 
                 <!-- EVENT LIST -->
-                <div id="event-selection-area" class="opacity-50 pointer-events-none transition-opacity duration-300">
-                    <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required)</span></h3>
+                <div id="event-selection-area" class="transition-opacity duration-300">
+                    <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required for Entry)</span></h3>
                     <div class="flex flex-wrap gap-3 mb-8">
-                        <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black">All</button>
-                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Pro Shows</button>
-                        <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Culture</button>
-                        <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Sports</button>
-                        <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">Literary</button>
-                        <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white">ESSC</button>
+                        <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black">All</button>
+                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Pro Shows</button>
+                        <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Culture</button>
+                        <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Sports</button>
+                        <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Literary</button>
+                        <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">ESSC</button>
                     </div>
                     <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                 </div>
@@ -230,16 +297,16 @@
         </section>
 
         <!-- CART -->
-        <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900 border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
+        <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900/90 backdrop-blur border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
             <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
-            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
+            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
         </div>
 
         <!-- AUTH MODAL -->
         <div id="auth-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
-            <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
-                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white p-2"><i data-lucide="x"></i></button>
                 
                 <div id="view-profile" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">My Pass</h2>
@@ -250,13 +317,45 @@
                         <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
                         <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
-                    <div class="flex justify-between items-center px-2"><div class="text-left"><p id="profile-name" class="text-sm font-bold text-white"></p><p id="profile-email" class="text-[10px] text-gray-500"></p></div><button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white">Logout</button></div>
+
+                    <!-- ID CARD GENERATOR (NEW) -->
+                    <div id="id-card-section" class="hidden mt-6 border-t border-zinc-800 pt-6">
+                         <h3 class="text-sm font-bold uppercase text-pink-500 mb-4 tracking-widest">Digital ID</h3>
+                         
+                         <!-- CAPTURE THIS DIV -->
+                         <div id="id-card-element" class="holo-card p-6 w-full max-w-[300px] mx-auto text-left rounded-lg shadow-xl mb-4">
+                             <div class="flex justify-between items-start mb-6">
+                                 <div>
+                                     <h2 class="text-xl font-display text-white italic">SPECTRUM</h2>
+                                     <p class="text-[10px] text-pink-500 font-mono">2026 EDITION</p>
+                                 </div>
+                                 <div class="w-12 h-12 bg-white/10 rounded flex items-center justify-center">
+                                     <i data-lucide="zap" class="text-white"></i>
+                                 </div>
+                             </div>
+                             <div class="space-y-3 font-mono">
+                                 <div><p class="text-[8px] text-gray-400 uppercase">Name</p><p id="card-name" class="text-sm font-bold text-white">Unknown</p></div>
+                                 <div><p class="text-[8px] text-gray-400 uppercase">Spectrum ID</p><p id="card-id" class="text-xs text-green-400">----</p></div>
+                                 <div><p class="text-[8px] text-gray-400 uppercase">Access Level</p><p id="card-access" class="text-xs text-white border border-white/30 inline-block px-1">----</p></div>
+                             </div>
+                             <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                                 <p class="text-[8px] text-gray-500">AUTHORIZED PERSONNEL</p>
+                                 <img id="card-qr" class="w-10 h-10 bg-white p-1">
+                             </div>
+                         </div>
+                         
+                         <button onclick="downloadID()" class="w-full bg-zinc-800 text-white text-[10px] font-bold uppercase py-3 hover:bg-white hover:text-black transition-colors flex items-center justify-center gap-2"><i data-lucide="download" class="w-3 h-3"></i> Download Badge</button>
+                    </div>
+
+                    <div class="flex justify-between items-center px-2"><div class="text-left"><p id="profile-name" class="text-sm font-bold text-white"></p><p id="profile-email" class="text-[10px] text-gray-500"></p></div><button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white p-2">Logout</button></div>
                 </div>
 
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
-                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider">Forgot?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
-                    <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
+                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider p-2">Forgot Password?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
+                    <div id="form-register" class="space-y-4 hidden">
+                        <div class="bg-yellow-900/30 border border-yellow-600 p-2 text-[10px] text-yellow-500 text-center font-bold">⚠️ NIFT Students: Use your @nift.ac.in email for FREE Access</div>
+                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
                 </div>
 
                 <div id="view-receipt" class="hidden space-y-4">
@@ -276,21 +375,125 @@
                     <div class="bg-white p-2 w-fit mx-auto"><img id="qr-code" src="" class="w-32 h-32"></div>
                     <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Scan & Pay via UPI</p>
                     <input id="input-utr" type="text" placeholder="Enter 12-Digit UTR" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none text-center tracking-widest">
+                    <div id="utr-error" class="text-[10px] text-red-500 hidden">Invalid UTR (Must be 12 digits)</div>
                     <button onclick="completePayment()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs">Verify Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WARNING MODAL FOR NO PASS -->
+        <div id="pass-warning-modal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="document.getElementById('pass-warning-modal').classList.add('hidden')"></div>
+            <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-red-500 p-6 shadow-2xl text-center">
+                <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
+                <h3 class="text-xl font-bold text-white uppercase mb-2">Access Denied</h3>
+                <p class="text-sm text-gray-400 mb-6">You have selected events, but you need a <b>Base Pass</b> to enter the fest.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="selectPassFromWarning('Cyber Entry', 299, 'base')" class="bg-zinc-800 border border-zinc-700 p-4 hover:border-white transition-all text-left">
+                        <div class="text-[10px] text-gray-400 uppercase">Basic Access</div>
+                        <div class="text-lg font-bold text-white">Cyber Entry</div>
+                        <div class="text-pink-500 font-bold">₹299</div>
+                    </button>
+                    <button onclick="selectPassFromWarning('Nexus Prime', 499, 'base')" class="bg-zinc-800 border border-pink-700 p-4 hover:bg-pink-900/20 transition-all text-left">
+                        <div class="text-[10px] text-pink-400 uppercase font-bold">Recommended</div>
+                        <div class="text-lg font-bold text-white">Nexus Prime</div>
+                        <div class="text-pink-500 font-bold">₹499</div>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // ------------------------------------------------------------------
+        // THREE.JS ANIMATION BACKGROUND
+        // ------------------------------------------------------------------
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Geometries
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const material = new THREE.MeshBasicMaterial({ color: 0xdb2777, wireframe: true, transparent: true, opacity: 0.3 });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 500;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.05, color: 0x00ff41, transparent: true, opacity: 0.8 });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 20;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX / window.innerWidth - 0.5;
+            mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.x += 0.001;
+            sphere.rotation.y += 0.002;
+            particlesMesh.rotation.y -= 0.0005;
+            sphere.rotation.y += mouseX * 0.05;
+            sphere.rotation.x += mouseY * 0.05;
+            camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.onload = function() {
+            animate();
+            startCountdown();
+        };
+
+
+        // ------------------------------------------------------------------
+        // APP LOGIC
+        // ------------------------------------------------------------------
         let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false, hasExistingPass=false;
         let cart = { pass: null, events: [] }; 
         let isUpgrade = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
-            runTerminalIntro();
-            auth.signOut(); 
+            
+            // INTRO SKIP LOGIC
+            if(sessionStorage.getItem('introDone')) {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('main-content').style.opacity = '1';
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('view-home').classList.add('active');
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+            } else {
+                runTerminalIntro();
+            }
+
+            // LOAD CART
+            loadCart();
+            filterEvents('all'); // Initialize Grid
+            renderSchedule('day1'); // Init Schedule
+
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     currentUser = user;
@@ -313,25 +516,66 @@
             db.ref('updates').limitToLast(1).on('child_added', (snapshot) => { const update = snapshot.val(); if(update) { document.getElementById('live-updates').classList.remove('hidden'); document.getElementById('update-text').innerText = update.message; showToast(update.message); } });
         });
 
-        // MODES
+        // COUNTDOWN TIMER
+        function startCountdown() {
+            const festDate = new Date("Feb 24, 2026 00:00:00").getTime();
+            setInterval(function() {
+                const now = new Date().getTime();
+                const distance = festDate - now;
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("cd-days").innerText = days;
+                document.getElementById("cd-hours").innerText = hours;
+                document.getElementById("cd-mins").innerText = minutes;
+                document.getElementById("cd-secs").innerText = seconds;
+            }, 1000);
+        }
+
+        // CART PERSISTENCE
+        function saveCart() { localStorage.setItem('spectrum_cart', JSON.stringify(cart)); }
+        function loadCart() {
+            const saved = localStorage.getItem('spectrum_cart');
+            if(saved) {
+                cart = JSON.parse(saved);
+                if(cart.pass && cart.pass.type) {
+                     const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std', 'Neon Pulse': 'pass-edm', 'Vogue Gala': 'pass-fash' };
+                     const elId = map[cart.pass.name];
+                     if(elId) {
+                        ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => {
+                            document.getElementById(id).classList.remove('selected-pass');
+                            document.getElementById(id).classList.add('glass-panel');
+                        });
+                        document.getElementById(elId).classList.remove('glass-panel');
+                        document.getElementById(elId).classList.add('selected-pass');
+                     }
+                }
+                updateCartUI();
+            }
+        }
+        function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
+
+        function updateNav(name) { document.getElementById('nav-user-text').innerText = name.split(' ')[0]; }
+
         function activateNiftMode() {
             document.getElementById('pass-selection-container').classList.add('hidden');
             document.getElementById('nift-message').classList.remove('hidden');
-            document.getElementById('event-selection-area').classList.remove('opacity-50', 'pointer-events-none');
             cart.pass = { name: "Nexus Prime (NIFT)", price: 0, type: "base" };
+            saveCart();
             updateCartUI();
         }
 
         function activateAddOnMode(user) {
             document.getElementById('pass-selection-container').classList.add('hidden');
-            document.getElementById('existing-user-message').classList.remove('hidden'); // Need to create this DIV if not exists
-            document.getElementById('event-selection-area').classList.remove('opacity-50', 'pointer-events-none');
-            // Auto-fill pass info for logic, but price 0 since already paid
-            cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' };
+            document.getElementById('existing-user-message').classList.remove('hidden'); 
+            if(user.order && user.order.pass) {
+                cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' };
+                saveCart();
+            }
             updateCartUI();
         }
 
-        // 1. SELECT PASS
         function selectPass(name, price, type, elementId) {
             ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => {
                 document.getElementById(id).classList.remove('selected-pass');
@@ -340,29 +584,13 @@
             document.getElementById(elementId).classList.remove('glass-panel'); 
             document.getElementById(elementId).classList.add('selected-pass');
             cart.pass = { name, price, type };
-            
-            const eventArea = document.getElementById('event-selection-area');
-            if(type === 'special') {
-                cart.events = [];
-                eventArea.classList.add('opacity-50', 'pointer-events-none');
-                const currentCat = document.querySelector('.filter-btn.active').innerText.toLowerCase();
-                filterEvents(currentCat === 'all' ? 'all' : currentCat);
-                document.getElementById('checkout-btn').innerText = "Buy Now";
-            } else {
-                eventArea.classList.remove('opacity-50', 'pointer-events-none');
-                document.getElementById('checkout-btn').innerText = "Checkout";
-            }
+            if(type === 'special') { cart.events = []; }
+            saveCart();
             updateCartUI();
         }
 
-        // 2. TOGGLE EVENT
         function toggleEvent(id, title, price, isPremium) {
-            if (!cart.pass && !isNift && !hasExistingPass) return alert("Select a Base Pass First");
-            
-            // Allow Special Passes to only have empty events (they cant add more)
             if (cart.pass && cart.pass.type === 'special' && !hasExistingPass) return alert("Special Passes cannot add extra events.");
-
-            // Check if already bought
             if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("You already own this event ticket.");
 
             const index = cart.events.findIndex(e => e.id === id);
@@ -371,62 +599,69 @@
                 if (cart.events.length >= 5) return alert("Max 5 events per transaction");
                 cart.events.push({ id, title, price, isPremium });
             }
+            saveCart();
+            
             const btn = document.getElementById(`btn-event-${id}`);
-            if(index === -1) { btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); } 
-            else { 
-                if(isNift) btn.innerText = "Add + ₹0"; else btn.innerText = "Add + ₹" + price; 
-                btn.classList.remove('bg-pink-600', 'border-pink-600'); 
+            if(btn) {
+                if(index > -1) { 
+                    if(isNift) btn.innerText = "Add + ₹0"; else btn.innerText = "Add + ₹" + price; 
+                    btn.classList.remove('bg-pink-600', 'border-pink-600'); 
+                } else { 
+                    btn.innerText = "Selected"; btn.classList.add('bg-pink-600', 'border-pink-600'); 
+                }
             }
             updateCartUI();
         }
 
-        // 3. CALCULATION
         function updateCartUI() {
             const bar = document.getElementById('cart-bar');
-            if (cart.pass || cart.events.length > 0) {
+            if ((cart.pass) || cart.events.length > 0) {
                 bar.classList.remove('translate-y-full');
-                let total = cart.pass ? cart.pass.price : 0; // If existing pass, price is 0
-                
-                // If user has existing pass, we calculate slots based on DB history
+                let total = cart.pass ? cart.pass.price : 0; 
                 let usedFreeSlots = 0;
-                if(hasExistingPass && userDataDB.order.events) {
-                     // Count how many non-premium events they already have
+                
+                if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) {
                      usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length;
                 }
 
                 cart.events.forEach((e) => {
-                    if (isNift) return; // Free
-                    
-                    // Logic: If Nexus Prime, and event is NOT premium
+                    if (isNift) return; 
                     if (cart.pass && (cart.pass.name.includes('Nexus Prime')) && !e.isPremium) {
-                        if (usedFreeSlots < 2) { /* Free */ usedFreeSlots++; } 
+                        if (usedFreeSlots < 2) { usedFreeSlots++; } 
                         else { total += e.price; }
                     } else { total += e.price; }
                 });
                 document.getElementById('cart-total').innerText = "₹" + total;
-                let desc = cart.pass ? cart.pass.name : "";
+                let desc = cart.pass ? cart.pass.name : "No Pass Selected";
                 if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`;
                 document.getElementById('cart-desc').innerText = desc;
             } else { bar.classList.add('translate-y-full'); }
         }
 
         function checkUpsell() {
-            if (!cart.pass && !isNift && !hasExistingPass) return alert("Select a Pass");
-            
-            // Warn if General Pass has no events
-            if (!hasExistingPass && !isNift && cart.pass.name === 'Cyber Entry' && cart.events.length === 0) {
-                 if (!confirm("No events selected. Continue?")) return;
+            if (isNift || hasExistingPass) { initiateCheckout(); return; }
+            if (!cart.pass) {
+                document.getElementById('pass-warning-modal').classList.remove('hidden');
+                document.getElementById('pass-warning-modal').style.display = 'flex';
+                return;
             }
+            initiateCheckout();
+        }
+        
+        function selectPassFromWarning(name, price, type) {
+            cart.pass = { name, price, type };
+            const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std' };
+            selectPass(name, price, type, map[name]);
+            document.getElementById('pass-warning-modal').classList.add('hidden');
+            saveCart();
             initiateCheckout();
         }
 
         function initiateCheckout() {
             let total = isNift ? 0 : (hasExistingPass ? 0 : cart.pass.price);
             let eventHtml = "";
-            
-            // Calculate existing slots again for receipt display
             let usedFreeSlots = 0;
-            if(hasExistingPass && userDataDB.order.events) usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length;
+            if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length;
 
             cart.events.forEach((e) => {
                 let cost = e.price; let label = `₹${e.price}`;
@@ -438,7 +673,7 @@
                 eventHtml += `<div class="flex justify-between"><span>${e.title}</span><span>${label}</span></div>`;
             });
             finalTotal = total;
-            document.getElementById('rec-pass-name').innerText = cart.pass.name + (hasExistingPass ? " (Owned)" : "");
+            document.getElementById('rec-pass-name').innerText = cart.pass ? (cart.pass.name + (hasExistingPass ? " (Owned)" : "")) : "Entry Pass";
             document.getElementById('rec-pass-price').innerText = hasExistingPass ? "₹0" : (isNift ? "₹0" : `₹${cart.pass.price}`);
             document.getElementById('rec-events-list').innerHTML = eventHtml;
             document.getElementById('rec-total').innerText = `₹${total}`;
@@ -451,11 +686,9 @@
             document.getElementById('view-receipt').classList.remove('hidden'); document.getElementById('view-payment').classList.add('hidden');
         }
 
-        // UPGRADE
         function upgradePass() {
             isUpgrade = true; finalTotal = 200;
             openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden');
-            document.getElementById('pay-item-name').innerText = "Upgrade: Nexus Prime - ₹200";
             document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=SpectrumUpgrade&am=200&cu=INR`;
         }
 
@@ -484,14 +717,20 @@
 
         function completePayment(isFree = false) {
             let utr = "FREE/NIFT";
-            if(!isFree) { utr = document.getElementById('input-utr').value; if(utr.length < 8) return alert("Invalid UTR"); }
+            if(!isFree) { 
+                utr = document.getElementById('input-utr').value; 
+                if (!/^\d{12}$/.test(utr)) {
+                    document.getElementById('utr-error').classList.remove('hidden');
+                    return;
+                }
+                document.getElementById('utr-error').classList.add('hidden');
+            }
             
             const cleanEmail = currentUser.email.replace(/\./g, ',');
             if(promoApplied && !isFree) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 });
             
-            // Merge Events if existing
             let finalEvents = cart.events;
-            if(hasExistingPass && userDataDB.order.events) {
+            if(hasExistingPass && userDataDB.order && userDataDB.order.events) {
                 finalEvents = [...userDataDB.order.events, ...cart.events];
             }
 
@@ -499,9 +738,8 @@
                 db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", utr: utr, "order/pass": "Nexus Prime" });
                 alert("Upgrade Submitted!"); isUpgrade = false;
             } else {
-                // Determine Status: If Add-on with payment, set to Pending. If NIFT/Free, keep Verified.
                 let status = isFree ? "Verified" : "Pending";
-                if(hasExistingPass && !isFree) status = "Pending"; // Re-verify for new payment
+                if(hasExistingPass && !isFree) status = "Pending"; 
 
                 db.ref('users/' + cleanEmail).update({ 
                     paymentStatus: status, 
@@ -509,12 +747,13 @@
                     order: { 
                         pass: cart.pass.name, 
                         events: finalEvents, 
-                        total: (userDataDB?.order?.total || 0) + finalTotal, // Accumulate total
+                        total: (userDataDB?.order?.total || 0) + finalTotal,
                         promo: promoApplied ? promoApplied.code : "None", 
                         timestamp: new Date().toISOString() 
                     } 
                 });
-                alert("Updated Successfully!"); 
+                alert("Order Placed! Check status in Profile."); 
+                clearCart();
             }
             handleAccountClick();
         }
@@ -527,75 +766,197 @@
             return `NIFT${namePart}${phonePart}${randPart}`;
         }
 
-        function userRegister(){ const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; if(!e||!p||!n||!ph) return alert("Fill all details"); if(p !== cp) return alert("Passwords do not match"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); const sID = generateSpectrumID(n, ph); db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); alert("Registered! Check Email to Verify."); auth.signOut(); closeModal(); }).catch(err=>alert(err.message)); }
-        function userLogin(){ const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email not verified! Check inbox."); auth.signOut(); } } else { alert("Welcome back!"); closeModal(); } }).catch(err=>alert(err.message)); }
-        function forgotPass(){ window.open(`https://wa.me/${WA_NUMBER}?text=Forgot Pass`, '_blank'); }
-        function logout(){ auth.signOut().then(()=>{ window.location.reload(); }); }
-        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
+        function userRegister(){ 
+            const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
+            if(!e||!p||!n||!ph) return alert("Fill all details"); 
+            if(p !== cp) return alert("Passwords do not match"); 
+            auth.createUserWithEmailAndPassword(e,p).then(crd=>{ 
+                crd.user.sendEmailVerification(); 
+                const sID = generateSpectrumID(n, ph); 
+                db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); 
+                alert("Registered! Please check your email to verify account."); 
+                switchAuthMode('login'); closeModal(); handleAccountClick(); 
+            }).catch(err=>alert(err.message)); 
+        }
+
+        function userLogin(){ const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email not verified! Check inbox."); } } closeModal(); }).catch(err=>alert(err.message)); }
+        function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter email first."); auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent.")).catch(err => alert(err.message)); }
+        function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
+        
+        function handleAccountClick(){ 
+            if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } 
+            else { 
+                openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); 
+                document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; 
+                document.getElementById('profile-email').innerText=currentUser.email; 
+                updateTicketUI(); 
+            } 
+        }
+
         function updateTicketUI(){ 
             if(!userDataDB) return; 
             ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); 
             const upgradeBtn = document.getElementById('upgrade-container');
+            const idCardSection = document.getElementById('id-card-section');
+
             if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden');
             if(userDataDB.order) { document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; } 
-            if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; } 
-            else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); 
-            else document.getElementById('ticket-none').classList.remove('hidden'); 
+            
+            if(userDataDB.paymentStatus==="Verified" || userDataDB.paymentStatus==="Pending"){ 
+                document.getElementById('ticket-verified').classList.remove('hidden'); 
+                document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
+                document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
+                
+                // Show ID Card Generator
+                idCardSection.classList.remove('hidden');
+                document.getElementById('card-name').innerText = userDataDB.name;
+                document.getElementById('card-id').innerText = userDataDB.spectrumId;
+                document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS";
+                document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
+            } 
+            else { 
+                document.getElementById('ticket-none').classList.remove('hidden'); 
+                idCardSection.classList.add('hidden');
+            } 
         }
+
+        // DOWNLOAD ID
+        function downloadID() {
+            const el = document.getElementById('id-card-element');
+            html2canvas(el, { useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Spectrum_${userDataDB.spectrumId}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        // SCHEDULE LOGIC
+        const schedule = {
+            day1: [
+                { time: "09:00 AM", title: "Inauguration", loc: "Main Auditorium", type: "General" },
+                { time: "11:00 AM", title: "Street Battle", loc: "Amphitheatre", type: "Culture" },
+                { time: "01:00 PM", title: "Valorant Prelims", loc: "IT Lab 3", type: "Gaming" },
+                { time: "04:00 PM", title: "Battle of Bands", loc: "Main Stage", type: "Music" },
+                { time: "07:30 PM", title: "Fashion Show", loc: "Ramp Area", type: "Show" }
+            ],
+            day2: [
+                { time: "10:00 AM", title: "Treasure Hunt", loc: "Campus Wide", type: "Fun" },
+                { time: "12:00 PM", title: "Box Cricket Finals", loc: "Sports Ground", type: "Sports" },
+                { time: "02:00 PM", title: "Solo Singing", loc: "Mini Audi", type: "Music" },
+                { time: "05:00 PM", title: "Runway Rivals", loc: "Ramp Area", type: "Fashion" },
+                { time: "08:00 PM", title: "EDM Night", loc: "Main Ground", type: "Show" }
+            ]
+        };
+
+        function renderSchedule(day) {
+            const container = document.getElementById('schedule-container');
+            document.getElementById('tab-day1').classList.replace('border-pink-500', 'border-transparent');
+            document.getElementById('tab-day1').classList.replace('text-white', 'text-gray-500');
+            document.getElementById('tab-day2').classList.replace('border-pink-500', 'border-transparent');
+            document.getElementById('tab-day2').classList.replace('text-white', 'text-gray-500');
+            
+            document.getElementById(`tab-${day}`).classList.replace('border-transparent', 'border-pink-500');
+            document.getElementById(`tab-${day}`).classList.replace('text-gray-500', 'text-white');
+
+            let html = '';
+            schedule[day].forEach(item => {
+                html += `
+                <div class="timeline-item relative pl-8 pb-8 group">
+                    <div class="timeline-line"></div>
+                    <div class="absolute left-3 top-1 timeline-dot group-hover:bg-pink-500 transition-colors"></div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
+                        <span class="text-pink-500 font-mono text-sm font-bold w-24">${item.time}</span>
+                        <div class="flex-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded hover:border-white transition-colors">
+                            <h4 class="text-white font-bold uppercase">${item.title}</h4>
+                            <div class="flex justify-between mt-1 text-[10px] text-gray-500 font-mono uppercase">
+                                <span><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.loc}</span>
+                                <span>${item.type}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
         function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
         function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 5000); }
         function hideToast() { document.getElementById('notification-toast').classList.remove('show'); }
         
-        function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); filterEvents('all'); }
-        function enterSite(){ const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); },800); }
+        function runTerminalIntro(){ 
+            const t=document.getElementById('terminal-output'); if(!t)return; 
+            setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); 
+            const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); 
+            setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); 
+        }
+        
+        function enterSite(){ 
+            sessionStorage.setItem('introDone', 'true');
+            const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); },800); 
+        }
         function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
         function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
+        function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('open'); }
 
         const eventsData = [
-            { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600' },
-            { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
-            { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600' },
-            { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600' },
-            { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600' },
-            { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600' },
-            { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600' },
-            { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600' },
-            { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600' },
-            { id: 9, club: 'photo', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600' },
-            { id: 10, club: 'photo', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600' },
-            { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600' },
-            { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600' },
-            { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600' }
+            { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: 'https://docs.google.com/document/d/placeholder' },
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style.', rules: '#' },
+            { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#' },
+            { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Eastern and Western Solo Singing.', rules: '#' },
+            { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '1', desc: 'Solo Fashion Walk competition.', rules: '#' },
+            { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#' },
+            { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#' },
+            { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#' },
+            { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#' },
+            { id: 9, club: 'photo', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#' },
+            { id: 10, club: 'photo', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#' },
+            { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#' },
+            { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#' },
+            { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainability workshop.', rules: '#' }
         ];
 
         function filterEvents(cat) {
             const grid = document.getElementById('events-grid'); grid.innerHTML='';
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-white bg-white text-black"; }
-                else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-zinc-700 text-white hover:border-white"; }
+                if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black"; }
+                else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white hover:border-white"; }
             });
             const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat);
             filtered.forEach(e => {
                 let priceText = `Fee: ₹${e.price}`;
                 if(isNift) priceText = `Fee: ₹0 (NIFT)`;
-                // Button Logic: Check if already owned
-                let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`;
-                if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) {
-                    btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-2 text-[10px] font-bold uppercase cursor-default">Owned</button>`;
-                }
+                let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`;
+                if(cart.events.some(ev => ev.id == e.id)) { btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-pink-600 bg-pink-600 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Selected</button>`; }
+                if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-3 text-xs font-bold uppercase cursor-default">Owned</button>`; }
                 
                 grid.innerHTML += `
-                <div class="bg-zinc-900 border border-zinc-800">
-                    <div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"></div>
+                <div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 hover:border-pink-500/50 transition-colors">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity">
+                        <div class="absolute bottom-0 right-0 bg-black/70 px-2 py-1 flex items-center gap-1 text-[10px] font-mono"><i data-lucide="users" class="w-3 h-3 text-pink-500"></i> ${e.members}</div>
+                    </div>
                     <div class="p-4">
-                        <h3 class="text-white font-bold uppercase">${e.title} ${e.isPremium ? '<span class="text-pink-500 text-[10px]">(Premium)</span>' : ''}</h3>
-                        <p class="text-xs text-gray-500 mt-1">${priceText}</p>
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-white font-bold uppercase text-sm">${e.title}</h3>
+                            <button onclick="toggleInfo(${e.id})" class="text-gray-400 hover:text-white"><i data-lucide="info" class="w-4 h-4"></i></button>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-0">${priceText}</p>
+                        ${e.isPremium ? '<span class="text-pink-500 text-[9px] font-bold uppercase tracking-widest">Premium Event</span>' : ''}
+                        
+                        <div id="info-${e.id}" class="info-content text-[10px] text-gray-400 mt-2">
+                            <p class="mb-2">${e.desc}</p>
+                            <a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a>
+                        </div>
+                        
                         ${btnHtml}
                     </div>
                 </div>`;
             });
+            if(typeof lucide !== 'undefined') lucide.createIcons();
         }
     </script>
 </body>
