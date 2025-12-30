@@ -501,7 +501,54 @@
         function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter email first."); auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent.")).catch(err => alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
         function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
-        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); const upgradeBtn = document.getElementById('upgrade-container'); const idCardSection = document.getElementById('id-card-section'); if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden'); if(userDataDB.order) { document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; } if(userDataDB.paymentStatus==="Verified" || userDataDB.paymentStatus==="Pending"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; idCardSection.classList.remove('hidden'); document.getElementById('card-name').innerText = userDataDB.name; document.getElementById('card-id').innerText = userDataDB.spectrumId; document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS"; document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`; } else { document.getElementById('ticket-none').classList.remove('hidden'); idCardSection.classList.add('hidden'); } }
+        
+        // --- FIXED FUNCTION: updateTicketUI ---
+        function updateTicketUI() {
+            if (!userDataDB) return;
+            
+            // 1. Reset all states
+            ['ticket-verified', 'ticket-pending', 'ticket-none'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('ticket-loading').classList.add('hidden');
+            const upgradeBtn = document.getElementById('upgrade-container');
+            const idCardSection = document.getElementById('id-card-section');
+            
+            // 2. Upgrade Button
+            if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); 
+            else upgradeBtn.classList.add('hidden');
+            
+            // 3. Info Text
+            if (userDataDB.order) {
+                document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass;
+                const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events";
+                document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "...";
+            }
+
+            // 4. STRICT STATUS CHECK
+            if (userDataDB.paymentStatus === "Verified") {
+                // Show Authorized UI
+                document.getElementById('ticket-verified').classList.remove('hidden');
+                document.getElementById('ticket-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`;
+                document.getElementById('ticket-id').innerText = `ID: ${userDataDB.spectrumId}`;
+                
+                // Show ID Card
+                idCardSection.classList.remove('hidden');
+                document.getElementById('card-name').innerText = userDataDB.name;
+                document.getElementById('card-id').innerText = userDataDB.spectrumId;
+                document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS";
+                document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
+            
+            } else if (userDataDB.paymentStatus === "Pending") {
+                // Show Pending UI & HIDE ID CARD
+                document.getElementById('ticket-pending').classList.remove('hidden');
+                idCardSection.classList.add('hidden'); 
+            
+            } else {
+                // Show Buy Now
+                document.getElementById('ticket-none').classList.remove('hidden');
+                idCardSection.classList.add('hidden');
+            }
+        }
+
         function downloadID() { const el = document.getElementById('id-card-element'); html2canvas(el, { useCORS: true }).then(canvas => { const link = document.createElement('a'); link.download = `Spectrum_${userDataDB.spectrumId}.png`; link.href = canvas.toDataURL(); link.click(); }); }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
