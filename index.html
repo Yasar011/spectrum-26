@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPECTRUM '26 | NIFT Jodhpur</title>
     
+    <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -17,6 +18,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
     <script>
+        // --- 1. CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyATPWBVx5bqqIrbgaXm44KDAy29b4ru6NY",
             authDomain: "spectram-234f7.firebaseapp.com",
@@ -24,21 +26,20 @@
             storageBucket: "spectram-234f7.firebasestorage.app",
             messagingSenderId: "192476382126",
             appId: "1:192476382126:web:26422db3e948165933be3f",
-            measurementId: "G-SK3RN0FDZK",
             databaseURL: "https://spectram-234f7-default-rtdb.firebaseio.com"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-        const UPI_ID = "chyasar2004-2@oksbi";
+        // --- 2. PAYMENT & IMAGE SETTINGS ---
+        // Get this from https://api.imgbb.com/ (It's free)
+        const IMGBB_KEY = "YOUR_IMGBB_API_KEY_HERE"; 
         
-        // --- CONFIGURATION ---
-        const ADMIN_URL = "admin.html"; // <--- PASTE YOUR ADMIN PAGE URL HERE
+        // Fallback admin URL
+        const ADMIN_URL = "admin.html"; 
     </script>
 
     <style>
@@ -70,20 +71,16 @@
         .view-section { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .view-section.active { display: block; opacity: 1; transform: translateY(0); }
         #sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        #logs-sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .fade-in { animation: fadeIn 1s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
+        
         /* CART & TOAST */
         .selected-pass { border-color: var(--accent) !important; background: rgba(219, 39, 119, 0.15) !important; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3); }
         #cart-bar { transition: transform 0.3s ease; }
         #notification-toast { transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         #notification-toast.show { transform: translateX(0); }
-        button { touch-action: manipulation; }
         
         /* INFO EXPAND */
         .info-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #111; }
-        .info-content.open { max-height: 200px; padding: 10px; border-top: 1px solid #333; }
+        .info-content.open { max-height: 300px; padding: 10px; border-top: 1px solid #333; overflow-y: auto; }
 
         /* SCHEDULE STYLES */
         .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); z-index: 0; }
@@ -94,24 +91,17 @@
         .holo-card { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid rgba(255, 255, 255, 0.2); position: relative; overflow: hidden; }
         .holo-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent); transform: rotate(45deg); animation: holo 3s infinite; pointer-events: none; }
         @keyframes holo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
-
-        /* LOGS */
-        .log-item { border-left: 2px solid #333; padding-left: 10px; padding-bottom: 15px; position: relative; }
-        .log-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 8px; height: 8px; background: #000; border: 2px solid var(--terminal-green); border-radius: 50%; }
-        .log-item:first-child { border-left-color: var(--terminal-green); }
-        .log-item:first-child::before { background: var(--terminal-green); }
     </style>
 </head>
 <body>
 
     <!-- 3D BACKGROUND -->
     <canvas id="bg-canvas"></canvas>
-
     <div class="scanline"></div>
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 800; opacity: 0.05; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%);"></div>
 
     <!-- PUSH NOTIFICATION TOAST -->
-    <div id="notification-toast" onclick="toggleLogs()" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-pink-500 p-4 shadow-2xl flex items-start gap-4 cursor-pointer hover:bg-zinc-800 transition-colors">
+    <div id="notification-toast" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-pink-500 p-4 shadow-2xl flex items-start gap-4">
         <i data-lucide="bell" class="text-pink-500 w-5 h-5 mt-1"></i>
         <div><h4 class="text-white font-bold uppercase text-xs tracking-widest mb-1">Incoming Transmission</h4><p id="toast-message" class="text-gray-400 text-xs font-mono leading-tight">System Update...</p></div>
     </div>
@@ -120,7 +110,7 @@
     <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center font-mono">
         <div class="relative z-10 w-full max-w-2xl px-6">
             <div id="terminal-output" class="text-left text-xs md:text-sm text-green-500 mb-8 h-32 border-l-2 border-green-500 pl-4 font-bold overflow-hidden"></div>
-            <div id="intro-title" class="opacity-0 transition-opacity duration-1000"><h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">SPEC<span class="text-pink-600">TRUM</span></h1><p class="text-xs font-bold tracking-[0.8em] text-gray-500 uppercase mt-4 animate-pulse">'26 SYSTEM ONLINE</p></div>
+            <div id="intro-title" class="opacity-0 transition-opacity duration-1000"><h1 class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">SPEC<span class="text-pink-600">TRUM</span></h1><p class="text-xs font-bold tracking-[0.8em] text-gray-500 uppercase mt-4 animate-pulse">'26 SYSTEM ONLINE</p></div>
             <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-green-500 border-green-500 hover:bg-green-500 hover:text-black hover:border-green-500 uppercase tracking-widest text-xs py-4 px-8">[ Enter System ]</button>
         </div>
     </div>
@@ -128,246 +118,190 @@
     <!-- MAIN APP -->
     <div id="main-content" class="hidden opacity-0">
         
+        <!-- NAV -->
         <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white backdrop-blur-sm bg-black/30 border-b border-white/5">
             <button onclick="toggleSidebar()" class="flex items-center gap-3"><div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div><span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span></button>
             <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
             <div class="flex gap-4">
-                <button onclick="toggleLogs()" class="text-white hover:text-pink-500 relative"><i data-lucide="bell" class="w-5 h-5"></i><span id="log-dot" class="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full hidden"></span></button>
                 <button onclick="handleAccountClick()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-pink-500 transition-colors"><i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text" class="hidden md:block">Login</span></button>
             </div>
         </nav>
 
-        <!-- LIVE LOGS SIDEBAR -->
-        <div id="logs-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[350px] bg-zinc-950/95 border-l border-zinc-800 z-[70] transform translate-x-full flex flex-col p-6 backdrop-blur-xl">
-            <div class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
-                <h3 class="text-xl font-display text-white">System Logs</h3>
-                <button onclick="toggleLogs()"><i data-lucide="x" class="text-white hover:text-pink-500"></i></button>
-            </div>
-            <div id="logs-container" class="flex-1 overflow-y-auto pr-2 space-y-2">
-                <!-- LOGS INJECTED HERE -->
-                <div class="text-center text-gray-600 text-xs font-mono mt-10">Waiting for transmission...</div>
-            </div>
-            <div class="mt-4 pt-4 border-t border-zinc-800">
-                <p class="text-[10px] text-gray-500 font-mono text-center">END OF STREAM</p>
-            </div>
-        </div>
-
+        <!-- SIDEBAR -->
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[55] hidden transition-opacity duration-300 opacity-0"></div>
         <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[400px] bg-black/90 border-r border-zinc-800 z-[60] transform -translate-x-full flex flex-col p-10 justify-between backdrop-blur-xl">
             <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-pink-500"></i></button></div>
             <div class="flex flex-col gap-6 font-display text-3xl">
                 <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Home</a>
-                <a onclick="switchView('schedule'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Schedule <span class="text-xs align-top border border-pink-500 px-1 ml-2">NEW</span></a>
-                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Theme</a>
+                <a onclick="switchView('schedule'); toggleSidebar()" class="text-pink-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Schedule</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
-                <a onclick="switchView('events'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Events</a>
-                <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Gallery</a>
+                <a onclick="switchView('merch'); toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all cursor-pointer">Merch Store <span class="text-xs align-top bg-pink-600 text-white px-1 ml-2">NEW</span></a>
+                <a href="#" onclick="toggleSidebar()" class="text-white hover:text-pink-600 hover:pl-4 transition-all">Sponsors</a>
             </div>
         </div>
 
+        <!-- HOME VIEW -->
         <main id="view-home" class="view-section active">
-            <!-- HERO -->
             <section class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
                     <div class="mb-6 inline-block border border-pink-500/50 bg-pink-500/10 backdrop-blur-md px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-pink-200">Feb 24 - 25 • 2026</p></div>
                     <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-4 drop-shadow-[0_0_15px_rgba(219,39,119,0.5)]">SPEC<span class="text-pink-600">TRUM</span></h1>
-                    
                     <div class="flex justify-center gap-6 mb-12 font-mono text-gray-400 text-xs md:text-sm">
                         <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-days">00</span>DAYS</div>
                         <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-hours">00</span>HRS</div>
                         <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-mins">00</span>MINS</div>
-                        <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-secs">00</span>SECS</div>
                     </div>
-
-                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]">Get Tickets</button></div>
+                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-pink-600 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]">Get Passes</button></div>
                 </div>
             </section>
-
-            <!-- LIVE UPDATES MARQUEE -->
-            <section id="live-updates" class="bg-pink-600 text-white py-3 overflow-hidden border-y border-pink-700 relative z-20 cursor-pointer">
-                <div class="flex items-center gap-4 animate-marquee whitespace-nowrap">
-                    <!-- Secret Admin Link Trigger -->
-                    <span onclick="triggerAdmin()" class="text-[10px] font-bold uppercase tracking-widest bg-black px-3 py-1 select-none hover:bg-white hover:text-black transition-colors">LIVE FEED</span>
-                    <span id="update-text" class="text-xs font-mono uppercase tracking-wide">Welcome to Spectrum '26. Registrations are open.</span>
-                </div>
-            </section>
-
-            <!-- ABOUT -->
-            <section id="about" class="py-24 px-6 bg-black/80 backdrop-blur-md border-b border-zinc-900 relative z-20">
-                <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="reveal"><div class="w-12 h-1 bg-pink-600 mb-6 shadow-[0_0_10px_#db2777]"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology.</p></div>
-                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-blue-500 mb-6 shadow-[0_0_10px_#3b82f6]"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza.</p></div>
-                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6 shadow-[0_0_10px_#22c55e]"></div><h3 class="text-2xl font-display text-white mb-4">The Theme</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">CYBER RENAISSANCE</span><br>A fusion of the classical and the digital.</p></div>
-                </div>
-            </section>
-
-            <!-- PLANS PREVIEW -->
-            <section class="py-24 px-6 bg-zinc-950/90 text-center relative z-20">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono text-gray-400 uppercase tracking-widest mb-12">
-                        <div class="p-4 border border-zinc-800 hover:border-white transition-colors">Cyber Entry</div><div class="p-4 border border-zinc-800 text-pink-500 border-pink-900 hover:bg-pink-900/20">Nexus Prime</div><div class="p-4 border border-zinc-800 hover:border-blue-500">Neon Pulse</div><div class="p-4 border border-zinc-800 hover:border-purple-500">Vogue Gala</div>
-                    </div>
-                    <button onclick="switchView('tickets')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">Buy Tickets</button>
-                </div>
-            </section>
-
-            <!-- GALLERY -->
-            <section id="gallery" class="py-24 relative z-20">
-                <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
-                    <div class="col-span-2 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                    <div class="col-span-1 row-span-2 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                    <div class="col-span-1 row-span-1 relative overflow-hidden group"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                </div>
-            </section>
-
-            <!-- FOOTER -->
-            <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal relative z-20">
-                <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
-                <div class="flex flex-col md:flex-row justify-center gap-8 mb-8 text-gray-500 text-xs uppercase font-bold tracking-wider">
-                    <a href="mailto:spectrum@nift.ac.in" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> spectrum@nift.ac.in</a>
-                    <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</a>
-                </div>
-                <div class="flex justify-center gap-6 mb-8">
-                    <a href="#" class="text-white hover:text-pink-500 transition-transform hover:scale-110"><i data-lucide="instagram"></i></a>
-                    <a href="#" class="text-white hover:text-red-500 transition-transform hover:scale-110"><i data-lucide="youtube"></i></a>
-                </div>
-                <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p>
-            </footer>
         </main>
 
         <!-- SCHEDULE VIEW -->
         <section id="view-schedule" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-4xl mx-auto">
-                <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
-                    <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Timeline</span><h2 class="text-4xl md:text-6xl font-display text-white">Event Schedule</h2></div>
-                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back</button>
-                </div>
+                <h2 class="text-4xl font-display text-white mb-8">Event Schedule</h2>
                 <div class="flex gap-4 mb-12">
-                    <button onclick="renderSchedule('day1')" id="tab-day1" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-pink-500 text-white transition-colors">Day 1 (Feb 24)</button>
-                    <button onclick="renderSchedule('day2')" id="tab-day2" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-transparent text-gray-500 hover:text-white transition-colors">Day 2 (Feb 25)</button>
+                    <button onclick="renderSchedule('day1')" id="tab-day1" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-pink-500 text-white">Day 1</button>
+                    <button onclick="renderSchedule('day2')" id="tab-day2" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-transparent text-gray-500">Day 2</button>
                 </div>
                 <div id="schedule-container" class="relative pl-6 space-y-8"></div>
             </div>
         </section>
 
-        <!-- TICKET STORE -->
+        <!-- TICKETS & EVENTS STORE -->
         <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
                     <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Store</span><h2 class="text-4xl md:text-6xl font-display text-white">Select Pass</h2></div>
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back to Home</button>
                 </div>
-                <!-- PASSES GRID -->
+                
+                <!-- PASSES -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20" id="pass-selection-container">
                     <div id="pass-gen" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">Cyber Entry</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
                     <div id="pass-std" class="bg-zinc-900 border border-pink-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Nexus Prime</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-pink-500" id="radio-pass-std"></div></div></div>
-                    <div id="pass-edm" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')"><h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3><p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div></div>
-                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
                 </div>
+
                 <!-- MESSAGES -->
                 <div id="nift-message" class="hidden text-center mb-10 p-6 bg-green-900/30 border border-green-500 rounded"><h3 class="text-xl font-bold text-green-400">NIFT STUDENT ACCESS</h3><p class="text-gray-300 text-sm">Nexus Prime Pass Active (Free). Select your events.</p></div>
                 <div id="existing-user-message" class="hidden text-center mb-10 p-6 bg-blue-900/30 border border-blue-500 rounded"><h3 class="text-xl font-bold text-blue-400">PASS ACTIVE</h3><p class="text-gray-300 text-sm">You already have a pass. You can add more events below.</p></div>
+
                 <!-- EVENT LIST -->
                 <div id="event-selection-area" class="transition-opacity duration-300">
-                    <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events <span class="text-xs font-mono text-gray-500 ml-4">(Base Pass Required for Entry)</span></h3>
+                    <h3 class="text-2xl font-display text-white mb-8 border-b border-zinc-800 pb-4">Add Events</h3>
                     <div class="flex flex-wrap gap-3 mb-8">
-                        <button onclick="filterEvents('all')" class="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black">All</button>
-                        <button onclick="filterEvents('entertainment')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Pro Shows</button>
-                        <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Culture</button>
+                        <button onclick="filterEvents('all')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black">All</button>
+                        <button onclick="filterEvents('tech')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Tech</button>
+                        <button onclick="filterEvents('culture')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Cultural</button>
                         <button onclick="filterEvents('sports')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Sports</button>
-                        <button onclick="filterEvents('lit')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">Literary</button>
-                        <button onclick="filterEvents('essc')" class="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white">ESSC</button>
                     </div>
                     <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                 </div>
             </div>
         </section>
 
-        <!-- CART -->
-        <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900/90 backdrop-blur border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
+        <!-- MERCH STORE -->
+        <section id="view-merch" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
+                    <div><span class="text-pink-600 text-xs font-bold uppercase tracking-widest mb-2 block">Apparel</span><h2 class="text-4xl md:text-6xl font-display text-white">Official Merch</h2></div>
+                    <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back</button>
+                </div>
+                
+                <div id="merch-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12"></div>
+
+                <!-- Merch Checkout Form -->
+                <div id="merch-form" class="hidden bg-zinc-900 border border-zinc-800 p-6 max-w-2xl mx-auto shadow-2xl">
+                    <h3 class="text-xl font-bold text-pink-500 uppercase mb-4">Delivery Details</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="merch-size" class="bg-black border border-zinc-700 p-3 text-white text-xs uppercase"><option value="S">Small</option><option value="M">Medium</option><option value="L">Large</option><option value="XL">Extra Large</option></select>
+                            <input id="merch-qty" type="number" min="1" value="1" class="bg-black border border-zinc-700 p-3 text-white text-xs">
+                        </div>
+                        <textarea id="merch-address" placeholder="Full Delivery Address (Hostel/Flat, Street, City, Pin)" class="w-full bg-black border border-zinc-700 p-3 text-white text-xs uppercase h-24"></textarea>
+                        <div class="flex justify-between items-center pt-4 border-t border-zinc-800">
+                            <div><p class="text-[10px] text-gray-500 uppercase">Item</p><p id="merch-selected-name" class="text-white font-bold">--</p></div>
+                            <button onclick="initiateMerchPayment()" class="bg-white text-black px-6 py-3 font-bold uppercase text-xs hover:bg-pink-500 hover:text-white">Pay & Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CART BAR -->
+        <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900/90 backdrop-blur border-t border-zinc-800 p-4 z-[90] transform translate-y-full flex justify-between items-center">
             <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-pink-500 ml-2"></span></div></div>
-            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
+            <button onclick="checkUpsell()" class="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-pink-600 hover:text-white transition-colors">Checkout</button>
         </div>
 
-        <!-- AUTH MODAL -->
+        <!-- AUTH & PAYMENT MODAL -->
         <div id="auth-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
             <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white p-2"><i data-lucide="x"></i></button>
                 
+                <!-- PROFILE VIEW -->
                 <div id="view-profile" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">My Pass</h2>
-                    <div id="upgrade-container" class="hidden mb-4"><button onclick="upgradePass()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-3 rounded animate-pulse">UPGRADE TO NEXUS PRIME (+₹200)</button></div>
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
                         <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
-                        <div id="ticket-verified" class="hidden"><div class="border-b-2 border-dashed border-gray-300 pb-4 mb-4"><h3 class="text-2xl font-black uppercase tracking-tighter">Spectrum '26</h3><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Gate Pass</p></div><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p><p class="text-[10px] font-bold text-gray-500" id="ticket-info-plan"></p><p class="text-[9px] text-gray-500" id="ticket-info-events"></p></div>
+                        <div id="ticket-verified" class="hidden"><img id="ticket-qr" src="" class="w-40 h-40 mx-auto mb-2 mix-blend-multiply"><p class="text-xs font-mono font-bold" id="ticket-id">ID: ----</p><p class="text-[10px] uppercase text-green-600 font-bold mt-2">● Authorized</p><p class="text-[10px] font-bold text-gray-500" id="ticket-info-plan"></p></div>
                         <div id="ticket-pending" class="hidden py-8"><i data-lucide="clock" class="w-12 h-12 mx-auto text-yellow-600 mb-4"></i><h3 class="font-bold uppercase">Processing</h3><p class="text-xs text-gray-600 mt-2 px-4">Verification Pending.</p></div>
                         <div id="ticket-none" class="hidden py-8"><p class="text-xs text-gray-600 mb-4">No active pass.</p><button onclick="closeModal(); switchView('tickets')" class="bg-black text-white px-6 py-2 text-xs font-bold uppercase">Buy Now</button></div>
                     </div>
-                    
-                    <!-- ID CARD GENERATOR -->
-                    <div id="id-card-section" class="hidden mt-6 border-t border-zinc-800 pt-6">
-                         <h3 class="text-sm font-bold uppercase text-pink-500 mb-4 tracking-widest">Digital ID</h3>
-                         <div id="id-card-element" class="holo-card p-6 w-full max-w-[300px] mx-auto text-left rounded-lg shadow-xl mb-4">
-                             <div class="flex justify-between items-start mb-6"><div><h2 class="text-xl font-display text-white italic">SPECTRUM</h2><p class="text-[10px] text-pink-500 font-mono">2026 EDITION</p></div><div class="w-12 h-12 bg-white/10 rounded flex items-center justify-center"><i data-lucide="zap" class="text-white"></i></div></div>
-                             <div class="space-y-3 font-mono"><div><p class="text-[8px] text-gray-400 uppercase">Name</p><p id="card-name" class="text-sm font-bold text-white">Unknown</p></div><div><p class="text-[8px] text-gray-400 uppercase">Spectrum ID</p><p id="card-id" class="text-xs text-green-400">----</p></div><div><p class="text-[8px] text-gray-400 uppercase">Access Level</p><p id="card-access" class="text-xs text-white border border-white/30 inline-block px-1">----</p></div></div>
-                             <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center"><p class="text-[8px] text-gray-500">AUTHORIZED PERSONNEL</p><img id="card-qr" class="w-10 h-10 bg-white p-1"></div>
-                         </div>
-                         <button onclick="downloadID()" class="w-full bg-zinc-800 text-white text-[10px] font-bold uppercase py-3 hover:bg-white hover:text-black transition-colors flex items-center justify-center gap-2"><i data-lucide="download" class="w-3 h-3"></i> Download Badge</button>
-                    </div>
-
                     <div class="flex justify-between items-center px-2"><div class="text-left"><p id="profile-name" class="text-sm font-bold text-white"></p><p id="profile-email" class="text-[10px] text-gray-500"></p></div><button onclick="logout()" class="text-red-500 text-xs font-bold uppercase hover:text-white p-2">Logout</button></div>
                 </div>
 
+                <!-- AUTH VIEW -->
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
-                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider p-2">Forgot Password?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
-                    <div id="form-register" class="space-y-4 hidden"><div class="bg-yellow-900/30 border border-yellow-600 p-2 text-[10px] text-yellow-500 text-center font-bold">⚠️ NIFT Students: Use your @nift.ac.in email for FREE Access</div><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
+                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
+                    <div id="form-register" class="space-y-4 hidden"><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
                 </div>
 
+                <!-- RECEIPT VIEW -->
                 <div id="view-receipt" class="hidden space-y-4">
                     <h2 class="text-xl font-display text-white text-center">Summary</h2>
                     <div class="bg-zinc-900 p-4 rounded text-xs space-y-2 font-mono">
                         <div class="flex justify-between text-white"><span id="rec-pass-name">Pass</span><span id="rec-pass-price">₹0</span></div>
                         <div id="rec-events-list" class="space-y-1 text-gray-400 border-t border-zinc-800 pt-2 mt-2"></div>
-                        <div class="flex gap-2 pt-2 border-t border-zinc-800"><input id="promo-code" type="text" placeholder="PROMO CODE" class="bg-black border border-zinc-700 w-full px-2 py-1 text-xs text-white uppercase outline-none"><button onclick="applyPromo()" class="bg-zinc-700 text-white px-3 py-1 text-[10px] font-bold uppercase hover:bg-pink-600">Apply</button></div>
-                        <div id="promo-msg" class="text-[10px] text-green-500 hidden">Code Applied!</div>
                         <div class="flex justify-between text-pink-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">₹0</span></div>
                     </div>
                     <button id="btn-proceed" onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
                 </div>
 
+                <!-- PAYMENT VIEW (NEW) -->
                 <div id="view-payment" class="hidden text-center space-y-4">
                     <h2 class="text-xl font-display text-white">Payment</h2>
-                    <div class="bg-white p-2 w-fit mx-auto"><img id="qr-code" src="" class="w-32 h-32"></div>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Scan & Pay via UPI</p>
-                    <input id="input-utr" type="text" placeholder="Enter 12-Digit UTR" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none text-center tracking-widest">
-                    <div id="utr-error" class="text-[10px] text-red-500 hidden">Invalid UTR (Must be 12 digits)</div>
-                    <button onclick="completePayment()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs">Verify Payment</button>
-                </div>
-            </div>
-        </div>
+                    <p class="text-[10px] text-gray-500 uppercase">Pay: <span id="pay-amount-display" class="text-white font-bold text-lg"></span></p>
+                    
+                    <!-- QR Area -->
+                    <div class="relative group">
+                        <div class="bg-white p-2 w-fit mx-auto rounded"><img id="payment-qr-image" src="" class="w-48 h-48 mix-blend-multiply"></div>
+                        <button onclick="reportBrokenQR()" class="mt-2 text-[10px] text-red-500 underline hover:text-red-400">QR not working? Click to switch.</button>
+                    </div>
 
-        <!-- WARNING MODAL -->
-        <div id="pass-warning-modal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="document.getElementById('pass-warning-modal').classList.add('hidden')"></div>
-            <div class="relative z-10 w-full max-w-md bg-zinc-950 border border-red-500 p-6 shadow-2xl text-center">
-                <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
-                <h3 class="text-xl font-bold text-white uppercase mb-2">Access Denied</h3>
-                <p class="text-sm text-gray-400 mb-6">You have selected events, but you need a <b>Base Pass</b> to enter the fest.</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="selectPassFromWarning('Cyber Entry', 299, 'base')" class="bg-zinc-800 border border-zinc-700 p-4 hover:border-white transition-all text-left"><div class="text-[10px] text-gray-400 uppercase">Basic Access</div><div class="text-lg font-bold text-white">Cyber Entry</div><div class="text-pink-500 font-bold">₹299</div></button>
-                    <button onclick="selectPassFromWarning('Nexus Prime', 499, 'base')" class="bg-zinc-800 border border-pink-700 p-4 hover:bg-pink-900/20 transition-all text-left"><div class="text-[10px] text-pink-400 uppercase font-bold">Recommended</div><div class="text-lg font-bold text-white">Nexus Prime</div><div class="text-pink-500 font-bold">₹499</div></button>
+                    <!-- Screenshot Upload (ImgBB) -->
+                    <div class="text-left border-t border-zinc-800 pt-4 mt-4">
+                        <label class="text-[10px] text-pink-500 font-bold uppercase mb-2 block">1. Upload Screenshot (Free)</label>
+                        <input type="file" id="payment-screenshot" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-white hover:file:bg-pink-600 mb-2">
+                        <p id="upload-status" class="text-[10px] text-gray-500">Waiting for file...</p>
+                    </div>
+
+                    <!-- UTR -->
+                    <div class="text-left mt-2">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-2 block">2. UTR (Backup)</label>
+                        <input id="input-utr" type="text" placeholder="12-Digit UTR" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none tracking-widest">
+                    </div>
+
+                    <button id="btn-verify-pay" onclick="uploadAndCompleteOrder()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs mt-4">Submit Verification</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // THREE.JS ANIMATION
+        // --- 3. ANIMATION & INTRO ---
         const canvas = document.getElementById('bg-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -377,196 +311,317 @@
         const material = new THREE.MeshBasicMaterial({ color: 0xdb2777, wireframe: true, transparent: true, opacity: 0.3 });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 500;
-        const posArray = new Float32Array(particlesCount * 3);
-        for(let i = 0; i < particlesCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 50; }
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const particlesMaterial = new THREE.PointsMaterial({ size: 0.05, color: 0x00ff41, transparent: true, opacity: 0.8 });
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
         camera.position.z = 20;
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (event) => { mouseX = event.clientX / window.innerWidth - 0.5; mouseY = event.clientY / window.innerHeight - 0.5; });
-        function animate() { requestAnimationFrame(animate); sphere.rotation.x += 0.001; sphere.rotation.y += 0.002; particlesMesh.rotation.y -= 0.0005; sphere.rotation.y += mouseX * 0.05; sphere.rotation.x += mouseY * 0.05; camera.position.x += (mouseX * 5 - camera.position.x) * 0.05; camera.position.y += (-mouseY * 5 - camera.position.y) * 0.05; camera.lookAt(scene.position); renderer.render(scene, camera); }
+        function animate() { requestAnimationFrame(animate); sphere.rotation.x += 0.001; sphere.rotation.y += 0.002; sphere.rotation.y += mouseX * 0.05; sphere.rotation.x += mouseY * 0.05; renderer.render(scene, camera); }
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-        window.onload = function() { animate(); startCountdown(); };
 
-        // APP LOGIC
+        window.onload = function() { 
+            animate(); 
+            startCountdown();
+            if(sessionStorage.getItem('introDone')) { document.getElementById('intro-screen').style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').style.opacity='1'; document.getElementById('view-home').classList.add('active'); document.querySelectorAll('.reveal').forEach(el=>el.classList.add('active')); } 
+            else { runTerminalIntro(); }
+            fetchDynamicContent(); // Load Data
+        };
+
+        // --- 4. GLOBAL VARS ---
         let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false, hasExistingPass=false;
         let cart = { pass: null, events: [] }; 
-        let isUpgrade = false;
-        let adminTriggerCount = 0;
+        let currentQRIndex = 0;
+        let availableQRs = [];
+        let selectedMerchItem = null;
+        let globalEventsData = [];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            if(sessionStorage.getItem('introDone')) {
-                document.getElementById('intro-screen').style.display = 'none';
-                document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('main-content').style.opacity = '1';
-                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('view-home').classList.add('active');
-                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
-            } else { runTerminalIntro(); }
-            loadCart(); filterEvents('all'); renderSchedule('day1');
-
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    const cleanEmail = user.email.replace(/\./g, ',');
-                    db.ref('users/' + cleanEmail).on('value', (snapshot) => {
-                        userDataDB = snapshot.val();
-                        updateNav(userDataDB ? userDataDB.name : "User");
-                        if(user.email.toLowerCase().endsWith('@nift.ac.in')) { isNift = true; activateNiftMode(); } 
-                        else if (userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) { hasExistingPass = true; activateAddOnMode(userDataDB); } 
-                        else { isNift = false; hasExistingPass = false; }
-                    });
-                } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift=false; hasExistingPass=false; }
-            });
-
-            // LIVE FEED LISTENER
-            db.ref('updates').limitToLast(10).on('child_added', (snapshot) => {
-                const update = snapshot.val();
-                if(update) {
-                    document.getElementById('live-updates').classList.remove('hidden'); 
-                    document.getElementById('update-text').innerText = update.message; 
-                    showToast(update.message);
-                    const date = new Date(update.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    const container = document.getElementById('logs-container');
-                    if(container.innerText.includes("Waiting")) container.innerHTML = '';
-                    const logHtml = `<div class="log-item fade-in"><p class="text-[10px] text-gray-500 font-mono mb-1">${date}</p><p class="text-sm text-gray-300 font-bold">${update.message}</p></div>`;
-                    container.insertAdjacentHTML('afterbegin', logHtml);
-                    document.getElementById('log-dot').classList.remove('hidden');
+        // --- 5. DATA FETCHING ---
+        function fetchDynamicContent() {
+            // Events
+            db.ref('events').on('value', snapshot => {
+                const data = snapshot.val();
+                if(data) {
+                    globalEventsData = Array.isArray(data) ? data : Object.values(data);
+                    filterEvents('all');
                 }
             });
+            // Schedule
+            db.ref('schedule').on('value', snapshot => {
+                const data = snapshot.val();
+                if(data) { window.schedule = data; renderSchedule('day1'); }
+            });
+            // Merch
+            db.ref('merch').on('value', snapshot => {
+                const data = snapshot.val();
+                renderMerch(data);
+            });
+            // QRs
+            db.ref('payment_qrs').on('value', snapshot => {
+                const data = snapshot.val();
+                if(data) {
+                    availableQRs = Object.entries(data).map(([key, val]) => ({ id: key, ...val }));
+                }
+            });
+        }
+
+        // --- 6. DATABASE SEEDER (RUN ONCE) ---
+        function seedDatabase() {
+            const seedData = {
+                events: [
+                    { id: 1, club: 'tech', title: 'Hackathon', price: 150, img: 'https://images.unsplash.com/photo-1504384308090-c54be3855833?w=600', members: '4', desc: '24hr coding battle.', rules: '#' },
+                    { id: 2, club: 'tech', title: 'RoboWar', price: 200, img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600', members: '2-4', desc: 'Bot destruction.', rules: '#' },
+                    { id: 3, club: 'culture', title: 'Street Dance', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Group', desc: 'Hip-hop battle.', rules: '#' },
+                    { id: 4, club: 'culture', title: 'Fashion Show', price: 200, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Ramp walk.', rules: '#' },
+                    { id: 5, club: 'sports', title: 'Valorant', price: 100, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 FPS.', rules: '#' },
+                    { id: 6, club: 'sports', title: 'Futsal', price: 300, img: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=600', members: '6', desc: '5-a-side Football.', rules: '#' }
+                ],
+                schedule: {
+                    day1: [{ time: "09:00 AM", title: "Opening Ceremony", loc: "Audi" }, { time: "02:00 PM", title: "Hackathon Starts", loc: "IT Lab" }],
+                    day2: [{ time: "10:00 AM", title: "RoboWar", loc: "Ground" }, { time: "06:00 PM", title: "Fashion Show", loc: "Ramp" }]
+                },
+                merch: {
+                    m1: { name: "Cyber Cap", price: 299, img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600" },
+                    m2: { name: "Glitch Tee (Oversized)", price: 599, img: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600" },
+                    m3: { name: "Neon Tee (Fitted)", price: 499, img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600" }
+                },
+                payment_qrs: {
+                    qr1: { url: "upi://pay?pa=chyasar2004-2@oksbi", reports: 0 },
+                    qr2: { url: "upi://pay?pa=admin2@oksbi", reports: 0 },
+                    qr3: { url: "upi://pay?pa=admin3@oksbi", reports: 0 },
+                    qr4: { url: "upi://pay?pa=admin4@oksbi", reports: 0 },
+                    qr5: { url: "upi://pay?pa=admin5@oksbi", reports: 0 }
+                }
+            };
+            db.ref('/').update(seedData, (error) => {
+                if(error) console.error(error);
+                else alert("Database Seeded Successfully! Refresh page.");
+            });
+        }
+
+        // --- 7. AUTH & LOGIC ---
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                const cleanEmail = user.email.replace(/\./g, ',');
+                db.ref('users/' + cleanEmail).on('value', (snapshot) => {
+                    userDataDB = snapshot.val();
+                    updateNav(userDataDB ? userDataDB.name : "User");
+                    if(user.email.toLowerCase().endsWith('@nift.ac.in')) isNift = true;
+                    if (userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) hasExistingPass = true;
+                });
+            } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift=false; hasExistingPass=false; }
         });
 
-        // ADMIN TRIGGER REDIRECT
-        function triggerAdmin() {
-            adminTriggerCount++;
-            if(adminTriggerCount >= 3) {
-                adminTriggerCount = 0;
-                window.open(ADMIN_URL, '_blank');
+        function selectPass(name, price, type, elId) {
+            ['pass-gen', 'pass-std'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); document.getElementById(id).classList.add('glass-panel'); });
+            document.getElementById(elId).classList.remove('glass-panel'); document.getElementById(elId).classList.add('selected-pass');
+            cart.pass = { name, price, type };
+            updateCartUI();
+        }
+
+        function filterEvents(cat) {
+            const grid = document.getElementById('events-grid');
+            grid.innerHTML='';
+            const filtered = cat==='all' ? globalEventsData : globalEventsData.filter(e => e.club === cat);
+            filtered.forEach(e => {
+                let btnHtml = `<button onclick="toggleEvent(${e.id}, '${e.title}', ${e.price})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase hover:bg-zinc-800">Add</button>`;
+                if(cart.events.some(ev => ev.id == e.id)) btnHtml = `<button class="w-full mt-4 bg-pink-600 text-white py-3 text-xs font-bold uppercase">Selected</button>`;
+                grid.innerHTML += `<div class="bg-zinc-900/80 backdrop-blur border border-zinc-800"><div class="h-48 overflow-hidden"><img src="${e.img}" class="w-full h-full object-cover"></div><div class="p-4"><h3 class="text-white font-bold uppercase text-sm">${e.title}</h3><p class="text-[10px] text-gray-500">Fee: ${isNift ? 'FREE' : '₹'+e.price}</p>${btnHtml}</div></div>`;
+            });
+        }
+
+        function toggleEvent(id, title, price) {
+            const index = cart.events.findIndex(e => e.id === id);
+            if (index > -1) cart.events.splice(index, 1);
+            else cart.events.push({ id, title, price });
+            updateCartUI();
+            filterEvents('all'); // Refresh buttons
+        }
+
+        function updateCartUI() {
+            const bar = document.getElementById('cart-bar');
+            if (cart.pass || cart.events.length > 0) {
+                bar.classList.remove('translate-y-full');
+                let total = cart.pass ? cart.pass.price : 0;
+                cart.events.forEach(e => total += isNift ? 0 : e.price);
+                document.getElementById('cart-total').innerText = "₹" + total;
+                document.getElementById('cart-desc').innerText = (cart.pass ? cart.pass.name : "") + (cart.events.length ? ` + ${cart.events.length} Events` : "");
+            } else bar.classList.add('translate-y-full');
+        }
+
+        function checkUpsell() {
+            if (!currentUser) { handleAccountClick(); return; }
+            if (!cart.pass && !hasExistingPass) return alert("Please select a Pass first!");
+            
+            // Calc total
+            let total = 0;
+            if(!hasExistingPass) total += isNift ? 0 : cart.pass.price;
+            cart.events.forEach(e => total += isNift ? 0 : e.price);
+            
+            finalTotal = total;
+            document.getElementById('rec-total').innerText = "₹" + total;
+            document.getElementById('rec-events-list').innerHTML = cart.events.map(e => `<div class="flex justify-between"><span>${e.title}</span><span>${isNift ? 'FREE' : '₹'+e.price}</span></div>`).join('');
+            
+            openModal();
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-profile').classList.add('hidden');
+            document.getElementById('view-receipt').classList.remove('hidden');
+            document.getElementById('view-payment').classList.add('hidden');
+        }
+
+        // --- 8. MERCH LOGIC ---
+        function renderMerch(merchData) {
+            const grid = document.getElementById('merch-grid');
+            grid.innerHTML = '';
+            if(!merchData) return;
+            Object.entries(merchData).forEach(([key, item]) => {
+                grid.innerHTML += `<div class="bg-zinc-900 border border-zinc-800 hover:border-pink-500 transition-all group"><div class="h-64 overflow-hidden"><img src="${item.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-6 text-center"><h3 class="text-xl font-display text-white mb-2">${item.name}</h3><p class="text-pink-500 font-bold mb-4">₹${item.price}</p><button onclick="selectMerchItem('${key}', '${item.name}', ${item.price})" class="btn-outline w-full py-2 text-xs font-bold uppercase">Buy Now</button></div></div>`;
+            });
+        }
+        function selectMerchItem(id, name, price) {
+            if(!currentUser) return handleAccountClick();
+            selectedMerchItem = { id, name, price };
+            document.getElementById('merch-form').classList.remove('hidden');
+            document.getElementById('merch-selected-name').innerText = `${name} (₹${price})`;
+            document.getElementById('merch-form').scrollIntoView({behavior: "smooth"});
+        }
+        function initiateMerchPayment() {
+            const qty = document.getElementById('merch-qty').value;
+            const total = selectedMerchItem.price * qty;
+            showPayment(total);
+        }
+
+        // --- 9. SMART PAYMENT & QR SYSTEM ---
+        function assignQR() {
+            if(availableQRs.length === 0) return null;
+            if(!sessionStorage.getItem('assignedQRIndex')) {
+                // Stable index based on UID
+                const sum = currentUser.uid.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                currentQRIndex = sum % availableQRs.length;
+                sessionStorage.setItem('assignedQRIndex', currentQRIndex);
+            } else currentQRIndex = parseInt(sessionStorage.getItem('assignedQRIndex'));
+            return availableQRs[currentQRIndex];
+        }
+
+        function showPayment(amount = null) {
+            const payAmount = amount || finalTotal;
+            if (payAmount === 0 && !selectedMerchItem) return completePayment(true); // Free NIFT
+            
+            const qrObj = assignQR();
+            if(!qrObj) return alert("Error: No QRs available. Run seedDatabase()");
+
+            // Hide Receipt, Show Payment
+            document.getElementById('view-receipt').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-modal').style.display='flex';
+            document.getElementById('view-payment').classList.remove('hidden');
+            
+            // Generate QR
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrObj.url + "&am=" + payAmount + "&cu=INR")}`;
+            document.getElementById('payment-qr-image').src = qrUrl;
+            document.getElementById('pay-amount-display').innerText = "₹" + payAmount;
+        }
+
+        function reportBrokenQR() {
+            if(confirm("Report current QR as broken? We will switch you to a new one.")) {
+                const currentQR = availableQRs[currentQRIndex];
+                db.ref('payment_qrs/' + currentQR.id + '/reports').transaction(val => (val || 0) + 1);
+                currentQRIndex = (currentQRIndex + 1) % availableQRs.length;
+                sessionStorage.setItem('assignedQRIndex', currentQRIndex);
+                showPayment(selectedMerchItem ? (selectedMerchItem.price * document.getElementById('merch-qty').value) : finalTotal);
             }
         }
 
-        // LOGS SIDEBAR
-        function toggleLogs() {
-            const s = document.getElementById('logs-sidebar');
-            const o = document.getElementById('sidebar-overlay');
-            if(s.classList.contains('translate-x-full')) {
-                s.classList.remove('translate-x-full');
-                o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10);
-                document.getElementById('log-dot').classList.add('hidden');
+        // --- 10. IMGBB UPLOAD & ORDER ---
+        function uploadAndCompleteOrder() {
+            const fileInput = document.getElementById('payment-screenshot');
+            const file = fileInput.files[0];
+            const utr = document.getElementById('input-utr').value;
+
+            if(!file) return alert("Please upload a screenshot.");
+            if(!IMGBB_KEY || IMGBB_KEY === "YOUR_IMGBB_API_KEY_HERE") return alert("Dev Error: Set IMGBB_KEY in code.");
+
+            // UI Feedback
+            const btn = document.getElementById('btn-verify-pay');
+            btn.innerText = "Uploading Proof (0%)...";
+            btn.disabled = true;
+
+            // ImgBB Upload
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: formData })
+            .then(res => res.json())
+            .then(result => {
+                if(result.success) {
+                    btn.innerText = "Verifying...";
+                    submitOrderToDB(result.data.url, utr);
+                } else {
+                    alert("Upload Failed: " + result.error.message);
+                    btn.innerText = "Submit Verification";
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Upload Error.");
+                btn.disabled = false;
+            });
+        }
+
+        function submitOrderToDB(proofUrl, utr) {
+            const cleanEmail = currentUser.email.replace(/\./g, ',');
+            const timestamp = new Date().toISOString();
+            
+            if(selectedMerchItem) {
+                // Merch Order
+                const orderData = {
+                    item: selectedMerchItem.name,
+                    price: selectedMerchItem.price,
+                    qty: document.getElementById('merch-qty').value,
+                    size: document.getElementById('merch-size').value,
+                    address: document.getElementById('merch-address').value,
+                    proof: proofUrl,
+                    utr: utr,
+                    status: "Pending",
+                    timestamp: timestamp
+                };
+                db.ref('users/' + cleanEmail + '/merch_orders').push(orderData).then(() => {
+                    alert("Merch Order Placed! Screenshot uploaded.");
+                    window.location.reload();
+                });
             } else {
-                s.classList.add('translate-x-full');
-                o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300);
+                // Ticket Order
+                db.ref('users/' + cleanEmail).update({
+                    paymentStatus: "Pending",
+                    utr: utr,
+                    order: {
+                        pass: cart.pass.name,
+                        events: cart.events,
+                        total: finalTotal,
+                        proof: proofUrl,
+                        timestamp: timestamp
+                    }
+                }).then(() => {
+                    alert("Pass Request Submitted! Screenshot uploaded.");
+                    window.location.reload();
+                });
             }
         }
 
-        // COUNTDOWN
-        function startCountdown() {
-            const festDate = new Date("Feb 24, 2026 00:00:00").getTime();
-            setInterval(function() {
-                const now = new Date().getTime();
-                const distance = festDate - now;
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("cd-days").innerText = days; document.getElementById("cd-hours").innerText = hours; document.getElementById("cd-mins").innerText = minutes; document.getElementById("cd-secs").innerText = seconds;
-            }, 1000);
-        }
-
-        // CART LOGIC
-        function saveCart() { localStorage.setItem('spectrum_cart', JSON.stringify(cart)); }
-        function loadCart() { const saved = localStorage.getItem('spectrum_cart'); if(saved) { cart = JSON.parse(saved); if(cart.pass && cart.pass.type) { const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std', 'Neon Pulse': 'pass-edm', 'Vogue Gala': 'pass-fash' }; const elId = map[cart.pass.name]; if(elId) { ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); document.getElementById(id).classList.add('glass-panel'); }); document.getElementById(elId).classList.remove('glass-panel'); document.getElementById(elId).classList.add('selected-pass'); } } updateCartUI(); } }
-        function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
-        function updateNav(name) { document.getElementById('nav-user-text').innerText = name.split(' ')[0]; }
-        function activateNiftMode() { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('nift-message').classList.remove('hidden'); cart.pass = { name: "Nexus Prime (NIFT)", price: 0, type: "base" }; saveCart(); updateCartUI(); }
-        function activateAddOnMode(user) { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('existing-user-message').classList.remove('hidden'); if(user.order && user.order.pass) { cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' }; saveCart(); } updateCartUI(); }
-        function selectPass(name, price, type, elementId) { ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); document.getElementById(id).classList.add('glass-panel'); }); document.getElementById(elementId).classList.remove('glass-panel'); document.getElementById(elementId).classList.add('selected-pass'); cart.pass = { name, price, type }; if(type === 'special') { cart.events = []; } saveCart(); updateCartUI(); }
-        function toggleEvent(id, title, price, isPremium) { if (cart.pass && cart.pass.type === 'special' && !hasExistingPass) return alert("Special Passes cannot add extra events."); if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("You already own this event ticket."); const index = cart.events.findIndex(e => e.id === id); if (index > -1) { cart.events.splice(index, 1); } else { if (cart.events.length >= 5) return alert("Max 5 events per transaction"); cart.events.push({ id, title, price, isPremium }); } saveCart(); updateCartUI(); }
-        function updateCartUI() { const bar = document.getElementById('cart-bar'); if ((cart.pass) || cart.events.length > 0) { bar.classList.remove('translate-y-full'); let total = cart.pass ? cart.pass.price : 0; let usedFreeSlots = 0; if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) { usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length; } cart.events.forEach((e) => { if (isNift) return; if (cart.pass && (cart.pass.name.includes('Nexus Prime')) && !e.isPremium) { if (usedFreeSlots < 2) { usedFreeSlots++; } else { total += e.price; } } else { total += e.price; } }); document.getElementById('cart-total').innerText = "₹" + total; let desc = cart.pass ? cart.pass.name : "No Pass Selected"; if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`; document.getElementById('cart-desc').innerText = desc; } else { bar.classList.add('translate-y-full'); } }
-        function checkUpsell() { if (isNift || hasExistingPass) { initiateCheckout(); return; } if (!cart.pass) { document.getElementById('pass-warning-modal').classList.remove('hidden'); document.getElementById('pass-warning-modal').style.display = 'flex'; return; } initiateCheckout(); }
-        function selectPassFromWarning(name, price, type) { cart.pass = { name, price, type }; const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std' }; selectPass(name, price, type, map[name]); document.getElementById('pass-warning-modal').classList.add('hidden'); saveCart(); initiateCheckout(); }
-        function initiateCheckout() { let total = isNift ? 0 : (hasExistingPass ? 0 : cart.pass.price); let eventHtml = ""; let usedFreeSlots = 0; if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length; cart.events.forEach((e) => { let cost = e.price; let label = `₹${e.price}`; if(isNift) { cost = 0; label = "FREE (NIFT)"; } else if (cart.pass && cart.pass.name.includes('Nexus Prime') && !e.isPremium) { if (usedFreeSlots < 2) { cost = 0; label = "FREE (Prime)"; usedFreeSlots++; } } total += cost; eventHtml += `<div class="flex justify-between"><span>${e.title}</span><span>${label}</span></div>`; }); finalTotal = total; document.getElementById('rec-pass-name').innerText = cart.pass ? (cart.pass.name + (hasExistingPass ? " (Owned)" : "")) : "Entry Pass"; document.getElementById('rec-pass-price').innerText = hasExistingPass ? "₹0" : (isNift ? "₹0" : `₹${cart.pass.price}`); document.getElementById('rec-events-list').innerHTML = eventHtml; document.getElementById('rec-total').innerText = `₹${total}`; if(isNift || total === 0) { document.getElementById('btn-proceed').innerText = "Confirm Update"; document.getElementById('promo-code').parentElement.classList.add('hidden'); } else { document.getElementById('btn-proceed').innerText = "Proceed to Pay"; document.getElementById('promo-code').parentElement.classList.remove('hidden'); } openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-receipt').classList.remove('hidden'); document.getElementById('view-payment').classList.add('hidden'); }
-        function upgradePass() { isUpgrade = true; finalTotal = 200; openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden'); document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=SpectrumUpgrade&am=200&cu=INR`; }
-        function applyPromo() { const code = document.getElementById('promo-code').value.toUpperCase(); if(!code) return; db.ref('promos/' + code).once('value').then(snapshot => { const promo = snapshot.val(); if(promo) { if(promo.used >= promo.limit) return alert("Limit reached"); let discount = promo.type === 'flat' ? promo.discount : (finalTotal * promo.discount / 100); finalTotal -= discount; if(finalTotal < 0) finalTotal = 0; document.getElementById('rec-total').innerText = `₹${finalTotal} (Code Applied)`; document.getElementById('promo-msg').classList.remove('hidden'); promoApplied = { code: code, currentUsed: promo.used }; } else alert("Invalid Code"); }); }
-        function showPayment() { if(!currentUser) { alert("Please Login to Pay"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; } if (finalTotal === 0) { completePayment(true); return; } document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden'); document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${UPI_ID}&pn=Spectrum26&am=${finalTotal}&cu=INR`; }
-        function completePayment(isFree = false) { let utr = "FREE/NIFT"; if(!isFree) { utr = document.getElementById('input-utr').value; if (!/^\d{12}$/.test(utr)) { document.getElementById('utr-error').classList.remove('hidden'); return; } document.getElementById('utr-error').classList.add('hidden'); } const cleanEmail = currentUser.email.replace(/\./g, ','); if(promoApplied && !isFree) db.ref('promos/' + promoApplied.code).update({ used: promoApplied.currentUsed + 1 }); let finalEvents = cart.events; if(hasExistingPass && userDataDB.order && userDataDB.order.events) { finalEvents = [...userDataDB.order.events, ...cart.events]; } if (isUpgrade) { db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", utr: utr, "order/pass": "Nexus Prime" }); alert("Upgrade Submitted!"); isUpgrade = false; } else { let status = isFree ? "Verified" : "Pending"; if(hasExistingPass && !isFree) status = "Pending"; db.ref('users/' + cleanEmail).update({ paymentStatus: status, utr: utr, order: { pass: cart.pass.name, events: finalEvents, total: (userDataDB?.order?.total || 0) + finalTotal, promo: promoApplied ? promoApplied.code : "None", timestamp: new Date().toISOString() } }); alert("Order Placed! Check status in Profile."); clearCart(); } handleAccountClick(); }
-        function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `NIFT${namePart}${phonePart}${randPart}`; }
-        function userRegister(){ const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; if(!e||!p||!n||!ph) return alert("Fill all details"); if(p !== cp) return alert("Passwords do not match"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); const sID = generateSpectrumID(n, ph); db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); alert("Registered! Please check your email to verify account."); switchAuthMode('login'); closeModal(); handleAccountClick(); }).catch(err=>alert(err.message)); }
-        function userLogin(){ const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email not verified! Check inbox."); } } closeModal(); }).catch(err=>alert(err.message)); }
-        function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter email first."); auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent.")).catch(err => alert(err.message)); }
-        function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
-        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
-        
-        // --- FIXED FUNCTION: updateTicketUI ---
-        function updateTicketUI() {
-            if (!userDataDB) return;
-            
-            // 1. Reset all states
-            ['ticket-verified', 'ticket-pending', 'ticket-none'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('ticket-loading').classList.add('hidden');
-            const upgradeBtn = document.getElementById('upgrade-container');
-            const idCardSection = document.getElementById('id-card-section');
-            
-            // 2. Upgrade Button
-            if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); 
-            else upgradeBtn.classList.add('hidden');
-            
-            // 3. Info Text
-            if (userDataDB.order) {
-                document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass;
-                const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events";
-                document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "...";
-            }
-
-            // 4. STRICT STATUS CHECK
-            if (userDataDB.paymentStatus === "Verified") {
-                // Show Authorized UI
-                document.getElementById('ticket-verified').classList.remove('hidden');
-                document.getElementById('ticket-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`;
-                document.getElementById('ticket-id').innerText = `ID: ${userDataDB.spectrumId}`;
-                
-                // Show ID Card
-                idCardSection.classList.remove('hidden');
-                document.getElementById('card-name').innerText = userDataDB.name;
-                document.getElementById('card-id').innerText = userDataDB.spectrumId;
-                document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS";
-                document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
-            
-            } else if (userDataDB.paymentStatus === "Pending") {
-                // Show Pending UI & HIDE ID CARD
-                document.getElementById('ticket-pending').classList.remove('hidden');
-                idCardSection.classList.add('hidden'); 
-            
-            } else {
-                // Show Buy Now
-                document.getElementById('ticket-none').classList.remove('hidden');
-                idCardSection.classList.add('hidden');
-            }
-        }
-
-        function downloadID() { const el = document.getElementById('id-card-element'); html2canvas(el, { useCORS: true }).then(canvas => { const link = document.createElement('a'); link.download = `Spectrum_${userDataDB.spectrumId}.png`; link.href = canvas.toDataURL(); link.click(); }); }
+        // --- HELPERS ---
+        function renderSchedule(day) { const c = document.getElementById('schedule-container'); if(!window.schedule) return; let html=''; window.schedule[day].forEach(i=>{ html+=`<div class="timeline-item relative pl-8 pb-8"><div class="timeline-line"></div><div class="timeline-dot absolute left-3 top-1"></div><div class="flex gap-4"><span class="text-pink-500 font-mono font-bold w-20">${i.time}</span><div class="bg-zinc-900 border border-zinc-800 p-4 w-full"><h4 class="text-white font-bold uppercase">${i.title}</h4><p class="text-xs text-gray-500 uppercase">${i.loc}</p></div></div></div>`; }); c.innerHTML=html; }
+        function runTerminalIntro(){ const t=document.getElementById('terminal-output'); setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); ["> SYSTEM_INIT...", "> CONNECTING...", "> READY."].forEach((x,i)=>setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;}, i*300)); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); }
+        function enterSite(){ sessionStorage.setItem('introDone','true'); document.getElementById('intro-screen').style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').style.opacity='1'; document.querySelectorAll('.reveal').forEach(el=>el.classList.add('active')); }
+        function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>el.classList.remove('active')); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); }
+        function toggleSidebar(){ const s=document.getElementById('sidebar'); s.classList.contains('-translate-x-full') ? s.classList.remove('-translate-x-full') : s.classList.add('-translate-x-full'); }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
-        function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
-        function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 5000); }
-        function hideToast() { document.getElementById('notification-toast').classList.remove('show'); }
-        function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); }
-        function enterSite(){ sessionStorage.setItem('introDone', 'true'); const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); },800); }
-        function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
-        function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
-        function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('open'); }
-
-        const schedule = { day1: [ { time: "09:00 AM", title: "Inauguration", loc: "Main Auditorium", type: "General" }, { time: "11:00 AM", title: "Street Battle", loc: "Amphitheatre", type: "Culture" }, { time: "01:00 PM", title: "Valorant Prelims", loc: "IT Lab 3", type: "Gaming" }, { time: "04:00 PM", title: "Battle of Bands", loc: "Main Stage", type: "Music" }, { time: "07:30 PM", title: "Fashion Show", loc: "Ramp Area", type: "Show" } ], day2: [ { time: "10:00 AM", title: "Treasure Hunt", loc: "Campus Wide", type: "Fun" }, { time: "12:00 PM", title: "Box Cricket Finals", loc: "Sports Ground", type: "Sports" }, { time: "02:00 PM", title: "Solo Singing", loc: "Mini Audi", type: "Music" }, { time: "05:00 PM", title: "Runway Rivals", loc: "Ramp Area", type: "Fashion" }, { time: "08:00 PM", title: "EDM Night", loc: "Main Ground", type: "Show" } ] };
-        function renderSchedule(day) { const container = document.getElementById('schedule-container'); document.getElementById('tab-day1').classList.replace('border-pink-500', 'border-transparent'); document.getElementById('tab-day1').classList.replace('text-white', 'text-gray-500'); document.getElementById('tab-day2').classList.replace('border-pink-500', 'border-transparent'); document.getElementById('tab-day2').classList.replace('text-white', 'text-gray-500'); document.getElementById(`tab-${day}`).classList.replace('border-transparent', 'border-pink-500'); document.getElementById(`tab-${day}`).classList.replace('text-gray-500', 'text-white'); let html = ''; schedule[day].forEach(item => { html += `<div class="timeline-item relative pl-8 pb-8 group"><div class="timeline-line"></div><div class="absolute left-3 top-1 timeline-dot group-hover:bg-pink-500 transition-colors"></div><div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8"><span class="text-pink-500 font-mono text-sm font-bold w-24">${item.time}</span><div class="flex-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded hover:border-white transition-colors"><h4 class="text-white font-bold uppercase">${item.title}</h4><div class="flex justify-between mt-1 text-[10px] text-gray-500 font-mono uppercase"><span><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.loc}</span><span>${item.type}</span></div></div></div></div>`; }); container.innerHTML = html; if(typeof lucide !== 'undefined') lucide.createIcons(); }
-        const eventsData = [ { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: 'https://docs.google.com/document/d/placeholder' }, { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style.', rules: '#' }, { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#' }, { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Eastern and Western Solo Singing.', rules: '#' }, { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '1', desc: 'Solo Fashion Walk competition.', rules: '#' }, { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#' }, { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#' }, { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#' }, { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#' }, { id: 9, club: 'photo', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#' }, { id: 10, club: 'photo', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#' }, { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#' }, { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#' }, { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainability workshop.', rules: '#' } ];
-        function filterEvents(cat) { const grid = document.getElementById('events-grid'); grid.innerHTML=''; document.querySelectorAll('.filter-btn').forEach(btn => { if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black"; } else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white hover:border-white"; } }); const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); filtered.forEach(e => { let priceText = `Fee: ₹${e.price}`; if(isNift) priceText = `Fee: ₹0 (NIFT)`; let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`; if(cart.events.some(ev => ev.id == e.id)) { btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-pink-600 bg-pink-600 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Selected</button>`; } if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-3 text-xs font-bold uppercase cursor-default">Owned</button>`; } grid.innerHTML += `<div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 hover:border-pink-500/50 transition-colors"><div class="h-48 overflow-hidden relative"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 right-0 bg-black/70 px-2 py-1 flex items-center gap-1 text-[10px] font-mono"><i data-lucide="users" class="w-3 h-3 text-pink-500"></i> ${e.members}</div></div><div class="p-4"><div class="flex justify-between items-start mb-1"><h3 class="text-white font-bold uppercase text-sm">${e.title}</h3><button onclick="toggleInfo(${e.id})" class="text-gray-400 hover:text-white"><i data-lucide="info" class="w-4 h-4"></i></button></div><p class="text-[10px] text-gray-500 mt-0">${priceText}</p>${e.isPremium ? '<span class="text-pink-500 text-[9px] font-bold uppercase tracking-widest">Premium Event</span>' : ''}<div id="info-${e.id}" class="info-content text-[10px] text-gray-400 mt-2"><p class="mb-2">${e.desc}</p><a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a></div>${btnHtml}</div></div>`; }); if(typeof lucide !== 'undefined') lucide.createIcons(); }
+        function startCountdown() { const d = new Date("Feb 24, 2026 00:00:00").getTime(); setInterval(()=>{ const now=new Date().getTime(), dist=d-now; document.getElementById("cd-days").innerText=Math.floor(dist/(1000*60*60*24)); document.getElementById("cd-hours").innerText=Math.floor((dist%(1000*60*60*24))/(1000*60*60)); document.getElementById("cd-mins").innerText=Math.floor((dist%(1000*60*60))/(1000*60)); },1000); }
+        function userLogin(){ auth.signInWithEmailAndPassword(document.getElementById('login-email').value,document.getElementById('login-pass').value).catch(e=>alert(e.message)); }
+        function userRegister(){ const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, n=document.getElementById('reg-name').value; auth.createUserWithEmailAndPassword(e,p).then(c=>{ db.ref('users/'+e.replace(/\./g,',')).set({name:n, email:e, paymentStatus:'None', uid:c.user.uid}); alert("Registered!"); }).catch(e=>alert(e.message)); }
+        function logout(){ auth.signOut().then(()=>window.location.reload()); }
+        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-auth').classList.remove('hidden'); document.getElementById('view-profile').classList.add('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB.name; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
+        function updateTicketUI() { if(!userDataDB) return; document.getElementById('ticket-loading').classList.add('hidden'); if(userDataDB.paymentStatus==="Verified") { document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.uid}`; document.getElementById('ticket-info-plan').innerText=userDataDB.order.pass; } else if(userDataDB.paymentStatus==="Pending") document.getElementById('ticket-pending').classList.remove('hidden'); else document.getElementById('ticket-none').classList.remove('hidden'); }
+        function updateNav(n){ document.getElementById('nav-user-text').innerText = n.split(' ')[0]; }
     </script>
 </body>
 </html>
-
-
