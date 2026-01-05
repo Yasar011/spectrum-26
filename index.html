@@ -38,9 +38,9 @@
         // --- CONFIGURATION ---
         const ADMIN_URL = "admin.html"; 
         
-        // --- CLOUDINARY CONFIG (UPDATED) ---
+        // --- CLOUDINARY CONFIG ---
         const CLOUD_NAME = "diksl1q87"; 
-        const UPLOAD_PRESET = "spectrum_uploads"; // Make sure you named it exactly this in settings!
+        const UPLOAD_PRESET = "spectrum_uploads"; 
     </script>
 
     <style>
@@ -56,6 +56,10 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; pointer-events: none; }
         .scanline { position: fixed; left: 0; top: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent); animation: scanline 6s linear infinite; pointer-events: none; z-index: 999; }
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000000; opacity: 0; }
+        .glitch-text.glitching::before { opacity: 1; left: 2px; text-shadow: -1px 0 #ff00c1; clip-path: inset(44% 0 61% 0); }
+        .glitch-text.glitching::after { opacity: 1; left: -2px; text-shadow: -1px 0 #00fff9; clip-path: inset(54% 0 21% 0); }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
@@ -344,7 +348,7 @@
 
                 <div id="view-auth">
                     <div id="auth-tabs" class="flex gap-6 mb-8 border-b border-zinc-800"><div onclick="switchAuthMode('login')" id="tab-login" class="auth-tab active text-xs font-bold uppercase tracking-widest pb-3">Log In</div><div onclick="switchAuthMode('register')" id="tab-register" class="auth-tab text-xs font-bold uppercase tracking-widest pb-3">Register</div></div>
-                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider p-2">Forgot Password?</a></div><button onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
+                    <div id="form-login" class="space-y-4"><input id="login-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="login-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="text-right"><a href="#" onclick="forgotPass()" class="text-[10px] text-gray-500 hover:text-white uppercase tracking-wider p-2">Forgot Password?</a></div><button id="btn-login-submit" onclick="userLogin()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Access</button></div>
                     <div id="form-register" class="space-y-4 hidden"><div class="bg-yellow-900/30 border border-yellow-600 p-2 text-[10px] text-yellow-500 text-center font-bold">⚠️ NIFT Students: Use your @nift.ac.in email for FREE Access</div><input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-email" type="email" placeholder="Email" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><div class="flex gap-2"><input id="reg-pass" type="password" placeholder="Password" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"></div><input id="reg-phone" type="tel" placeholder="Phone" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-college" type="text" placeholder="College Name" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><input id="reg-id" type="text" placeholder="College ID" class="w-full bg-black border border-zinc-800 p-3 text-xs text-white uppercase outline-none"><button onclick="userRegister()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Register</button></div>
                 </div>
 
@@ -548,6 +552,9 @@
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('view-home').classList.add('active');
                 document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+                
+                // Show welcome toast if intro skipped
+                setTimeout(() => showToast("System Online. Welcome back."), 1000);
             } else { runTerminalIntro(); }
             loadCart(); filterEvents('all'); renderSchedule('day1');
 
@@ -561,17 +568,33 @@
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     currentUser = user;
+                    // Fix: Ensure user state is updated immediately on load
                     const cleanEmail = user.email.replace(/\./g, ',');
+                    
                     db.ref('users/' + cleanEmail).on('value', (snapshot) => {
                         userDataDB = snapshot.val();
                         updateNav(userDataDB ? userDataDB.name : "User");
-                        if(user.email.toLowerCase().endsWith('@nift.ac.in')) { isNift = true; activateNiftMode(); } 
-                        else if (userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) { hasExistingPass = true; activateAddOnMode(userDataDB); } 
-                        else { isNift = false; hasExistingPass = false; }
+                        
+                        if(user.email.toLowerCase().endsWith('@nift.ac.in')) { 
+                            isNift = true; 
+                            activateNiftMode(); 
+                        } else if (userDataDB && (userDataDB.paymentStatus === 'Verified' || userDataDB.paymentStatus === 'Pending')) { 
+                            hasExistingPass = true; 
+                            activateAddOnMode(userDataDB); 
+                        } else { 
+                            isNift = false; 
+                            hasExistingPass = false; 
+                        }
                         
                         if(userDataDB) updateTicketUI();
                     });
-                } else { currentUser = null; userDataDB = null; updateNav("Login"); isNift=false; hasExistingPass=false; }
+                } else { 
+                    currentUser = null; 
+                    userDataDB = null; 
+                    updateNav("Login"); 
+                    isNift=false; 
+                    hasExistingPass=false; 
+                }
             });
 
             db.ref('updates').limitToLast(10).on('child_added', (snapshot) => {
@@ -630,7 +653,13 @@
         function saveCart() { localStorage.setItem('spectrum_cart', JSON.stringify(cart)); }
         function loadCart() { const saved = localStorage.getItem('spectrum_cart'); if(saved) { cart = JSON.parse(saved); if(cart.pass && cart.pass.type) { const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std', 'Neon Pulse': 'pass-edm', 'Vogue Gala': 'pass-fash' }; const elId = map[cart.pass.name]; if(elId) { ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); document.getElementById(id).classList.add('glass-panel'); }); document.getElementById(elId).classList.remove('glass-panel'); document.getElementById(elId).classList.add('selected-pass'); } } updateCartUI(); } }
         function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
-        function updateNav(name) { document.getElementById('nav-user-text').innerText = name.split(' ')[0]; }
+        
+        function updateNav(name) { 
+            // Fix: Fallback for null name
+            const displayName = name ? name.split(' ')[0] : "Login";
+            document.getElementById('nav-user-text').innerText = displayName; 
+        }
+        
         function activateNiftMode() { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('nift-message').classList.remove('hidden'); cart.pass = { name: "Nexus Prime (NIFT)", price: 0, type: "base" }; saveCart(); updateCartUI(); }
         function activateAddOnMode(user) { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('existing-user-message').classList.remove('hidden'); if(user.order && user.order.pass) { cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' }; saveCart(); } updateCartUI(); }
         function selectPass(name, price, type, elementId) { ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); document.getElementById(id).classList.add('glass-panel'); }); document.getElementById(elementId).classList.remove('glass-panel'); document.getElementById(elementId).classList.add('selected-pass'); cart.pass = { name, price, type }; if(type === 'special') { cart.events = []; } saveCart(); updateCartUI(); }
@@ -707,24 +736,192 @@
         }
         
         function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `NIFT${namePart}${phonePart}${randPart}`; }
-        function userRegister(){ const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; if(!e||!p||!n||!ph) return alert("Fill all details"); if(p !== cp) return alert("Passwords do not match"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); const sID = generateSpectrumID(n, ph); db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); alert("Registered! Please check your email to verify account."); switchAuthMode('login'); closeModal(); handleAccountClick(); }).catch(err=>alert(err.message)); }
-        function userLogin(){ const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email not verified! Check inbox."); } } closeModal(); }).catch(err=>alert(err.message)); }
+        function userRegister(){ 
+            const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
+            if(!e||!p||!n||!ph) return alert("Fill all details"); 
+            if(p !== cp) return alert("Passwords do not match"); 
+            
+            auth.createUserWithEmailAndPassword(e,p).then(crd=>{ 
+                crd.user.sendEmailVerification(); 
+                const sID = generateSpectrumID(n, ph); 
+                db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); 
+                alert("Registered! Please check your email to verify account."); 
+                switchAuthMode('login'); closeModal(); handleAccountClick(); 
+            }).catch(err=>alert(err.message)); 
+        }
+
+        function userLogin(){ 
+            const btn = document.getElementById('btn-login-submit');
+            btn.innerText = "Processing...";
+            const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
+            
+            auth.signInWithEmailAndPassword(e,p).then(c=>{ 
+                btn.innerText = "Success";
+                if(!c.user.emailVerified) { 
+                    if (e.endsWith('@nift.ac.in')) { } else { alert("Email not verified! Check inbox."); } 
+                } 
+                closeModal(); 
+                btn.innerText = "ACCESS";
+            }).catch(err=>{
+                alert(err.message);
+                btn.innerText = "ACCESS";
+            }); 
+        }
+
         function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter email first."); auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent.")).catch(err => alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
-        function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); document.getElementById('profile-name').innerText=userDataDB?userDataDB.name:"User"; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } }
         
-        function updateTicketUI(){ if(!userDataDB) return; ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('ticket-loading').classList.add('hidden'); const upgradeBtn = document.getElementById('upgrade-container'); const idCardSection = document.getElementById('id-card-section'); if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden'); if(userDataDB.order) { document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; } if(userDataDB.paymentStatus==="Verified"){ document.getElementById('ticket-verified').classList.remove('hidden'); document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; idCardSection.classList.remove('hidden'); document.getElementById('card-name').innerText = userDataDB.name; document.getElementById('card-id').innerText = userDataDB.spectrumId; document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS"; document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`; } else if (userDataDB.paymentStatus==="Pending") { document.getElementById('ticket-pending').classList.remove('hidden'); document.getElementById('pending-reason').innerText = userDataDB.verificationReason ? `For: ${userDataDB.verificationReason}` : ''; idCardSection.classList.add('hidden'); } else { document.getElementById('ticket-none').classList.remove('hidden'); idCardSection.classList.add('hidden'); } }
+        function handleAccountClick(){ 
+            if(!currentUser){ 
+                openModal(); 
+                document.getElementById('view-profile').classList.add('hidden'); 
+                document.getElementById('view-auth').classList.remove('hidden'); 
+            } else { 
+                openModal(); 
+                document.getElementById('view-auth').classList.add('hidden'); 
+                document.getElementById('view-profile').classList.remove('hidden'); 
+                
+                if(userDataDB) {
+                    document.getElementById('profile-name').innerText=userDataDB.name; 
+                    document.getElementById('profile-email').innerText=currentUser.email; 
+                    updateTicketUI(); 
+                }
+            } 
+        }
+        
+        function updateTicketUI(){ 
+            if(!userDataDB) return; 
+            ['ticket-verified','ticket-pending','ticket-none'].forEach(id=>document.getElementById(id).classList.add('hidden')); 
+            document.getElementById('ticket-loading').classList.add('hidden'); 
+            
+            const upgradeBtn = document.getElementById('upgrade-container');
+            const idCardSection = document.getElementById('id-card-section');
+            
+            if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden');
+            
+            if(userDataDB.order) { 
+                document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; 
+                const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; 
+                document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; 
+            } 
+            
+            if(userDataDB.paymentStatus==="Verified"){ 
+                document.getElementById('ticket-verified').classList.remove('hidden'); 
+                document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
+                document.getElementById('ticket-id').innerText=`ID: ${userDataDB.spectrumId}`; 
+                idCardSection.classList.remove('hidden'); 
+                document.getElementById('card-name').innerText = userDataDB.name; 
+                document.getElementById('card-id').innerText = userDataDB.spectrumId; 
+                document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "GATE PASS"; 
+                document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`; 
+            } else if (userDataDB.paymentStatus==="Pending") { 
+                document.getElementById('ticket-pending').classList.remove('hidden'); 
+                document.getElementById('pending-reason').innerText = userDataDB.verificationReason ? `For: ${userDataDB.verificationReason}` : ''; 
+                idCardSection.classList.add('hidden'); 
+            } else { 
+                document.getElementById('ticket-none').classList.remove('hidden'); 
+                idCardSection.classList.add('hidden'); 
+            } 
+        }
+
         function downloadID() { const el = document.getElementById('id-card-element'); html2canvas(el, { useCORS: true }).then(canvas => { const link = document.createElement('a'); link.download = `Spectrum_${userDataDB.spectrumId}.png`; link.href = canvas.toDataURL(); link.click(); }); }
         function openModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('auth-modal').style.display='none'; }
         function switchAuthMode(m){ ['form-login','form-register'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('tab-login').classList.remove('active'); document.getElementById('tab-register').classList.remove('active'); document.getElementById(`tab-${m}`).classList.add('active'); document.getElementById(`form-${m}`).classList.remove('hidden'); }
-        function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 5000); }
+        
+        function showToast(msg) { 
+            const t = document.getElementById('notification-toast'); 
+            document.getElementById('toast-message').innerText=msg; 
+            t.classList.add('show'); 
+            setTimeout(()=>t.classList.remove('show'), 5000); 
+        }
         function hideToast() { document.getElementById('notification-toast').classList.remove('show'); }
-        function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); }
-        function enterSite(){ sessionStorage.setItem('introDone', 'true'); const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').classList.add('fade-in'); const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); },800); }
+        
+        function runTerminalIntro(){ 
+            const t=document.getElementById('terminal-output'); if(!t)return; 
+            setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); 
+            const l=["> SYSTEM_INIT...", "> CONNECTING...", "> READY."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=300; }); 
+            setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),1500); 
+        }
+        
+        function enterSite(){ 
+            sessionStorage.setItem('introDone', 'true'); 
+            const i=document.getElementById('intro-screen'); 
+            i.style.transition="opacity 0.8s"; i.style.opacity='0'; 
+            setTimeout(()=>{
+                i.style.display='none'; 
+                document.getElementById('main-content').classList.remove('hidden'); 
+                document.getElementById('main-content').classList.add('fade-in'); 
+                const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); 
+                document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); 
+                
+                // Show welcome if no updates
+                setTimeout(() => showToast("Welcome back."), 1500);
+            },800); 
+        }
+        
         function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
         function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
         function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('open'); }
+
+        const schedule = {
+            day1: [
+                { time: "09:00 AM", title: "Inauguration", loc: "Main Auditorium", type: "General" },
+                { time: "11:00 AM", title: "Street Battle", loc: "Amphitheatre", type: "Culture" },
+                { time: "01:00 PM", title: "Valorant Prelims", loc: "IT Lab 3", type: "Gaming" },
+                { time: "04:00 PM", title: "Battle of Bands", loc: "Main Stage", type: "Music" },
+                { time: "07:30 PM", title: "Fashion Show", loc: "Ramp Area", type: "Show" }
+            ],
+            day2: [
+                { time: "10:00 AM", title: "Treasure Hunt", loc: "Campus Wide", type: "Fun" },
+                { time: "12:00 PM", title: "Box Cricket Finals", loc: "Sports Ground", type: "Sports" },
+                { time: "02:00 PM", title: "Solo Singing", loc: "Mini Audi", type: "Music" },
+                { time: "05:00 PM", title: "Runway Rivals", loc: "Ramp Area", type: "Fashion" },
+                { time: "08:00 PM", title: "EDM Night", loc: "Main Ground", type: "Show" }
+            ]
+        };
+
+        function renderSchedule(day) {
+            const container = document.getElementById('schedule-container');
+            if(!container) return;
+            
+            ['day1', 'day2'].forEach(d => {
+                const tab = document.getElementById(`tab-${d}`);
+                if(tab) {
+                    tab.classList.replace('border-pink-500', 'border-transparent');
+                    tab.classList.replace('text-white', 'text-gray-500');
+                }
+            });
+
+            const activeTab = document.getElementById(`tab-${day}`);
+            if(activeTab) {
+                activeTab.classList.replace('border-transparent', 'border-pink-500');
+                activeTab.classList.replace('text-gray-500', 'text-white');
+            }
+
+            let html = '';
+            if(schedule[day]) {
+                schedule[day].forEach(item => {
+                    html += `
+                    <div class="timeline-item relative pl-8 pb-8 group">
+                        <div class="timeline-line"></div>
+                        <div class="absolute left-3 top-1 timeline-dot group-hover:bg-pink-500 transition-colors"></div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
+                            <span class="text-pink-500 font-mono text-sm font-bold w-24">${item.time}</span>
+                            <div class="flex-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded hover:border-white transition-colors">
+                                <h4 class="text-white font-bold uppercase">${item.title}</h4>
+                                <div class="flex justify-between mt-1 text-[10px] text-gray-500 font-mono uppercase">
+                                    <span><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${item.loc}</span>
+                                    <span>${item.type}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            }
+            container.innerHTML = html;
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
 
         const eventsData = [ { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: 'https://docs.google.com/document/d/placeholder' }, { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style.', rules: '#' }, { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#' }, { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Eastern and Western Solo Singing.', rules: '#' }, { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '1', desc: 'Solo Fashion Walk competition.', rules: '#' }, { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#' }, { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#' }, { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#' }, { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#' }, { id: 9, club: 'adventure', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#' }, { id: 10, club: 'adventure', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#' }, { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#' }, { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#' }, { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainability workshop.', rules: '#' } ];
         function filterEvents(cat) { const grid = document.getElementById('events-grid'); grid.innerHTML=''; document.querySelectorAll('.filter-btn').forEach(btn => { if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black"; } else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white hover:border-white"; } }); const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); filtered.forEach(e => { let priceText = `Fee: ₹${e.price}`; if(isNift) priceText = `Fee: ₹0 (NIFT)`; let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`; if(cart.events.some(ev => ev.id == e.id)) { btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-pink-600 bg-pink-600 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Selected</button>`; } if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-3 text-xs font-bold uppercase cursor-default">Owned</button>`; } grid.innerHTML += `<div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 hover:border-pink-500/50 transition-colors"><div class="h-48 overflow-hidden relative"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 right-0 bg-black/70 px-2 py-1 flex items-center gap-1 text-[10px] font-mono"><i data-lucide="users" class="w-3 h-3 text-pink-500"></i> ${e.members}</div></div><div class="p-4"><div class="flex justify-between items-start mb-1"><h3 class="text-white font-bold uppercase text-sm">${e.title}</h3><button onclick="toggleInfo(${e.id})" class="text-gray-400 hover:text-white"><i data-lucide="info" class="w-4 h-4"></i></button></div><p class="text-[10px] text-gray-500 mt-0">${priceText}</p>${e.isPremium ? '<span class="text-pink-500 text-[9px] font-bold uppercase tracking-widest">Premium Event</span>' : ''}<div id="info-${e.id}" class="info-content text-[10px] text-gray-400 mt-2"><p class="mb-2">${e.desc}</p><a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a></div>${btnHtml}</div></div>`; }); if(typeof lucide !== 'undefined') lucide.createIcons(); }
