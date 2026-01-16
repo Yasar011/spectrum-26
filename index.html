@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPECTRUM '26 | Entropy</title>
+    <title>SPECTRUM '26 | VIBHRAM</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -44,36 +44,44 @@
     </script>
 
     <style>
-        /* ENTROPY THEME COLORS: Orange/Rust/Chaos */
-        :root { --accent: #ff5500; --terminal-green: #00ff41; --decay-grey: #2a2a2a; }
+        /* VIBHRAM THEME: Psychedelia, Illusion, Vibrant Chaos */
+        :root { 
+            --accent: #d946ef; /* Fuchsia */
+            --accent-sec: #06b6d4; /* Cyan */
+            --accent-tri: #eab308; /* Yellow */
+            --text-main: #f0f0f0; 
+            --bg-dark: #050505; 
+        }
         html { scroll-behavior: smooth; }
-        body { background-color: #050505; color: #e0e0e0; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Manrope', sans-serif; overflow-x: hidden; }
         
+        /* Typography Mix */
         .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
-        .font-serif { font-family: 'Italiana', serif; }
+        .font-serif { font-family: 'Italiana', serif; } /* Artistic/Illusion Feel */
         .font-mono { font-family: 'Space Mono', monospace; }
 
         /* FX */
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; pointer-events: none; }
         
-        .scanline { position: fixed; left: 0; top: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, transparent, rgba(255, 85, 0, 0.05), transparent); animation: scanline 8s linear infinite; pointer-events: none; z-index: 999; }
+        /* Psychedelic Gradient Scanline */
+        .scanline { position: fixed; left: 0; top: 0; width: 100%; height: 50px; background: linear-gradient(to bottom, transparent, rgba(217, 70, 239, 0.2), rgba(6, 182, 212, 0.2), transparent); animation: scanline 6s linear infinite; pointer-events: none; z-index: 999; mix-blend-mode: overlay;}
         @keyframes scanline { 0% { transform: translateY(-100vh); } 100% { transform: translateY(100vh); } }
         
+        /* VIBHRAM GLITCH - Split Color */
         .glitch-text { position: relative; }
-        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050505; opacity: 0; }
-        .glitch-text.glitching::before { opacity: 1; left: 3px; text-shadow: -2px 0 #ff5500; clip-path: inset(20% 0 80% 0); animation: glitch-anim-1 2s infinite linear alternate-reverse; }
-        .glitch-text.glitching::after { opacity: 1; left: -3px; text-shadow: -2px 0 #00ff41; clip-path: inset(60% 0 10% 0); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
-        
-        @keyframes glitch-anim-1 { 0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
-        @keyframes glitch-anim-2 { 0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 10% 0); } 40% { clip-path: inset(70% 0 20% 0); } 60% { clip-path: inset(20% 0 40% 0); } 80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(0% 0 80% 0); } }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); opacity: 0; mix-blend-mode: hard-light; }
+        .glitch-text.glitching::before { opacity: 1; left: 3px; text-shadow: -2px 0 var(--accent); clip-path: inset(20% 0 80% 0); animation: glitch-1 2s infinite linear alternate-reverse; }
+        .glitch-text.glitching::after { opacity: 1; left: -3px; text-shadow: -2px 0 var(--accent-sec); clip-path: inset(60% 0 10% 0); animation: glitch-2 3s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
 
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* UI */
-        .glass-panel { background: rgba(15, 15, 15, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); }
+        /* UI ELEMENTS - Vibhram Style (Fluid, Glowing) */
+        .glass-panel { background: rgba(10, 10, 10, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); box-shadow: 0 0 30px rgba(217, 70, 239, 0.05); }
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s; }
-        .btn-outline:hover { border-color: var(--accent); background: rgba(255, 85, 0, 0.1); color: white; box-shadow: 0 0 20px var(--accent); text-shadow: 0 0 5px var(--accent); }
+        .btn-outline:hover { border-color: var(--accent); background: rgba(217, 70, 239, 0.15); color: white; box-shadow: 0 0 20px var(--accent); }
         
         .auth-tab { padding-bottom: 10px; color: #666; border-bottom: 2px solid transparent; transition: 0.3s; cursor: pointer; }
         .auth-tab.active { color: white; border-bottom: 2px solid var(--accent); }
@@ -85,16 +93,14 @@
         .fade-in { animation: fadeIn 1s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* MARQUEE */
-        .animate-marquee { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
+        .animate-marquee { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
         /* CART & TOAST */
-        .selected-pass { border-color: var(--accent) !important; background: rgba(255, 85, 0, 0.1) !important; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(255, 85, 0, 0.2); }
+        .selected-pass { border-color: var(--accent) !important; background: rgba(217, 70, 239, 0.1) !important; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(217, 70, 239, 0.3); }
         #cart-bar { transition: transform 0.3s ease; }
         #notification-toast { transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         #notification-toast.show { transform: translateX(0); }
-        button { touch-action: manipulation; }
         
         /* INFO EXPAND */
         .info-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #111; }
@@ -105,41 +111,49 @@
         .timeline-item:last-child .timeline-line { display: none; }
         .timeline-dot { width: 12px; height: 12px; background: #000; border: 2px solid var(--accent); border-radius: 50%; z-index: 10; position: relative; }
         
-        /* HOLOGRAPHIC ID */
-        .holo-card { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border: 1px solid rgba(255, 255, 255, 0.2); position: relative; overflow: hidden; }
-        .holo-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent); transform: rotate(45deg); animation: holo 3s infinite; pointer-events: none; }
+        /* HOLOGRAPHIC ID - Iridescent effect */
+        .holo-card { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid rgba(255, 255, 255, 0.2); position: relative; overflow: hidden; }
+        .holo-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to right, transparent, rgba(6, 182, 212, 0.2), rgba(217, 70, 239, 0.2), transparent); transform: rotate(45deg); animation: holo 4s infinite; pointer-events: none; }
         @keyframes holo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
 
         /* LOGS */
         .log-item { border-left: 2px solid #333; padding-left: 10px; padding-bottom: 15px; position: relative; }
-        .log-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 8px; height: 8px; background: #000; border: 2px solid var(--terminal-green); border-radius: 50%; }
-        .log-item:first-child { border-left-color: var(--terminal-green); }
-        .log-item:first-child::before { background: var(--terminal-green); }
+        .log-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 8px; height: 8px; background: #000; border: 2px solid var(--accent-sec); border-radius: 50%; }
+        .log-item:first-child { border-left-color: var(--accent-sec); }
+        .log-item:first-child::before { background: var(--accent-sec); }
         
-        /* ENTROPY SPECIFIC */
-        .entropy-border { border: 1px solid rgba(255,255,255,0.1); clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%); }
+        /* NOISE OVERLAY */
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 800; opacity: 0.06; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%); }
+        
+        /* VIBHRAM SPECIFIC BORDER */
+        .vibhram-border { border: 1px solid rgba(255, 255, 255, 0.1); border-image: linear-gradient(45deg, var(--accent), var(--accent-sec)) 1; }
+
+        /* SLIDESHOW */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .slide-card { scroll-snap-align: center; }
+        
+        /* TEXT GRADIENTS */
+        .text-gradient-vibhram { background: linear-gradient(to right, var(--accent), var(--accent-sec), var(--accent-tri)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body>
 
-    <!-- 3D BACKGROUND -->
     <canvas id="bg-canvas"></canvas>
-
     <div class="scanline"></div>
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 800; opacity: 0.07; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(170%) brightness(100%);"></div>
+    <div class="noise-overlay"></div>
 
-    <!-- PUSH NOTIFICATION TOAST -->
-    <div id="notification-toast" onclick="toggleLogs()" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-orange-500 p-4 shadow-2xl flex items-start gap-4 cursor-pointer hover:bg-zinc-800 transition-colors">
-        <i data-lucide="bell" class="text-orange-500 w-5 h-5 mt-1"></i>
-        <div><h4 class="text-white font-bold uppercase text-xs tracking-widest mb-1">System Alert</h4><p id="toast-message" class="text-gray-400 text-xs font-mono leading-tight">Entropy Increasing...</p></div>
+    <div id="notification-toast" onclick="toggleLogs()" class="fixed top-24 right-6 z-[100] max-w-xs w-full bg-zinc-900 border-l-4 border-fuchsia-500 p-4 shadow-2xl flex items-start gap-4 cursor-pointer hover:bg-zinc-800 transition-colors">
+        <i data-lucide="bell" class="text-fuchsia-500 w-5 h-5 mt-1"></i>
+        <div><h4 class="text-white font-bold uppercase text-xs tracking-widest mb-1">Transmission</h4><p id="toast-message" class="text-gray-400 text-xs font-mono leading-tight">Updating...</p></div>
     </div>
 
     <!-- INTRO -->
     <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center font-mono">
         <div class="relative z-10 w-full max-w-2xl px-6">
-            <div id="terminal-output" class="text-left text-xs md:text-sm text-green-500 mb-8 h-32 border-l-2 border-green-500 pl-4 font-bold overflow-hidden"></div>
-            <div id="intro-title" class="opacity-0 transition-opacity duration-1000"><h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">SPEC<span class="text-orange-600">TRUM</span></h1><p class="text-xs font-bold tracking-[0.8em] text-gray-500 uppercase mt-4 animate-pulse">'26 ENTROPY ONLINE</p></div>
-            <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-green-500 border-green-500 hover:bg-green-500 hover:text-black hover:border-green-500 uppercase tracking-widest text-xs py-4 px-8">[ Initialize Chaos ]</button>
+            <div id="terminal-output" class="text-left text-xs md:text-sm text-fuchsia-500 mb-8 h-32 border-l-2 border-fuchsia-500 pl-4 font-bold overflow-hidden"></div>
+            <div id="intro-title" class="opacity-0 transition-opacity duration-1000"><h1 id="hero-title" class="text-6xl md:text-9xl font-display font-bold text-white tracking-widest glitch-text" data-text="SPECTRUM">SPEC<span class="text-fuchsia-500">TRUM</span></h1><p class="text-xs font-bold tracking-[0.8em] text-cyan-400 uppercase mt-4 animate-pulse">'26 VIBHRAM ONLINE</p></div>
+            <button id="enter-btn" onclick="enterSite()" class="mt-12 opacity-0 btn-outline text-fuchsia-500 border-fuchsia-500 hover:bg-fuchsia-600 hover:text-black hover:border-fuchsia-600 uppercase tracking-widest text-xs py-4 px-8">[ AWAKEN CHAOS ]</button>
         </div>
     </div>
 
@@ -150,16 +164,15 @@
             <button onclick="toggleSidebar()" class="flex items-center gap-3"><div class="flex flex-col gap-1.5"><span class="w-6 h-0.5 bg-white"></span><span class="w-4 h-0.5 bg-white"></span></div><span class="text-[10px] font-bold uppercase tracking-widest hidden md:block">Menu</span></button>
             <div class="absolute left-1/2 transform -translate-x-1/2 font-display text-xl font-bold tracking-widest cursor-pointer" onclick="switchView('home')">SPECTRUM '26</div>
             <div class="flex gap-4">
-                <button onclick="toggleLogs()" class="text-white hover:text-orange-500 relative"><i data-lucide="bell" class="w-5 h-5"></i><span id="log-dot" class="absolute top-0 right-0 w-2 h-2 bg-orange-500 rounded-full hidden"></span></button>
-                <button onclick="handleAccountClick()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-orange-500 transition-colors"><i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text" class="hidden md:block">Login</span></button>
+                <button onclick="toggleLogs()" class="text-white hover:text-fuchsia-500 relative"><i data-lucide="bell" class="w-5 h-5"></i><span id="log-dot" class="absolute top-0 right-0 w-2 h-2 bg-fuchsia-500 rounded-full hidden"></span></button>
+                <button onclick="handleAccountClick()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-fuchsia-500 transition-colors"><i data-lucide="user" class="w-4 h-4"></i><span id="nav-user-text" class="hidden md:block">Login</span></button>
             </div>
         </nav>
 
-        <!-- LIVE LOGS SIDEBAR -->
         <div id="logs-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[350px] bg-zinc-950/95 border-l border-zinc-800 z-[70] transform translate-x-full flex flex-col p-6 backdrop-blur-xl">
             <div class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
                 <h3 class="text-xl font-display text-white">System Logs</h3>
-                <button onclick="toggleLogs()"><i data-lucide="x" class="text-white hover:text-orange-500"></i></button>
+                <button onclick="toggleLogs()"><i data-lucide="x" class="text-white hover:text-fuchsia-500"></i></button>
             </div>
             <div id="logs-container" class="flex-1 overflow-y-auto pr-2 space-y-2">
                 <div class="text-center text-gray-600 text-xs font-mono mt-10">Waiting for transmission...</div>
@@ -171,24 +184,25 @@
 
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[55] hidden transition-opacity duration-300 opacity-0"></div>
         <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[400px] bg-black/90 border-r border-zinc-800 z-[60] transform -translate-x-full flex flex-col p-10 justify-between backdrop-blur-xl">
-            <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-orange-500"></i></button></div>
+            <div class="flex justify-between items-center"><span class="text-xs text-gray-500 uppercase tracking-widest">Navigation</span><button onclick="toggleSidebar()"><i data-lucide="x" class="text-white hover:text-fuchsia-500"></i></button></div>
             <div class="flex flex-col gap-6 font-display text-3xl">
-                <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all cursor-pointer">Home</a>
-                <a onclick="switchView('schedule'); toggleSidebar()" class="text-orange-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Schedule <span class="text-xs align-top border border-orange-500 px-1 ml-2">NEW</span></a>
-                <a onclick="switchView('merch'); toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all cursor-pointer">Merch Store</a>
-                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all">Theme</a>
-                <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
-                <a onclick="switchView('events'); toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all cursor-pointer">Events</a>
-                <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-orange-600 hover:pl-4 transition-all">Gallery</a>
+                <a onclick="switchView('home'); toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all cursor-pointer">Home</a>
+                <a onclick="switchView('schedule'); toggleSidebar()" class="text-fuchsia-500 hover:text-white hover:pl-4 transition-all cursor-pointer">Schedule <span class="text-xs align-top border border-fuchsia-500 px-1 ml-2">NEW</span></a>
+                <a onclick="switchView('merch'); toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all cursor-pointer">Merch Store</a>
+                <a href="#about" onclick="toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all">Theme</a>
+                <a onclick="switchView('tickets'); toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all cursor-pointer">Buy Tickets</a>
+                <a onclick="switchView('events'); toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all cursor-pointer">Events</a>
+                <a href="#gallery" onclick="toggleSidebar()" class="text-white hover:text-fuchsia-500 hover:pl-4 transition-all">Gallery</a>
             </div>
         </div>
 
         <main id="view-home" class="view-section active">
-            <!-- HERO -->
+            <!-- 1. HERO -->
             <section class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
                 <div class="relative z-10 text-center px-4 max-w-4xl reveal active">
-                    <div class="mb-6 inline-block border border-orange-500/50 bg-orange-500/10 backdrop-blur-md px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-orange-200">Feb 24 - 25 • 2026</p></div>
-                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-4 drop-shadow-[0_0_15px_rgba(255,85,0,0.5)]">SPEC<span class="text-orange-600">TRUM</span></h1>
+                    <div class="mb-6 inline-block border border-fuchsia-500/50 bg-fuchsia-500/10 backdrop-blur-md px-4 py-2 rounded-full"><p class="text-[10px] font-bold uppercase tracking-widest text-fuchsia-200">Feb 27 - 28 • 2026</p></div>
+                    <h1 class="text-7xl md:text-[9rem] font-display font-bold text-white leading-none mb-4 drop-shadow-[0_0_15px_rgba(217,70,239,0.5)]">SPEC<span class="text-fuchsia-500">TRUM</span></h1>
+                    <p class="text-xl md:text-2xl font-serif text-cyan-400 tracking-wider mb-8 italic">VIBHRAM</p>
                     
                     <div class="flex justify-center gap-6 mb-12 font-mono text-gray-400 text-xs md:text-sm">
                         <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-days">00</span>DAYS</div>
@@ -197,42 +211,135 @@
                         <div class="text-center"><span class="block text-2xl md:text-4xl text-white font-bold" id="cd-secs">00</span>SECS</div>
                     </div>
 
-                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-orange-600 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]">Get Tickets</button></div>
+                    <div class="flex justify-center"><button onclick="switchView('tickets')" class="bg-white text-black px-12 py-4 font-bold uppercase tracking-widest text-sm hover:bg-fuchsia-600 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]">Get Tickets</button></div>
                 </div>
             </section>
 
             <!-- LIVE UPDATES MARQUEE -->
-            <section id="live-updates" class="bg-orange-600 text-black py-3 overflow-hidden border-y border-orange-700 relative z-20 cursor-pointer">
-                <!-- Fixed animation wrapper -->
+            <section id="live-updates" class="bg-fuchsia-900/50 backdrop-blur text-white py-3 overflow-hidden border-y border-fuchsia-700 relative z-20 cursor-pointer">
                 <div class="flex items-center gap-4 animate-marquee whitespace-nowrap">
-                    <span onclick="triggerAdmin()" class="text-[10px] font-bold uppercase tracking-widest bg-black text-white px-3 py-1 select-none hover:bg-white hover:text-black transition-colors">LIVE FEED</span>
-                    <span id="update-text" class="text-xs font-mono uppercase tracking-wide font-bold">Entropy Rising. Disorder imminent. Registrations are open.</span>
-                    <span class="text-black/50 mx-4">///</span>
-                    <span class="text-xs font-mono uppercase tracking-wide font-bold">Chaos is the only constant.</span>
+                    <span onclick="triggerAdmin()" class="text-[10px] font-bold uppercase tracking-widest bg-cyan-500 text-black px-3 py-1 select-none hover:bg-white transition-colors">LIVE FEED</span>
+                    <span id="update-text" class="text-xs font-mono uppercase tracking-wide font-bold">Vibhram Emerging. Chaos Awakens Imagination.</span>
+                    <span class="text-white/50 mx-4">///</span>
+                    <span class="text-xs font-mono uppercase tracking-wide font-bold">Registration Open for All Events.</span>
                 </div>
             </section>
 
-            <!-- ABOUT -->
-            <section id="about" class="py-24 px-6 bg-black/80 backdrop-blur-md border-b border-zinc-900 relative z-20">
-                <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="reveal"><div class="w-12 h-1 bg-orange-600 mb-6 shadow-[0_0_10px_#ff5500]"></div><h3 class="text-2xl font-display text-white mb-4">The Institute</h3><p class="text-gray-400 text-sm leading-relaxed">National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology.</p></div>
-                    <div class="reveal md:delay-100"><div class="w-12 h-1 bg-white mb-6 shadow-[0_0_10px_#ffffff]"></div><h3 class="text-2xl font-display text-white mb-4">The Fest</h3><p class="text-gray-400 text-sm leading-relaxed">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza.</p></div>
-                    <div class="reveal md:delay-200"><div class="w-12 h-1 bg-green-500 mb-6 shadow-[0_0_10px_#22c55e]"></div><h3 class="text-2xl font-display text-white mb-4">ENTROPY</h3><p class="text-gray-400 text-sm leading-relaxed"><span class="text-white font-bold">THEME 2026</span><br>Exploring beauty in imperfection, decay, and constant change. Embracing disorder as a force of evolution.</p></div>
+            <!-- 2. THE INSTITUTE -->
+            <section class="py-24 px-6 bg-black border-b border-zinc-900 relative z-20">
+                <div class="max-w-4xl mx-auto text-center reveal">
+                    <div class="w-px h-16 bg-gradient-to-b from-transparent to-fuchsia-600 mx-auto mb-8"></div>
+                    <h3 class="text-4xl font-serif text-white mb-6">NIFT JODHPUR</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-2xl mx-auto">
+                        National Institute of Fashion Technology (NIFT) Jodhpur is a premier institute of design, management, and technology. It plays a pivotal role in envisioning and developing the fashion industry's future in India.
+                    </p>
                 </div>
             </section>
 
-            <!-- PLANS PREVIEW -->
-            <section class="py-24 px-6 bg-zinc-950/90 text-center relative z-20">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-4xl font-display text-white mb-12">Access Plans</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono text-gray-400 uppercase tracking-widest mb-12">
-                        <div class="p-4 border border-zinc-800 hover:border-white transition-colors">Cyber Entry</div><div class="p-4 border border-zinc-800 text-orange-500 border-orange-900 hover:bg-orange-900/20">Nexus Prime</div><div class="p-4 border border-zinc-800 hover:border-blue-500">Neon Pulse</div><div class="p-4 border border-zinc-800 hover:border-purple-500">Vogue Gala</div>
+            <!-- 3. FEST & VIBHRAM -->
+            <section id="about" class="py-24 px-6 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 relative z-20">
+                <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                    <div class="reveal">
+                        <span class="text-fuchsia-500 font-mono text-xs uppercase tracking-widest mb-2 block">The Experience</span>
+                        <h2 class="text-5xl font-display text-white mb-6">SPECTRUM</h2>
+                        <p class="text-gray-400 leading-relaxed mb-6">Spectrum is our annual techno-cultural-sports fest. It is a 2-day extravaganza that brings together talent, creativity, and energy from across the country.</p>
+                        <div class="flex gap-4">
+                            <div class="bg-zinc-900 border border-zinc-800 p-4 w-32 text-center"><span class="block text-2xl font-bold text-white">20+</span><span class="text-[10px] text-gray-500 uppercase">Events</span></div>
+                            <div class="bg-zinc-900 border border-zinc-800 p-4 w-32 text-center"><span class="block text-2xl font-bold text-white">5k+</span><span class="text-[10px] text-gray-500 uppercase">Footfall</span></div>
+                        </div>
                     </div>
-                    <button onclick="switchView('tickets')" class="btn-outline py-3 px-8 text-xs font-bold uppercase tracking-widest">Buy Tickets</button>
+                    <div class="reveal md:delay-100 border-l border-fuchsia-900/50 pl-12">
+                        <span class="text-cyan-500 font-mono text-xs uppercase tracking-widest mb-2 block">Theme 2026</span>
+                        <h2 class="text-5xl font-serif text-white mb-6 text-gradient-vibhram">VIBHRAM</h2>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            <b class="text-fuchsia-400">विभ्रम</b> (Vibhram) — Where chaos awakens imagination.
+                        </p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            Entropy is the natural tendency of everything to move from order to disorder. Psychedelia is the expansion of perception. Vibhram emerges at the intersection of these two ideas.
+                        </p>
+                        <p class="text-gray-400 text-sm leading-relaxed italic border-l-2 border-fuchsia-500 pl-4">
+                            "It is the moment when order breaks, perceptions shift, and the mind opens to infinite possibilities."
+                        </p>
+                    </div>
                 </div>
             </section>
 
-            <!-- GALLERY -->
+            <!-- 4. FASHION SHOW AREA (Flagship) -->
+            <section class="py-24 px-6 bg-gradient-to-b from-black to-zinc-950 border-b border-zinc-900 relative z-20 overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10"></div>
+                <div class="max-w-6xl mx-auto relative z-10">
+                    <div class="flex flex-col md:flex-row items-center gap-12 bg-zinc-900/50 border border-fuchsia-500/30 p-8 md:p-12 rounded-lg backdrop-blur-xl reveal">
+                        <div class="flex-1 text-center md:text-left">
+                            <span class="inline-block bg-fuchsia-600 text-white text-[10px] font-bold uppercase px-3 py-1 mb-4 tracking-widest shadow-[0_0_15px_#d946ef]">Flagship Event</span>
+                            <h2 class="text-5xl md:text-7xl font-serif text-white mb-2 leading-tight">FASHION <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 to-cyan-500">SHOW</span></h2>
+                            <p class="text-gray-400 font-mono text-sm mb-8 max-w-md">Embrace the illusion. Walk through the distorted reality. The ultimate runway showdown.</p>
+                            
+                            <div class="flex flex-wrap gap-6 mb-8 justify-center md:justify-start">
+                                <div class="text-center">
+                                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">Prize Pool</p>
+                                    <p class="text-3xl font-bold text-yellow-400 text-glow">₹20,000</p>
+                                </div>
+                                <div class="w-px bg-white/10 h-10 hidden md:block"></div>
+                                <div class="text-center">
+                                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">Registration Fee</p>
+                                    <p class="text-3xl font-bold text-white">₹2,000</p>
+                                </div>
+                            </div>
+
+                            <button onclick="toggleEvent(102, 'Fashion Show (Main)', 2000, true); checkUpsell();" class="bg-white text-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-fuchsia-600 hover:text-white transition-all transform hover:scale-105">Register Now</button>
+                            <p class="text-[9px] text-gray-500 mt-2">* Standalone registration available (No Base Pass needed).</p>
+                        </div>
+                        <div class="flex-1 w-full relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-fuchsia-600 to-cyan-600 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
+                            <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=800" class="relative z-10 w-full h-80 object-cover rounded border border-white/10 grayscale group-hover:grayscale-0 transition-all duration-700">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. EDM NIGHT AREA -->
+            <section class="py-24 px-6 bg-black border-b border-zinc-900 relative z-20">
+                <div class="max-w-6xl mx-auto relative z-10">
+                    <div class="flex flex-col md:flex-row-reverse items-center gap-12 bg-zinc-900/30 border border-zinc-800 p-8 md:p-12 rounded-lg backdrop-blur-xl reveal">
+                        <div class="flex-1 text-center md:text-left">
+                            <span class="inline-block bg-white text-black text-[10px] font-bold uppercase px-3 py-1 mb-4 tracking-widest">Pro Show</span>
+                            <h2 class="text-5xl md:text-7xl font-display text-white mb-2 leading-tight">EDM <span class="text-gray-500">NIGHT</span></h2>
+                            <p class="text-gray-400 font-mono text-sm mb-8 max-w-md">Lose yourself in the Vibhram. A night where sound dissolves reality and lights distort perception.</p>
+                            
+                            <div class="flex flex-wrap gap-6 mb-8 justify-center md:justify-start">
+                                <div class="text-center">
+                                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">Entry Fee</p>
+                                    <p class="text-3xl font-bold text-white">₹200</p>
+                                </div>
+                            </div>
+
+                            <button onclick="toggleEvent(101, 'EDM Night (Add-on)', 200, true); checkUpsell();" class="bg-transparent border border-white text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">Get Passes</button>
+                            <p class="text-[9px] text-gray-500 mt-2">* Included in Nexus Prime Pass.</p>
+                        </div>
+                        <div class="flex-1 w-full relative group">
+                            <div class="absolute inset-0 bg-gradient-to-l from-cyan-500 to-purple-900 blur-3xl opacity-10 group-hover:opacity-30 transition-opacity duration-700"></div>
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800" class="relative z-10 w-full h-80 object-cover rounded border border-white/10 grayscale hover:grayscale-0 transition-all duration-700">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. OTHER EVENTS SLIDESHOW -->
+            <section class="py-24 bg-zinc-950 relative z-20 border-b border-zinc-900 overflow-hidden">
+                <div class="px-6 mb-12 flex justify-between items-end max-w-7xl mx-auto">
+                    <h2 class="text-4xl font-display text-white">Competitions</h2>
+                    <div class="flex gap-2">
+                        <button onclick="document.getElementById('event-slider').scrollBy({left: -300, behavior: 'smooth'})" class="p-2 border border-zinc-800 hover:bg-white hover:text-black transition-colors"><i data-lucide="arrow-left"></i></button>
+                        <button onclick="document.getElementById('event-slider').scrollBy({left: 300, behavior: 'smooth'})" class="p-2 border border-zinc-800 hover:bg-white hover:text-black transition-colors"><i data-lucide="arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="event-slider" class="flex gap-6 overflow-x-auto snap-x snap-mandatory px-6 pb-12 hide-scrollbar max-w-[100vw]">
+                    <!-- JS will populate this -->
+                </div>
+            </section>
+
+            <!-- 7. GALLERY (PHOTOS) -->
             <section id="gallery" class="py-24 relative z-20">
                 <div class="max-w-7xl mx-auto px-6 mb-12 text-center reveal"><h2 class="text-4xl font-display text-white uppercase">Gallery</h2></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1 h-[600px] reveal">
@@ -243,7 +350,7 @@
                 </div>
             </section>
 
-            <!-- FOOTER -->
+            <!-- 8. FOOTER -->
             <footer class="py-16 bg-black text-center border-t border-zinc-900 reveal relative z-20">
                 <h2 class="font-display text-2xl text-white mb-6">NIFT JODHPUR</h2>
                 <div class="flex flex-col md:flex-row justify-center gap-8 mb-8 text-gray-500 text-xs uppercase font-bold tracking-wider">
@@ -251,23 +358,24 @@
                     <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</a>
                 </div>
                 <div class="flex justify-center gap-6 mb-8">
-                    <a href="#" class="text-white hover:text-orange-500 transition-transform hover:scale-110"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="text-white hover:text-fuchsia-500 transition-transform hover:scale-110"><i data-lucide="instagram"></i></a>
                     <a href="#" class="text-white hover:text-red-500 transition-transform hover:scale-110"><i data-lucide="youtube"></i></a>
                 </div>
                 <p class="text-[10px] text-gray-700 font-mono uppercase tracking-widest">© 2026 Spectrum Team</p>
             </footer>
         </main>
 
+        <!-- (All other sections like Tickets, Schedule, Merch remain same but hidden initially) -->
         <!-- SCHEDULE VIEW -->
         <section id="view-schedule" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-4xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
-                    <div><span class="text-orange-600 text-xs font-bold uppercase tracking-widest mb-2 block">Timeline</span><h2 class="text-4xl md:text-6xl font-display text-white">Event Schedule</h2></div>
+                    <div><span class="text-fuchsia-500 text-xs font-bold uppercase tracking-widest mb-2 block">Timeline</span><h2 class="text-4xl md:text-6xl font-display text-white">Event Schedule</h2></div>
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back</button>
                 </div>
                 <div class="flex gap-4 mb-12">
-                    <button onclick="renderSchedule('day1')" id="tab-day1" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-orange-500 text-white transition-colors">Day 1 (Feb 24)</button>
-                    <button onclick="renderSchedule('day2')" id="tab-day2" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-transparent text-gray-500 hover:text-white transition-colors">Day 2 (Feb 25)</button>
+                    <button onclick="renderSchedule('day1')" id="tab-day1" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-fuchsia-500 text-white transition-colors">Day 1 (Feb 27)</button>
+                    <button onclick="renderSchedule('day2')" id="tab-day2" class="text-xl font-bold uppercase px-6 py-2 border-b-2 border-transparent text-gray-500 hover:text-white transition-colors">Day 2 (Feb 28)</button>
                 </div>
                 <div id="schedule-container" class="relative pl-6 space-y-8"></div>
             </div>
@@ -277,17 +385,17 @@
         <section id="view-merch" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
-                    <div><span class="text-orange-600 text-xs font-bold uppercase tracking-widest mb-2 block">Apparel</span><h2 class="text-4xl md:text-6xl font-display text-white">Cyber Store</h2></div>
+                    <div><span class="text-fuchsia-500 text-xs font-bold uppercase tracking-widest mb-2 block">Apparel</span><h2 class="text-4xl md:text-6xl font-display text-white">Cyber Store</h2></div>
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back to Home</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="group relative bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-orange-500 transition-all duration-500">
+                    <div class="group relative bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-fuchsia-500 transition-all duration-500">
                         <div class="h-80 bg-zinc-800 flex items-center justify-center overflow-hidden"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div></div>
-                        <div class="p-6 relative"><div class="absolute -top-6 right-6 bg-orange-600 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-lg">Limited Drop</div><h3 class="text-2xl font-display text-white mb-1">Entropy Hoodie</h3><p class="text-xs text-gray-400 font-mono mb-4">Heavyweight cotton / Puff Print</p><div class="flex justify-between items-center"><span class="text-xl text-white font-bold">₹799</span><button onclick="openMerchModal('Entropy Hoodie', 799)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-orange-600 hover:text-white transition-colors">Pre-Order</button></div></div>
+                        <div class="p-6 relative"><div class="absolute -top-6 right-6 bg-fuchsia-600 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-lg">Limited Drop</div><h3 class="text-2xl font-display text-white mb-1">Vibhram Hoodie</h3><p class="text-xs text-gray-400 font-mono mb-4">Heavyweight cotton / Puff Print</p><div class="flex justify-between items-center"><span class="text-xl text-white font-bold">₹799</span><button onclick="openMerchModal('Vibhram Hoodie', 799)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-fuchsia-600 hover:text-white transition-colors">Pre-Order</button></div></div>
                     </div>
-                    <div class="group relative bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-green-500 transition-all duration-500">
+                    <div class="group relative bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-cyan-500 transition-all duration-500">
                         <div class="h-80 bg-zinc-800 flex items-center justify-center overflow-hidden"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover opacity-70 group-hover:scale-110 group-hover:opacity-100 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div></div>
-                        <div class="p-6 relative"><h3 class="text-2xl font-display text-white mb-1">Glitch Oversized Tee</h3><p class="text-xs text-gray-400 font-mono mb-4">100% Cotton / Reflective Text</p><div class="flex justify-between items-center"><span class="text-xl text-white font-bold">₹499</span><button onclick="openMerchModal('Glitch Oversized Tee', 499)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-green-500 hover:text-white transition-colors">Pre-Order</button></div></div>
+                        <div class="p-6 relative"><h3 class="text-2xl font-display text-white mb-1">Illusion Oversized Tee</h3><p class="text-xs text-gray-400 font-mono mb-4">100% Cotton / Reflective Text</p><div class="flex justify-between items-center"><span class="text-xl text-white font-bold">₹499</span><button onclick="openMerchModal('Illusion Oversized Tee', 499)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-cyan-500 hover:text-white transition-colors">Pre-Order</button></div></div>
                     </div>
                 </div>
             </div>
@@ -297,14 +405,14 @@
         <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24 bg-zinc-950/95 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="flex justify-between items-end mb-12 border-b border-zinc-800 pb-6 reveal active">
-                    <div><span class="text-orange-600 text-xs font-bold uppercase tracking-widest mb-2 block">Store</span><h2 class="text-4xl md:text-6xl font-display text-white">Select Pass</h2></div>
+                    <div><span class="text-fuchsia-500 text-xs font-bold uppercase tracking-widest mb-2 block">Store</span><h2 class="text-4xl md:text-6xl font-display text-white">Select Pass</h2></div>
                     <button onclick="switchView('home')" class="btn-outline py-2 px-6 text-xs uppercase font-bold">Back to Home</button>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20" id="pass-selection-container">
-                    <div id="pass-gen" class="glass-panel entropy-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">Cyber Entry</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
-                    <div id="pass-std" class="bg-zinc-900 entropy-border border border-orange-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Nexus Prime</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-orange-500" id="radio-pass-std"></div></div></div>
-                    <div id="pass-edm" class="glass-panel entropy-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')"><h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3><p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div></div>
-                    <div id="pass-fash" class="glass-panel entropy-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
+                    <div id="pass-gen" class="glass-panel vibhram-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')"><h3 class="text-xl font-bold uppercase text-white">Cyber Entry</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry Only. Add Events Below.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹299</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-gen"></div></div></div>
+                    <div id="pass-std" class="bg-zinc-900 vibhram-border border border-fuchsia-900 p-6 transform md:-translate-y-4 shadow-xl cursor-pointer" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')"><span class="text-[10px] font-bold text-fuchsia-500 uppercase tracking-widest">Recommended</span><h3 class="text-xl font-bold uppercase text-white mt-1">Nexus Prime</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Entry + <b>2 Regular Events FREE</b>.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹499</span><div class="w-4 h-4 rounded-full border border-fuchsia-500" id="radio-pass-std"></div></div></div>
+                    <div id="pass-edm" class="glass-panel vibhram-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')"><h3 class="text-xl font-bold uppercase text-blue-400">Neon Pulse</h3><p class="text-[10px] text-gray-400 mt-2 h-10">EDM Night ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-edm"></div></div></div>
+                    <div id="pass-fash" class="glass-panel vibhram-border p-6 cursor-pointer hover:bg-white/5 transition-all" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')"><h3 class="text-xl font-bold uppercase text-purple-400">Vogue Gala</h3><p class="text-[10px] text-gray-400 mt-2 h-10">Fashion Show ONLY. No other events.</p><div class="border-t border-white/10 pt-4 flex justify-between items-center mt-4"><span class="text-lg font-bold text-white">₹199</span><div class="w-4 h-4 rounded-full border border-white" id="radio-pass-fash"></div></div></div>
                 </div>
                 <div id="nift-message" class="hidden text-center mb-10 p-6 bg-green-900/30 border border-green-500 rounded"><h3 class="text-xl font-bold text-green-400">NIFT STUDENT ACCESS</h3><p class="text-gray-300 text-sm">Nexus Prime Pass Active (Free). Select your events.</p></div>
                 <div id="existing-user-message" class="hidden text-center mb-10 p-6 bg-blue-900/30 border border-blue-500 rounded"><h3 class="text-xl font-bold text-blue-400">PASS ACTIVE</h3><p class="text-gray-300 text-sm">You already have a pass. You can add more events below.</p></div>
@@ -326,8 +434,8 @@
 
         <!-- CART -->
         <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-zinc-900/90 backdrop-blur border-t border-zinc-800 p-4 z-[90] transform translate-y-full transition-transform duration-300 flex justify-between items-center">
-            <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-orange-500 ml-2"></span></div></div>
-            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-orange-600 hover:text-white transition-colors">Checkout</button>
+            <div><p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Selection</p><div class="flex items-baseline gap-2"><span id="cart-total" class="text-xl font-mono font-bold text-white">₹0</span><span id="cart-desc" class="text-xs text-fuchsia-500 ml-2"></span></div></div>
+            <button id="checkout-btn" onclick="checkUpsell()" class="bg-white text-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-fuchsia-600 hover:text-white transition-colors">Checkout</button>
         </div>
 
         <!-- AUTH MODAL -->
@@ -346,7 +454,7 @@
                             <div><p class="text-[10px] text-gray-400 uppercase">UPI ID</p><p id="profile-upi-text" class="text-sm font-mono text-white select-all">Loading...</p><p class="text-[9px] text-gray-500 mt-1">* Scan to Pay</p></div>
                         </div>
                     </div>
-                    <div id="upgrade-container" class="hidden mb-4"><button onclick="upgradePass()" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold py-3 rounded animate-pulse">UPGRADE TO NEXUS PRIME (+₹200)</button></div>
+                    <div id="upgrade-container" class="hidden mb-4"><button onclick="upgradePass()" class="w-full bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold py-3 rounded animate-pulse">UPGRADE TO NEXUS PRIME (+₹200)</button></div>
                     
                     <div id="ticket-container" class="bg-white text-black p-6 rounded-sm relative overflow-hidden">
                         <div id="ticket-loading" class="text-xs font-mono">Loading...</div>
@@ -370,9 +478,9 @@
 
                     <!-- ID CARD GENERATOR -->
                     <div id="id-card-section" class="hidden mt-6 border-t border-zinc-800 pt-6">
-                         <h3 class="text-sm font-bold uppercase text-orange-500 mb-4 tracking-widest">Digital ID</h3>
+                         <h3 class="text-sm font-bold uppercase text-fuchsia-500 mb-4 tracking-widest">Digital ID</h3>
                          <div id="id-card-element" class="holo-card p-6 w-full max-w-[300px] mx-auto text-left rounded-lg shadow-xl mb-4">
-                             <div class="flex justify-between items-start mb-6"><div><h2 class="text-xl font-display text-white italic">SPECTRUM</h2><p class="text-[10px] text-orange-500 font-mono">2026 EDITION</p></div><div class="w-12 h-12 bg-white/10 rounded flex items-center justify-center"><i data-lucide="zap" class="text-white"></i></div></div>
+                             <div class="flex justify-between items-start mb-6"><div><h2 class="text-xl font-display text-white italic">SPECTRUM</h2><p class="text-[10px] text-fuchsia-500 font-mono">2026 EDITION</p></div><div class="w-12 h-12 bg-white/10 rounded flex items-center justify-center"><i data-lucide="zap" class="text-white"></i></div></div>
                              <div class="space-y-3 font-mono"><div><p class="text-[8px] text-gray-400 uppercase">Name</p><p id="card-name" class="text-sm font-bold text-white">Unknown</p></div><div><p class="text-[8px] text-gray-400 uppercase">Spectrum ID</p><p id="card-id" class="text-xs text-green-400">----</p></div><div><p class="text-[8px] text-gray-400 uppercase">Access Level</p><p id="card-access" class="text-xs text-white border border-white/30 inline-block px-1">----</p></div></div>
                              <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center"><p class="text-[8px] text-gray-500">AUTHORIZED PERSONNEL</p><img id="card-qr" class="w-10 h-10 bg-white p-1"></div>
                          </div>
@@ -392,9 +500,9 @@
                     <div class="bg-zinc-900 p-4 rounded text-xs space-y-2 font-mono">
                         <div class="flex justify-between text-white"><span id="rec-pass-name">Pass</span><span id="rec-pass-price">₹0</span></div>
                         <div id="rec-events-list" class="space-y-1 text-gray-400 border-t border-zinc-800 pt-2 mt-2"></div>
-                        <div class="flex gap-2 pt-2 border-t border-zinc-800"><input id="promo-code" type="text" placeholder="PROMO CODE" class="bg-black border border-zinc-700 w-full px-2 py-1 text-xs text-white uppercase outline-none"><button onclick="applyPromo()" class="bg-zinc-700 text-white px-3 py-1 text-[10px] font-bold uppercase hover:bg-orange-600">Apply</button></div>
+                        <div class="flex gap-2 pt-2 border-t border-zinc-800"><input id="promo-code" type="text" placeholder="PROMO CODE" class="bg-black border border-zinc-700 w-full px-2 py-1 text-xs text-white uppercase outline-none"><button onclick="applyPromo()" class="bg-zinc-700 text-white px-3 py-1 text-[10px] font-bold uppercase hover:bg-fuchsia-600">Apply</button></div>
                         <div id="promo-msg" class="text-[10px] text-green-500 hidden">Code Applied!</div>
-                        <div class="flex justify-between text-orange-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">₹0</span></div>
+                        <div class="flex justify-between text-fuchsia-500 font-bold border-t border-zinc-800 pt-2 mt-2"><span>TOTAL</span><span id="rec-total">₹0</span></div>
                     </div>
                     <button id="btn-proceed" onclick="showPayment()" class="w-full bg-white text-black font-bold uppercase py-3 text-xs hover:bg-gray-200">Proceed to Pay</button>
                 </div>
@@ -446,8 +554,8 @@
                 <h3 class="text-xl font-bold text-white uppercase mb-2">Access Denied</h3>
                 <p class="text-sm text-gray-400 mb-6">You have selected events, but you need a <b>Base Pass</b> to enter the fest.</p>
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick="selectPassFromWarning('Cyber Entry', 299, 'base')" class="bg-zinc-800 border border-zinc-700 p-4 hover:border-white transition-all text-left"><div class="text-[10px] text-gray-400 uppercase">Basic Access</div><div class="text-lg font-bold text-white">Cyber Entry</div><div class="text-orange-500 font-bold">₹299</div></button>
-                    <button onclick="selectPassFromWarning('Nexus Prime', 499, 'base')" class="bg-zinc-800 border border-orange-700 p-4 hover:bg-orange-900/20 transition-all text-left"><div class="text-[10px] text-orange-400 uppercase font-bold">Recommended</div><div class="text-lg font-bold text-white">Nexus Prime</div><div class="text-orange-500 font-bold">₹499</div></button>
+                    <button onclick="selectPassFromWarning('Cyber Entry', 299, 'base')" class="bg-zinc-800 border border-zinc-700 p-4 hover:border-white transition-all text-left"><div class="text-[10px] text-gray-400 uppercase">Basic Access</div><div class="text-lg font-bold text-white">Cyber Entry</div><div class="text-fuchsia-500 font-bold">₹299</div></button>
+                    <button onclick="selectPassFromWarning('Nexus Prime', 499, 'base')" class="bg-zinc-800 border border-fuchsia-700 p-4 hover:bg-fuchsia-900/20 transition-all text-left"><div class="text-[10px] text-fuchsia-400 uppercase font-bold">Recommended</div><div class="text-lg font-bold text-white">Nexus Prime</div><div class="text-fuchsia-500 font-bold">₹499</div></button>
                 </div>
             </div>
         </div>
@@ -455,14 +563,14 @@
         <!-- MERCH MODAL -->
         <div id="merch-modal" class="fixed inset-0 z-[260] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeMerchModal()"></div>
-            <div class="relative z-10 w-full max-w-sm bg-zinc-950 border border-orange-600 p-6 shadow-2xl">
+            <div class="relative z-10 w-full max-w-sm bg-zinc-950 border border-fuchsia-600 p-6 shadow-2xl">
                 <button onclick="closeMerchModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
                 <h3 class="text-xl font-display text-white mb-1">Pre-Order Merch</h3>
-                <p id="merch-item-name" class="text-sm text-orange-500 font-bold mb-6"></p>
+                <p id="merch-item-name" class="text-sm text-fuchsia-500 font-bold mb-6"></p>
                 <div class="space-y-4">
                     <div><label class="text-[10px] uppercase text-gray-500 block mb-2">Select Size</label><select id="merch-size" class="w-full bg-black border border-zinc-700 text-white p-2 text-xs outline-none"><option value="S">Small (S)</option><option value="M">Medium (M)</option><option value="L">Large (L)</option><option value="XL">Extra Large (XL)</option></select><button onclick="alert('Size Chart:\\nS: 38\\nM: 40\\nL: 42\\nXL: 44')" class="text-[9px] text-blue-400 underline mt-1 cursor-pointer">View Size Chart</button></div>
                     <div><label class="text-[10px] uppercase text-gray-500 block mb-2">Delivery Address (Hostel/City)</label><textarea id="merch-address" rows="3" class="w-full bg-black border border-zinc-700 text-white p-2 text-xs outline-none" placeholder="Enter full delivery address..."></textarea></div>
-                    <button onclick="confirmMerchOrder()" class="w-full bg-orange-600 text-white font-bold py-3 text-xs hover:bg-orange-500 uppercase">Confirm Order</button>
+                    <button onclick="confirmMerchOrder()" class="w-full bg-fuchsia-600 text-white font-bold py-3 text-xs hover:bg-fuchsia-500 uppercase">Confirm Order</button>
                 </div>
             </div>
         </div>
@@ -495,10 +603,10 @@
                     
                     <!-- SECTION 1: CORE TEAM -->
                     <div>
-                        <h3 class="text-orange-500 font-bold uppercase text-xs tracking-widest mb-4">Emergency Contacts</h3>
+                        <h3 class="text-fuchsia-500 font-bold uppercase text-xs tracking-widest mb-4">Emergency Contacts</h3>
                         <div class="space-y-4">
                             <div class="flex items-center gap-4 bg-zinc-900/50 p-3 border border-zinc-800">
-                                <div class="bg-orange-600 p-2 rounded-full text-white"><i data-lucide="phone" class="w-4 h-4"></i></div>
+                                <div class="bg-fuchsia-600 p-2 rounded-full text-white"><i data-lucide="phone" class="w-4 h-4"></i></div>
                                 <div>
                                     <p class="text-white text-sm font-bold">Rahul Sharma</p>
                                     <p class="text-[10px] text-gray-500">Fest Convener</p>
@@ -532,7 +640,7 @@
                         </div>
                         <p class="text-xs text-gray-400 mb-4">
                             NIFT Jodhpur, Karwar, Rajasthan 342037.<br>
-                            <span class="text-orange-500">25 mins from Railway Station.</span>
+                            <span class="text-fuchsia-500">25 mins from Railway Station.</span>
                         </p>
                         <a href="https://maps.app.goo.gl/placeholder" target="_blank" class="w-full block text-center bg-white text-black py-2 text-xs font-bold uppercase hover:bg-gray-200">Navigate</a>
                     </div>
@@ -573,32 +681,27 @@
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         
-        // ENTROPY EFFECT: Particles instead of wireframe sphere
+        // VIBHRAM EFFECT: Distorted Wave Particles
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 1500;
+        const particlesCount = 2000;
         const posArray = new Float32Array(particlesCount * 3);
-        const velocityArray = new Float32Array(particlesCount * 3); // For movement
+        const colorArray = new Float32Array(particlesCount * 3);
 
-        for(let i = 0; i < particlesCount * 3; i++) {
-            // Distribute in a sphere-like cloud but with noise
-            const r = 10 + Math.random() * 5;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1);
+        for(let i = 0; i < particlesCount * 3; i+=3) {
+            // Spiral distribution
+            const r = Math.random() * 30 + 5;
+            const theta = Math.random() * Math.PI * 2 * 3; // multiple spirals
             
-            posArray[i] = r * Math.sin(phi) * Math.cos(theta); // x
-            posArray[i+1] = r * Math.sin(phi) * Math.sin(theta); // y
-            posArray[i+2] = r * Math.cos(phi); // z
-            
-            // Random tiny velocities for "brownian motion"
-            velocityArray[i] = (Math.random() - 0.5) * 0.02;
+            posArray[i] = r * Math.cos(theta); // x
+            posArray[i+1] = (Math.random() - 0.5) * 10; // y height variation
+            posArray[i+2] = r * Math.sin(theta); // z
         }
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         
-        // Material: Orange/Red atoms
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.08,
-            color: 0xff5500,
+            size: 0.1,
+            color: 0xffffff,
             transparent: true,
             opacity: 0.8,
             blending: THREE.AdditiveBlending
@@ -607,49 +710,84 @@
         const particleCloud = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particleCloud);
 
-        camera.position.z = 25;
+        camera.position.z = 30;
+        camera.position.y = 10;
+        camera.lookAt(0,0,0);
         
         let mouseX = 0, mouseY = 0;
+        let time = 0;
         
         document.addEventListener('mousemove', (event) => { 
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.0005;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.0005;
         });
         
         document.addEventListener('touchmove', (event) => { 
             if(event.touches.length > 0) { 
-                mouseX = (event.touches[0].clientX - window.innerWidth / 2) * 0.001; 
-                mouseY = (event.touches[0].clientY - window.innerHeight / 2) * 0.001; 
+                mouseX = (event.touches[0].clientX - window.innerWidth / 2) * 0.0005; 
+                mouseY = (event.touches[0].clientY - window.innerHeight / 2) * 0.0005; 
             } 
         });
 
         function animate() { 
             requestAnimationFrame(animate); 
+            time += 0.01;
             
             const positions = particleCloud.geometry.attributes.position.array;
             
-            // ENTROPY: Jitter particles
-            for(let i = 0; i < particlesCount * 3; i+=3) {
-                positions[i] += (Math.random() - 0.5) * 0.05 + (mouseX * 0.1); 
-                positions[i+1] += (Math.random() - 0.5) * 0.05 + (mouseY * -0.1);
-                positions[i+2] += (Math.random() - 0.5) * 0.05;
+            // VIBHRAM: Sine wave distortion + Color shift
+            particlesMaterial.color.setHSL(Math.sin(time * 0.2) * 0.5 + 0.5, 1.0, 0.5); // Cycle colors rainbow-ish
+
+            for(let i = 0; i < particlesCount; i++) {
+                const ix = i * 3;
+                const iy = i * 3 + 1;
+                const iz = i * 3 + 2;
                 
-                // Keep them somewhat bounded so they don't fly off screen forever
-                if (Math.abs(positions[i]) > 20) positions[i] *= 0.9;
-                if (Math.abs(positions[i+1]) > 20) positions[i+1] *= 0.9;
-                if (Math.abs(positions[i+2]) > 20) positions[i+2] *= 0.9;
+                // Wavy movement
+                positions[iy] += Math.sin(time + positions[ix] * 0.2) * 0.05;
             }
             
             particleCloud.geometry.attributes.position.needsUpdate = true;
             
-            particleCloud.rotation.y += 0.002;
-            particleCloud.rotation.x += 0.001;
+            // Gentle rotation based on mouse
+            particleCloud.rotation.y += 0.002 + mouseX * 0.1;
+            particleCloud.rotation.z += mouseY * 0.1;
             
             renderer.render(scene, camera); 
         }
         
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-        window.onload = function() { animate(); startCountdown(); };
+        // FIXED: Updated target date to Feb 27, 2026
+        function startCountdown() { const festDate = new Date("Feb 27, 2026 00:00:00").getTime(); setInterval(function() { const now = new Date().getTime(); const distance = festDate - now; const days = Math.floor(distance / (1000 * 60 * 60 * 24)); const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((distance % (1000 * 60)) / 1000); document.getElementById("cd-days").innerText = days; document.getElementById("cd-hours").innerText = hours; document.getElementById("cd-mins").innerText = minutes; document.getElementById("cd-secs").innerText = seconds; }, 1000); }
+        
+        // NEW: Function to render slideshow
+        function renderEventSlideshow() {
+            const container = document.getElementById('event-slider');
+            if(!container) return;
+            
+            // Filter out 'special' events if needed, or show all except main fashion show/edm if redundant
+            const eventsToShow = eventsData.filter(e => e.id !== 101 && e.id !== 102);
+            
+            let html = '';
+            eventsToShow.forEach(e => {
+                html += `
+                <div class="slide-card min-w-[280px] bg-zinc-900 border border-zinc-800 p-4 relative group hover:border-fuchsia-500 transition-colors cursor-pointer" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false}); checkUpsell();">
+                    <div class="h-40 overflow-hidden mb-4 relative">
+                        <img src="${e.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-2 right-2 bg-black/80 px-2 text-[10px] font-bold text-white">${e.isPremium ? 'PREMIUM' : 'REGULAR'}</div>
+                    </div>
+                    <h3 class="text-xl font-display text-white mb-1 uppercase">${e.title}</h3>
+                    <div class="flex justify-between text-xs text-gray-400 font-mono mb-3">
+                        <span>₹${e.price}</span>
+                        <span>${e.members}</span>
+                    </div>
+                    <button class="w-full border border-fuchsia-600 text-fuchsia-500 text-[10px] font-bold uppercase py-2 hover:bg-fuchsia-600 hover:text-black transition-colors">Add to Cart</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.onload = function() { animate(); startCountdown(); renderEventSlideshow(); };
 
         let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false, hasExistingPass=false;
         let cart = { pass: null, events: [] }; 
@@ -762,7 +900,7 @@
         function triggerAdmin() { adminTriggerCount++; if(adminTriggerCount >= 3) { adminTriggerCount = 0; window.open(ADMIN_URL, '_blank'); } }
 
         function toggleLogs() { const s = document.getElementById('logs-sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('translate-x-full')) { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('log-dot').classList.add('hidden'); } else { s.classList.add('translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
-        function startCountdown() { const festDate = new Date("Feb 24, 2026 00:00:00").getTime(); setInterval(function() { const now = new Date().getTime(); const distance = festDate - now; const days = Math.floor(distance / (1000 * 60 * 60 * 24)); const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((distance % (1000 * 60)) / 1000); document.getElementById("cd-days").innerText = days; document.getElementById("cd-hours").innerText = hours; document.getElementById("cd-mins").innerText = minutes; document.getElementById("cd-secs").innerText = seconds; }, 1000); }
+        // Note: startCountdown defined earlier in the script block near window.onload
         function openMerchModal(itemName, itemPrice) { if(!currentUser) { alert("Please login first to pre-order merch."); handleAccountClick(); return; } currentMerchItem = { name: itemName, price: itemPrice }; document.getElementById('merch-item-name').innerText = `${itemName} - ₹${itemPrice}`; document.getElementById('merch-modal').classList.remove('hidden'); document.getElementById('merch-modal').style.display = 'flex'; }
         function closeMerchModal() { document.getElementById('merch-modal').style.display = 'none'; }
         function confirmMerchOrder() { const size = document.getElementById('merch-size').value; const address = document.getElementById('merch-address').value; if(!address) return alert("Please enter a delivery address."); const cleanEmail = currentUser.email.replace(/\./g, ','); db.ref('users/' + cleanEmail + '/merch_orders').push({ item: currentMerchItem.name, price: currentMerchItem.price, size: size, address: address, status: 'Ordered', timestamp: Date.now() }); db.ref('users/' + cleanEmail).update({ paymentStatus: "Pending", pendingAmount: currentMerchItem.price, verificationReason: "Merch Order: " + currentMerchItem.name }); alert("Pre-order Placed! Please pay via the QR code in your Profile to confirm."); closeMerchModal(); }
@@ -776,7 +914,15 @@
         
         function updateCartUI() { const bar = document.getElementById('cart-bar'); if ((cart.pass) || cart.events.length > 0) { bar.classList.remove('translate-y-full'); let total = cart.pass ? cart.pass.price : 0; let usedFreeSlots = 0; if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) { usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length; } cart.events.forEach((e) => { if (isNift) return; if (cart.pass && (cart.pass.name.includes('Nexus Prime')) && !e.isPremium) { if (usedFreeSlots < 2) { usedFreeSlots++; } else { total += e.price; } } else { total += e.price; } }); document.getElementById('cart-total').innerText = "₹" + total; let desc = cart.pass ? cart.pass.name : "No Pass Selected"; if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`; document.getElementById('cart-desc').innerText = desc; } else { bar.classList.add('translate-y-full'); } }
         
-        function checkUpsell() { if (isNift || hasExistingPass) { initiateCheckout(); return; } if (!cart.pass) { document.getElementById('pass-warning-modal').classList.remove('hidden'); document.getElementById('pass-warning-modal').style.display = 'flex'; return; } initiateCheckout(); }
+        function checkUpsell() { 
+            const hasStandalone = cart.events.some(e => e.id === 102 || e.id === 101); // Fashion Show ID or EDM
+            if (!cart.pass && !hasStandalone && !isNift && !hasExistingPass) { 
+                document.getElementById('pass-warning-modal').classList.remove('hidden'); 
+                document.getElementById('pass-warning-modal').style.display = 'flex'; 
+                return; 
+            } 
+            initiateCheckout(); 
+        }
         function selectPassFromWarning(name, price, type) { cart.pass = { name, price, type }; const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std' }; selectPass(name, price, type, map[name]); document.getElementById('pass-warning-modal').classList.add('hidden'); saveCart(); initiateCheckout(); }
         
         function saveCart() { localStorage.setItem('spectrum_cart', JSON.stringify(cart)); }
@@ -784,7 +930,10 @@
         function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
         
         function initiateCheckout() { 
-            let total = isNift ? 0 : (hasExistingPass ? 0 : cart.pass.price); 
+            // Fix: Check if cart.pass exists before accessing price
+            let passPrice = cart.pass ? cart.pass.price : 0;
+            let total = isNift ? 0 : (hasExistingPass ? 0 : passPrice); 
+            
             let eventHtml = ""; 
             let usedFreeSlots = 0; 
             
@@ -810,8 +959,24 @@
             }); 
             
             finalTotal = total; 
-            document.getElementById('rec-pass-name').innerText = cart.pass ? (cart.pass.name + (hasExistingPass ? " (Owned)" : "")) : "Entry Pass"; 
-            document.getElementById('rec-pass-price').innerText = hasExistingPass ? "₹0" : (isNift ? "₹0" : `₹${cart.pass.price}`); 
+            
+            // Fix display names for pass
+            let passName = "No Base Pass";
+            if (cart.pass) {
+                passName = cart.pass.name + (hasExistingPass ? " (Owned)" : "");
+            } else if (cart.events.length > 0) {
+                 passName = "Event Ticket Only";
+            }
+
+            document.getElementById('rec-pass-name').innerText = passName; 
+            
+            // Fix display price
+            let displayPassPrice = "₹0";
+            if (!isNift && !hasExistingPass && cart.pass) {
+                displayPassPrice = `₹${cart.pass.price}`;
+            }
+            document.getElementById('rec-pass-price').innerText = displayPassPrice; 
+            
             document.getElementById('rec-events-list').innerHTML = eventHtml; 
             document.getElementById('rec-total').innerText = `₹${total}`; 
             
@@ -863,8 +1028,8 @@
             if(userDataDB.merch_orders) {
                 const orders = userDataDB.merch_orders;
                 Object.values(orders).forEach(order => {
-                    html += `<div class="bg-zinc-900 border border-orange-900/30 p-3 mb-2 rounded">
-                                <div class="flex justify-between"><span class="text-white font-bold uppercase text-xs">${order.item} (${order.size})</span><span class="text-orange-500 text-[10px]">₹${order.price}</span></div>
+                    html += `<div class="bg-zinc-900 border border-fuchsia-900/30 p-3 mb-2 rounded">
+                                <div class="flex justify-between"><span class="text-white font-bold uppercase text-xs">${order.item} (${order.size})</span><span class="text-fuchsia-500 text-[10px]">₹${order.price}</span></div>
                                 <p class="text-[9px] text-gray-500 mt-1">Status: ${order.status || 'Pending'}</p>
                              </div>`;
                 });
@@ -956,7 +1121,7 @@
                 paymentStatus: "Pending", 
                 utr: utr, 
                 order: { 
-                    pass: cart.pass.name, 
+                    pass: cart.pass ? cart.pass.name : (cart.events.some(e => e.id === 102) ? "Fashion Show Ticket" : "Unknown"), 
                     events: finalEvents, 
                     total: (userDataDB?.order?.total || 0) + finalTotal, 
                     promo: promoApplied ? promoApplied.code : "None", 
@@ -991,7 +1156,7 @@
             } 
         }
         
-        function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `NIFT${namePart}${phonePart}${randPart}`; }
+        function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `SPEC${namePart}${phonePart}${randPart}`; }
         function userRegister(){ 
             const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; 
             if(!e||!p||!n||!ph) return alert("Fill all details"); 
@@ -1001,8 +1166,13 @@
                 crd.user.sendEmailVerification(); 
                 const sID = generateSpectrumID(n, ph); 
                 db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); 
-                alert("Registered! Please check your email to verify account."); 
-                switchAuthMode('login'); closeModal(); handleAccountClick(); 
+                
+                // SECURITY FIX: Sign out immediately after creating account to prevent auto-login
+                auth.signOut().then(() => {
+                    alert("Registered! Verification email sent. Please verify before logging in."); 
+                    switchAuthMode('login'); 
+                    // We do NOT close the modal, keep them on login screen
+                });
             }).catch(err=>alert(err.message)); 
         }
 
@@ -1139,18 +1309,18 @@
 
         const schedule = {
             day1: [
-                { time: "09:00 AM", title: "Inauguration", loc: "Main Auditorium", type: "General" },
+                { time: "09:00 AM", title: "Registration", loc: "Campus", type: "General" },
                 { time: "11:00 AM", title: "Street Battle", loc: "Amphitheatre", type: "Culture" },
                 { time: "01:00 PM", title: "Valorant Prelims", loc: "IT Lab 3", type: "Gaming" },
-                { time: "04:00 PM", title: "Battle of Bands", loc: "Main Stage", type: "Music" },
-                { time: "07:30 PM", title: "Fashion Show", loc: "Ramp Area", type: "Show" }
+                { time: "06:30 PM", title: "Inauguration", loc: "Rhythm Theatre", type: "General" },
+                { time: "08:00 PM", title: "EDM Night", loc: "Main Ground", type: "Show" }
             ],
             day2: [
                 { time: "10:00 AM", title: "Treasure Hunt", loc: "Campus Wide", type: "Fun" },
-                { time: "12:00 PM", title: "Box Cricket Finals", loc: "Sports Ground", type: "Sports" },
-                { time: "02:00 PM", title: "Solo Singing", loc: "Mini Audi", type: "Music" },
-                { time: "05:00 PM", title: "Runway Rivals", loc: "Ramp Area", type: "Fashion" },
-                { time: "08:00 PM", title: "EDM Night", loc: "Main Ground", type: "Show" }
+                { time: "02:00 PM", title: "Among Us IRL", loc: "T5 + Campus", type: "Literary" },
+                { time: "04:00 PM", title: "Battle of Bands", loc: "Main Stage", type: "Music" },
+                { time: "06:00 PM", title: "Valedictory", loc: "OAT", type: "General" },
+                { time: "07:30 PM", title: "Fashion Show", loc: "Ramp Area", type: "Show" }
             ]
         };
 
@@ -1161,14 +1331,14 @@
             ['day1', 'day2'].forEach(d => {
                 const tab = document.getElementById(`tab-${d}`);
                 if(tab) {
-                    tab.classList.replace('border-orange-500', 'border-transparent');
+                    tab.classList.replace('border-fuchsia-500', 'border-transparent');
                     tab.classList.replace('text-white', 'text-gray-500');
                 }
             });
 
             const activeTab = document.getElementById(`tab-${day}`);
             if(activeTab) {
-                activeTab.classList.replace('border-transparent', 'border-orange-500');
+                activeTab.classList.replace('border-transparent', 'border-fuchsia-500');
                 activeTab.classList.replace('text-gray-500', 'text-white');
             }
 
@@ -1178,9 +1348,9 @@
                     html += `
                     <div class="timeline-item relative pl-8 pb-8 group">
                         <div class="timeline-line"></div>
-                        <div class="absolute left-3 top-1 timeline-dot group-hover:bg-orange-500 transition-colors"></div>
+                        <div class="absolute left-3 top-1 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
                         <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
-                            <span class="text-orange-500 font-mono text-sm font-bold w-24">${item.time}</span>
+                            <span class="text-fuchsia-500 font-mono text-sm font-bold w-24">${item.time}</span>
                             <div class="flex-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded hover:border-white transition-colors">
                                 <h4 class="text-white font-bold uppercase">${item.title}</h4>
                                 <div class="flex justify-between mt-1 text-[10px] text-gray-500 font-mono uppercase">
@@ -1196,8 +1366,8 @@
             if(typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        const eventsData = [ { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: 'https://docs.google.com/document/d/placeholder' }, { id: 102, club: 'entertainment', title: 'Fashion Show (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style.', rules: '#' }, { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#' }, { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Eastern and Western Solo Singing.', rules: '#' }, { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '1', desc: 'Solo Fashion Walk competition.', rules: '#' }, { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#' }, { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#' }, { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#' }, { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#' }, { id: 9, club: 'adventure', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#' }, { id: 10, club: 'adventure', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#' }, { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#' }, { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#' }, { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainability workshop.', rules: '#' } ];
-        function filterEvents(cat) { const grid = document.getElementById('events-grid'); grid.innerHTML=''; document.querySelectorAll('.filter-btn').forEach(btn => { if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black"; } else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white hover:border-white"; } }); const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); filtered.forEach(e => { let priceText = `Fee: ₹${e.price}`; if(isNift) priceText = `Fee: ₹0 (NIFT)`; let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`; if(cart.events.some(ev => ev.id == e.id)) { btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-orange-600 bg-orange-600 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Selected</button>`; } if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-3 text-xs font-bold uppercase cursor-default">Owned</button>`; } grid.innerHTML += `<div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 hover:border-orange-500/50 transition-colors"><div class="h-48 overflow-hidden relative"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 right-0 bg-black/70 px-2 py-1 flex items-center gap-1 text-[10px] font-mono"><i data-lucide="users" class="w-3 h-3 text-orange-500"></i> ${e.members}</div></div><div class="p-4"><div class="flex justify-between items-start mb-1"><h3 class="text-white font-bold uppercase text-sm">${e.title}</h3><button onclick="toggleInfo(${e.id})" class="text-gray-400 hover:text-white"><i data-lucide="info" class="w-4 h-4"></i></button></div><p class="text-[10px] text-gray-500 mt-0">${priceText}</p>${e.isPremium ? '<span class="text-orange-500 text-[9px] font-bold uppercase tracking-widest">Premium Event</span>' : ''}<div id="info-${e.id}" class="info-content text-[10px] text-gray-400 mt-2"><p class="mb-2">${e.desc}</p><a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a></div>${btnHtml}</div></div>`; }); if(typeof lucide !== 'undefined') lucide.createIcons(); }
+        const eventsData = [ { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: 'https://docs.google.com/document/d/placeholder' }, { id: 102, club: 'entertainment', title: 'Fashion Show (Main)', price: 2000, isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹20,000.', rules: '#' }, { id: 1, club: 'culture', title: 'Street Battle', price: 50, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#' }, { id: 2, club: 'culture', title: 'Solo Singing', price: 50, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Eastern and Western Solo Singing.', rules: '#' }, { id: 3, club: 'culture', title: 'Runway Rivals', price: 100, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '1', desc: 'Solo Fashion Walk competition.', rules: '#' }, { id: 4, club: 'entertainment', title: 'Battle of Bands', price: 150, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#' }, { id: 6, club: 'sports', title: 'Valorant', price: 50, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#' }, { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#' }, { id: 8, club: 'sports', title: 'Box Cricket', price: 100, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#' }, { id: 9, club: 'adventure', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#' }, { id: 10, club: 'adventure', title: 'Treasure Hunt', price: 50, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#' }, { id: 11, club: 'lit', title: 'Debate War', price: 30, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#' }, { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#' }, { id: 13, club: 'essc', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainability workshop.', rules: '#' }, { id: 14, club: 'lit', title: 'Among Us IRL', price: 50, img: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=600', members: 'Group', desc: 'Find the imposter in real life.', rules: '#' } ];
+        function filterEvents(cat) { const grid = document.getElementById('events-grid'); grid.innerHTML=''; document.querySelectorAll('.filter-btn').forEach(btn => { if(btn.innerText.toLowerCase().includes(cat) || (cat==='all' && btn.innerText==='All')) { btn.className="filter-btn active text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-white bg-white text-black"; } else { btn.className="filter-btn text-[10px] font-bold uppercase tracking-widest px-4 py-3 border border-zinc-700 text-white hover:border-white"; } }); const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); filtered.forEach(e => { let priceText = `Fee: ₹${e.price}`; if(isNift) priceText = `Fee: ₹0 (NIFT)`; let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-zinc-700 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Add</button>`; if(cart.events.some(ev => ev.id == e.id)) { btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-4 border border-fuchsia-600 bg-fuchsia-600 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Selected</button>`; } if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { btnHtml = `<button class="w-full mt-4 bg-green-900/50 text-green-500 py-3 text-xs font-bold uppercase cursor-default">Owned</button>`; } grid.innerHTML += `<div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 hover:border-fuchsia-500/50 transition-colors"><div class="h-48 overflow-hidden relative"><img src="${e.img}" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 right-0 bg-black/70 px-2 py-1 flex items-center gap-1 text-[10px] font-mono"><i data-lucide="users" class="w-3 h-3 text-fuchsia-500"></i> ${e.members}</div></div><div class="p-4"><div class="flex justify-between items-start mb-1"><h3 class="text-white font-bold uppercase text-sm">${e.title}</h3><button onclick="toggleInfo(${e.id})" class="text-gray-400 hover:text-white"><i data-lucide="info" class="w-4 h-4"></i></button></div><p class="text-[10px] text-gray-500 mt-0">${priceText}</p>${e.isPremium ? '<span class="text-fuchsia-500 text-[9px] font-bold uppercase tracking-widest">Premium Event</span>' : ''}<div id="info-${e.id}" class="info-content text-[10px] text-gray-400 mt-2"><p class="mb-2">${e.desc}</p><a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a></div>${btnHtml}</div></div>`; }); if(typeof lucide !== 'undefined') lucide.createIcons(); }
     </script>
 </body>
 </html>
