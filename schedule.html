@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum '26 | Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: #f0f0f0; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
+        .font-serif { font-family: 'Italiana', serif; }
+        .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d946ef, #06b6d4); z-index: 0; }
+        .timeline-dot { width: 12px; height: 12px; background: #000; border: 2px solid #d946ef; border-radius: 50%; z-index: 10; position: relative; box-shadow: 0 0 10px #d946ef; }
+        .card-glass { background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); transition: 0.3s; }
+        .card-glass:hover { border-color: #06b6d4; transform: translateX(10px); background: rgba(30, 30, 30, 0.8); }
+    </style>
+</head>
+<body class="p-6 pb-24">
+    <nav class="flex justify-between items-center mb-16">
+        <a href="theme.html" class="flex items-center gap-2 text-fuchsia-500 hover:text-white transition-colors"><i data-lucide="arrow-left"></i> Back to Home</a>
+        <h1 class="font-display text-2xl tracking-widest text-white">EVENT TIMELINE</h1>
+    </nav>
+
+    <div class="max-w-3xl mx-auto">
+        
+        <!-- Day 1 Header -->
+        <div class="flex items-end gap-4 mb-12 border-b border-zinc-800 pb-4">
+            <h2 class="text-4xl font-display text-white">DAY 01</h2>
+            <span class="text-fuchsia-500 font-mono mb-1">February 27, 2026</span>
+        </div>
+
+        <div class="relative pl-6 space-y-12 mb-24">
+            <!-- Event 1 -->
+            <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">09:00 AM</span>
+                    <div class="flex-1 card-glass p-5 rounded-lg">
+                        <h4 class="text-xl text-white font-bold uppercase mb-1">Registration & Entry</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Campus Entrance</span>
+                            <span class="text-green-500">Kickoff</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+             <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">06:30 PM</span>
+                    <div class="flex-1 card-glass p-5 rounded-lg">
+                        <h4 class="text-xl text-white font-bold uppercase mb-1">Inauguration Ceremony</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Rhythm Theatre</span>
+                            <span class="text-fuchsia-500">Main Event</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 italic">Faculty: Dr. Ruchika Dawar, Dr. Sheetal Soni</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot bg-fuchsia-500 border-white"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-fuchsia-400 font-mono text-sm font-bold w-32 pt-1">08:00 PM</span>
+                    <div class="flex-1 bg-zinc-900 border border-fuchsia-500/50 p-5 rounded-lg shadow-[0_0_20px_rgba(217,70,239,0.1)]">
+                        <h4 class="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-cyan-400 font-bold uppercase mb-1">EDM Night</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Main Ground</span>
+                            <span class="text-white bg-fuchsia-600 px-2 rounded">PRO SHOW</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 Header -->
+        <div class="flex items-end gap-4 mb-12 border-b border-zinc-800 pb-4">
+            <h2 class="text-4xl font-display text-white">DAY 02</h2>
+            <span class="text-fuchsia-500 font-mono mb-1">February 28, 2026</span>
+        </div>
+
+        <div class="relative pl-6 space-y-12">
+            <!-- Event 1 -->
+            <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">02:00 PM</span>
+                    <div class="flex-1 card-glass p-5 rounded-lg">
+                        <h4 class="text-xl text-white font-bold uppercase mb-1">Among Us IRL</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> T5 + Campus</span>
+                            <span class="text-yellow-500">Literary Club</span>
+                        </div>
+                         <p class="text-xs text-gray-500 mt-2">Prizes: 4 Gold, 4 Silver, 4 Bronze Medals + Certificates</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">06:00 PM</span>
+                    <div class="flex-1 card-glass p-5 rounded-lg">
+                        <h4 class="text-xl text-white font-bold uppercase mb-1">Valedictory Ceremony</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> OAT</span>
+                            <span class="text-gray-400">Closing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event 3 -->
+            <div class="timeline-item relative pl-8 group">
+                <div class="timeline-line"></div>
+                <div class="absolute left-3 top-2 timeline-dot bg-white border-fuchsia-500"></div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <span class="text-fuchsia-400 font-mono text-sm font-bold w-32 pt-1">07:30 PM</span>
+                    <div class="flex-1 bg-zinc-900 border border-fuchsia-500/50 p-5 rounded-lg shadow-[0_0_20px_rgba(217,70,239,0.1)]">
+                        <h4 class="text-2xl text-white font-bold uppercase mb-1">Fashion Show</h4>
+                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Ramp Area</span>
+                            <span class="text-white bg-cyan-600 px-2 rounded">FLAGSHIP</span>
+                        </div>
+                        <p class="text-xs text-yellow-400 mt-2 font-bold">Prize Pool: ₹20,000</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
