@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions | SPECTRUM '26</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;300;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* THEME: Electric Blue Mode */
+        :root { 
+            --bg-dark: #050505; 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(5, 10, 20, 0.85); 
+            --primary: #3b82f6;
+            --secondary: #06b6d4;
+        }
+        
+        body { background-color: var(--bg-dark); color: #e5e5e5; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* FX */
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.04; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%); }
+        
+        /* Gradients & Text */
+        .text-gradient { background: linear-gradient(to right, var(--primary), var(--secondary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glitch-text { position: relative; display: inline-block; color: white; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); opacity: 0; mix-blend-mode: hard-light; pointer-events: none;}
+        .glitch-text:hover::before { opacity: 1; left: 2px; text-shadow: -1px 0 var(--primary); clip-path: inset(20% 0 80% 0); animation: glitch-1 2s infinite linear alternate-reverse; }
+        .glitch-text:hover::after { opacity: 1; left: -2px; text-shadow: -1px 0 var(--secondary); clip-path: inset(60% 0 10% 0); animation: glitch-2 3s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+
+        /* Glass Components */
+        .glass-panel { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glass-panel:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateX(5px); }
+
+        /* Protocol List Styles */
+        .protocol-item { position: relative; padding-left: 2rem; padding-bottom: 3rem; }
+        .protocol-line { position: absolute; left: 24px; top: 24px; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--primary), rgba(255,255,255,0.05)); z-index: 0; }
+        .protocol-item:last-child .protocol-line { display: none; }
+        .protocol-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid var(--primary); border-radius: 8px; z-index: 10; position: absolute; left: 0; top: 0; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        ul.rules-list { list-style: none; padding: 0; margin-top: 1rem; }
+        ul.rules-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; color: #94a3b8; font-size: 0.85rem; line-height: 1.6; }
+        ul.rules-list li::before { content: '>'; position: absolute; left: 0; color: var(--secondary); font-family: 'Space Mono', monospace; font-weight: bold; }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-white">
+
+    <div class="noise-overlay"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-5 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-white/5">
+        <a href="index.html" class="flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity">
+            <i data-lucide="arrow-left" class="w-5 h-5 text-white"></i>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-white">Return to Base</span>
+        </a>
+        <div class="font-display text-xl font-bold tracking-widest text-center">
+            SPEC<span class="text-gradient">TRUM</span>
+        </div>
+        <div class="w-20"></div> 
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-16 px-6 text-center relative z-10">
+        <h1 class="text-5xl md:text-7xl font-display text-white mb-2 glitch-text" data-text="PROTOCOLS">PROTOCOLS</h1>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em]">Terms & Conditions</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-6 pb-24 relative z-10">
+        
+        <!-- Section 1 -->
+        <div class="protocol-item reveal">
+            <div class="protocol-line"></div>
+            <div class="protocol-icon text-cyan-400">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div class="glass-panel p-8 rounded-lg ml-16 border-l-2 border-l-cyan-500">
+                <h3 class="text-2xl font-display text-white mb-1">01. Access Control</h3>
+                <p class="text-xs text-cyan-400 font-mono mb-4 uppercase tracking-widest">Entry Requirements</p>
+                <ul class="rules-list">
+                    <li>Entry to the fest is strictly via the official <strong>Digital ID Card</strong> (Spectrum Pass).</li>
+                    <li>A valid college ID card is mandatory along with the Spectrum Pass for verification at the gate.</li>
+                    <li>The "Nexus Prime" pass grants entry to the campus for both days and access to pro-shows.</li>
+                    <li>Right to admission is reserved by the NIFT Jodhpur administration.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="protocol-item reveal">
+            <div class="protocol-line"></div>
+            <div class="protocol-icon text-blue-400">
+                <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
+            </div>
+            <div class="glass-panel p-8 rounded-lg ml-16 border-l-2 border-l-blue-500">
+                <h3 class="text-2xl font-display text-white mb-1">02. Transaction Policy</h3>
+                <p class="text-xs text-blue-400 font-mono mb-4 uppercase tracking-widest">Refunds & Transfers</p>
+                <ul class="rules-list">
+                    <li>All ticket sales are final. <strong>No refunds</strong> will be processed under any circumstances.</li>
+                    <li>Tickets are non-transferable. The name on the pass must match your College ID.</li>
+                    <li>In case of event cancellation due to force majeure, the organizing committee's decision regarding rescheduling will be final.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="protocol-item reveal">
+            <div class="protocol-line"></div>
+            <div class="protocol-icon text-purple-400">
+                <i data-lucide="scale" class="w-5 h-5"></i>
+            </div>
+            <div class="glass-panel p-8 rounded-lg ml-16 border-l-2 border-l-purple-500">
+                <h3 class="text-2xl font-display text-white mb-1">03. Code of Conduct</h3>
+                <p class="text-xs text-purple-400 font-mono mb-4 uppercase tracking-widest">Behavioral Standards</p>
+                <ul class="rules-list">
+                    <li>Possession or consumption of alcohol, narcotics, or any illicit substances is <strong>strictly prohibited</strong>.</li>
+                    <li>Any form of harassment or violence will lead to immediate expulsion without refund.</li>
+                    <li>Damage to college property will result in heavy fines and potential legal action.</li>
+                    <li>Participants must adhere to the dress code where specified for formal events.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="protocol-item reveal">
+            <div class="protocol-line"></div>
+            <div class="protocol-icon text-pink-400">
+                <i data-lucide="camera-off" class="w-5 h-5"></i>
+            </div>
+            <div class="glass-panel p-8 rounded-lg ml-16 border-l-2 border-l-pink-500">
+                <h3 class="text-2xl font-display text-white mb-1">04. Media & Liability</h3>
+                <p class="text-xs text-pink-400 font-mono mb-4 uppercase tracking-widest">Rights & Restrictions</p>
+                <ul class="rules-list">
+                    <li>The organizers are not responsible for the loss or theft of personal belongings.</li>
+                    <li>By entering, you grant permission to be photographed/filmed for promotional use.</li>
+                    <li>Participation in adventure/sports events is at the participant's own risk.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-12 reveal">
+            <p class="text-xs text-gray-500 font-mono mb-6">BY REGISTERING, YOU ACCEPT THESE PROTOCOLS.</p>
+            <a href="index.html" class="inline-block bg-white/5 border border-white/20 text-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">
+                Acknowledge & Return
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="py-8 bg-black border-t border-white/5 text-center relative z-10">
+        <p class="text-[10px] text-gray-600 font-mono uppercase tracking-widest">© 2026 NIFT Jodhpur | Legal Division</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Init Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
