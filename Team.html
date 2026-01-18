@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team | SPECTRUM '26</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;300;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* THEME: Electric Blue Mode */
+        :root { 
+            --bg-dark: #050505; 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(5, 10, 20, 0.85); 
+            --primary: #3b82f6;
+            --secondary: #06b6d4;
+        }
+        
+        body { background-color: var(--bg-dark); color: #e5e5e5; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .font-serif { font-family: 'Italiana', serif; } 
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* FX */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; pointer-events: none; }
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.04; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%); }
+        
+        /* CRT Scanline Effect ("Scre Effect") */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            animation: scanline 0.2s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes scanline { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+
+        /* Gradients & Text */
+        .text-gradient { background: linear-gradient(to right, var(--primary), var(--secondary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glitch-text { position: relative; display: inline-block; color: white; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); opacity: 0; mix-blend-mode: hard-light; pointer-events: none;}
+        .glitch-text:hover::before { opacity: 1; left: 2px; text-shadow: -1px 0 var(--primary); clip-path: inset(20% 0 80% 0); animation: glitch-1 2s infinite linear alternate-reverse; }
+        .glitch-text:hover::after { opacity: 1; left: -2px; text-shadow: -1px 0 var(--secondary); clip-path: inset(60% 0 10% 0); animation: glitch-2 3s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+
+        /* Glass Components */
+        .glass-panel { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glass-panel:hover { border-color: rgba(59, 130, 246, 0.6); transform: translateY(-5px) scale(1.01); box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.3); }
+
+        /* Team Card Specifics */
+        .role-badge { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 8px; border: 1px solid var(--primary); color: var(--secondary); display: inline-block; margin-bottom: 0.5rem; }
+        .social-link { color: #6b7280; transition: color 0.3s; }
+        .social-link:hover { color: var(--secondary); }
+
+        /* Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-white">
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-5 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-white/5">
+        <a href="index.html" class="flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity">
+            <i data-lucide="arrow-left" class="w-5 h-5 text-white"></i>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-white">Return to Base</span>
+        </a>
+        <div class="font-display text-xl font-bold tracking-widest text-center">
+            SPEC<span class="text-gradient">TRUM</span>
+        </div>
+        <div class="w-20"></div> 
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-12 px-6 text-center relative z-10">
+        <h1 class="text-5xl md:text-7xl font-display text-white mb-2 glitch-text" data-text="THE CORE">THE CORE</h1>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em]">Operational Hierarchy</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-6 pb-24 relative z-10">
+        
+        <!-- Section: Architects (Top Tier) -->
+        <div class="mb-24">
+            <div class="flex items-center gap-4 mb-10 reveal">
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent to-blue-500/50"></div>
+                <h2 class="text-2xl font-display text-white tracking-widest">ARCHITECTS</h2>
+                <div class="h-px flex-1 bg-gradient-to-l from-transparent to-blue-500/50"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 justify-center">
+                <!-- Director -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">Director</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Prof. G.H.S. Prasad</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Administration</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Joint Director -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal" style="transition-delay: 100ms;">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">Joint Director</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Dr. A.K. Singh</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Administration</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SDAC Advisor -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal" style="transition-delay: 200ms;">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">SDAC Advisor</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Ms. S. Gupta</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Faculty Mentor</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fest Convener -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal" style="transition-delay: 0ms;">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">Fest Convener</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Rahul Sharma</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Master Control</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Co-Convener -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal" style="transition-delay: 100ms;">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">Co-Convener</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Priya Singh</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Operations Lead</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Council President -->
+                <div class="glass-panel p-0 rounded-lg overflow-hidden group reveal" style="transition-delay: 200ms;">
+                    <div class="h-64 bg-zinc-900 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                    </div>
+                    <div class="p-6 relative -mt-12">
+                        <span class="role-badge bg-black/50 backdrop-blur">SDAC President</span>
+                        <h3 class="text-2xl font-display text-white mb-1">Amit Verma</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4">Student Council</p>
+                        <div class="flex gap-4">
+                            <a href="#" class="social-link"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                            <a href="#" class="social-link"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Club Leadership (6 Clubs x 2 Leaders) -->
+        <div class="mb-20">
+            <div class="flex items-center gap-4 mb-10 reveal">
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-500/50"></div>
+                <h2 class="text-2xl font-display text-white tracking-widest">CLUB COMMANDERS</h2>
+                <div class="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/50"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Club 1: Cultural -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-cyan-500/50 transition-colors">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-cyan-400">CULTURAL CLUB</h3>
+                        <i data-lucide="music" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Sara Khan</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Arman Malik</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club 2: Technical -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-blue-500/50 transition-colors" style="transition-delay: 50ms;">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-blue-400">TECHNICAL CLUB</h3>
+                        <i data-lucide="cpu" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1521119989659-a83eee488058?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Arjun Das</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Riya Tech</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club 3: Literary -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-purple-500/50 transition-colors" style="transition-delay: 100ms;">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-purple-400">LITERARY CLUB</h3>
+                        <i data-lucide="book-open" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Neha Gupta</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Kavya Sharma</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club 4: Sports -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-green-500/50 transition-colors" style="transition-delay: 150ms;">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-green-400">SPORTS CLUB</h3>
+                        <i data-lucide="trophy" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1522075469751-3a3694fb60ed?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Rohan Mehta</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1533227297136-9b7d228d90b4?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Virat Singh</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club 5: ESSC -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-yellow-500/50 transition-colors" style="transition-delay: 200ms;">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-yellow-400">ESSC CLUB</h3>
+                        <i data-lucide="heart" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Anjali Devi</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Raj Kumar</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club 6: Adventure -->
+                <div class="glass-panel p-6 rounded-lg reveal hover:border-red-500/50 transition-colors" style="transition-delay: 250ms;">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-display text-red-400">ADVENTURE CLUB</h3>
+                        <i data-lucide="camera" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1504593811423-6dd665756598?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Vikram Lens</h4><p class="text-xs text-gray-500 font-mono">President</p></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden border border-white/10"><img src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=200&q=80" class="w-full h-full object-cover"></div>
+                            <div><h4 class="text-white text-sm font-bold">Simran Trek</h4><p class="text-xs text-gray-500 font-mono">Secretary</p></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Section: Web Team -->
+        <div class="reveal">
+            <div class="border border-white/10 bg-white/5 p-8 rounded-lg text-center">
+                <h3 class="text-xl font-display text-white mb-2">VIBHRAM DIGITAL UNIT</h3>
+                <p class="text-gray-400 text-xs font-mono mb-6">Built & Maintained by the Spectrum Tech Committee</p>
+                <div class="flex justify-center gap-2 flex-wrap">
+                    <span class="px-3 py-1 bg-black rounded-full border border-white/10 text-[10px] text-gray-300">Lead Developer</span>
+                    <span class="px-3 py-1 bg-black rounded-full border border-white/10 text-[10px] text-gray-300">UI/UX Designer</span>
+                    <span class="px-3 py-1 bg-black rounded-full border border-white/10 text-[10px] text-gray-300">Backend Ops</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="py-8 bg-black border-t border-white/5 text-center relative z-10">
+        <p class="text-[10px] text-gray-600 font-mono uppercase tracking-widest">© 2026 NIFT Jodhpur | Personnel Division</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Init Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        // Three.js Background (Blue/Cyan Particles - same as Theme page)
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i+=3) {
+            posArray[i] = (Math.random() - 0.5) * 60; 
+            posArray[i+1] = (Math.random() - 0.5) * 60; 
+            posArray[i+2] = (Math.random() - 0.5) * 60; 
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        // Electric Blue Color
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.12,
+            color: 0x3b82f6, 
+            transparent: true,
+            opacity: 0.7,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleCloud = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleCloud);
+
+        camera.position.z = 25;
+        
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => { 
+            mouseX = event.clientX * 0.0002;
+            mouseY = event.clientY * 0.0002;
+        });
+        
+        function animate() { 
+            requestAnimationFrame(animate); 
+            particleCloud.rotation.y += 0.001;
+            particleCloud.rotation.x -= 0.0005;
+            
+            // Interactive movement
+            particleCloud.rotation.y += mouseX * 0.05;
+            particleCloud.rotation.x += mouseY * 0.05;
+
+            renderer.render(scene, camera); 
+        }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+</body>
+</html>
