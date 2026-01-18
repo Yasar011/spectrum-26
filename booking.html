@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Book | SPECTRUM '26</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;300;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* THEME: Electric Blue Mode */
+        :root { 
+            --bg-dark: #050505; 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(5, 10, 20, 0.85); 
+            --primary: #3b82f6;
+            --secondary: #06b6d4;
+        }
+        
+        body { background-color: var(--bg-dark); color: #e5e5e5; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* FX */
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.04; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%); }
+        
+        /* Gradients & Text */
+        .text-gradient { background: linear-gradient(to right, var(--primary), var(--secondary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glitch-text { position: relative; display: inline-block; color: white; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); opacity: 0; mix-blend-mode: hard-light; pointer-events: none;}
+        .glitch-text:hover::before { opacity: 1; left: 2px; text-shadow: -1px 0 var(--primary); clip-path: inset(20% 0 80% 0); animation: glitch-1 2s infinite linear alternate-reverse; }
+        .glitch-text:hover::after { opacity: 1; left: -2px; text-shadow: -1px 0 var(--secondary); clip-path: inset(60% 0 10% 0); animation: glitch-2 3s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+
+        /* Glass Components */
+        .glass-panel { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glass-panel:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateX(5px); }
+
+        /* Step Connectors */
+        .step-connector { position: absolute; left: 24px; top: 60px; bottom: -40px; width: 2px; background: linear-gradient(to bottom, var(--primary), rgba(255,255,255,0.1)); z-index: 0; }
+        .step-item:last-child .step-connector { display: none; }
+        .step-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #000; border: 2px solid var(--primary); border-radius: 50%; z-index: 10; position: relative; box-shadow: 0 0 15px var(--primary); }
+
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-white">
+
+    <div class="noise-overlay"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-5 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-white/5">
+        <a href="index.html" class="flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity">
+            <i data-lucide="arrow-left" class="w-5 h-5 text-white"></i>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-white">Return to Base</span>
+        </a>
+        <div class="font-display text-xl font-bold tracking-widest text-center">
+            SPEC<span class="text-gradient">TRUM</span>
+        </div>
+        <div class="w-20"></div> 
+    </nav>
+
+    <!-- HEADER -->
+    <header class="pt-32 pb-12 px-6 text-center relative z-10">
+        <h1 class="text-5xl md:text-7xl font-display text-white mb-2 glitch-text" data-text="OPERATIONS">OPERATIONS</h1>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em]">Booking Procedure</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-6 pb-24 relative z-10">
+        
+        <!-- Step 1 -->
+        <div class="step-item relative pl-20 pb-12 reveal">
+            <div class="step-connector"></div>
+            <div class="absolute left-0 top-0 step-icon text-cyan-400">
+                <i data-lucide="user-plus" class="w-6 h-6"></i>
+            </div>
+            <div class="glass-panel p-6 rounded-lg border-l-4 border-l-blue-500">
+                <h3 class="text-xl font-display text-white mb-2">01. Initialize Identity</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Click the <strong>Login</strong> button on the top right. Create a new account using your email. 
+                    <br><span class="text-cyan-400 text-xs">Note: NIFT Students must use their official @nift.ac.in email for free access.</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-item relative pl-20 pb-12 reveal">
+            <div class="step-connector"></div>
+            <div class="absolute left-0 top-0 step-icon text-blue-400">
+                <i data-lucide="ticket" class="w-6 h-6"></i>
+            </div>
+            <div class="glass-panel p-6 rounded-lg border-l-4 border-l-cyan-500">
+                <h3 class="text-xl font-display text-white mb-2">02. Select Clearance Level</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Navigate to <strong>Buy Tickets</strong>. Choose your Base Pass:
+                </p>
+                <ul class="mt-2 space-y-1 text-xs text-gray-500 font-mono">
+                    <li>> <strong>Cyber Entry (₹299):</strong> Basic Entry Only.</li>
+                    <li>> <strong>Nexus Prime (₹499):</strong> Entry + 2 Free Events + Priority Access.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-item relative pl-20 pb-12 reveal">
+            <div class="step-connector"></div>
+            <div class="absolute left-0 top-0 step-icon text-purple-400">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+            </div>
+            <div class="glass-panel p-6 rounded-lg border-l-4 border-l-purple-500">
+                <h3 class="text-xl font-display text-white mb-2">03. Add Event Modules</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Select the competitions or workshops you wish to participate in. 
+                    If you have <strong>Nexus Prime</strong>, the first two regular events will automatically be marked as FREE in your cart.
+                </p>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-item relative pl-20 pb-12 reveal">
+            <div class="step-connector"></div>
+            <div class="absolute left-0 top-0 step-icon text-pink-400">
+                <i data-lucide="scan-line" class="w-6 h-6"></i>
+            </div>
+            <div class="glass-panel p-6 rounded-lg border-l-4 border-l-pink-500">
+                <h3 class="text-xl font-display text-white mb-2">04. Execute Transaction</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Proceed to checkout. A UPI QR code will be generated.
+                    <br>1. Scan and Pay the total amount.
+                    <br>2. Take a <strong>Screenshot</strong> of the successful payment.
+                    <br>3. Upload the screenshot and enter the 12-digit UTR number.
+                </p>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-item relative pl-20 pb-12 reveal">
+            <div class="step-connector"></div>
+            <div class="absolute left-0 top-0 step-icon text-green-400">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div class="glass-panel p-6 rounded-lg border-l-4 border-l-green-500">
+                <h3 class="text-xl font-display text-white mb-2">05. Verification Protocol</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Your pass will show as "Pending" in your Profile. Our team will verify the UTR and Screenshot within 2-4 hours.
+                    <br>Once verified, your <strong>Digital ID Card</strong> with a unique QR code will be activated.
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-8 reveal">
+            <a href="index.html" class="inline-block bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:scale-105 transition-transform uppercase tracking-widest text-xs">
+                Initiate Sequence
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="py-8 bg-black border-t border-white/5 text-center relative z-10">
+        <p class="text-[10px] text-gray-600 font-mono uppercase tracking-widest">© 2026 NIFT Jodhpur | Operations</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Init Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
