@@ -247,13 +247,14 @@
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Buy Tickets</a>
                 <a onclick="switchView('events'); toggleSidebar()" class="menu-link">Events</a>
                 <a onclick="switchView('merch'); toggleSidebar()" class="menu-link">Merch Store</a>
+                <a onclick="openSquadModal(); toggleSidebar()" class="menu-link text-cyan-400">Squad Uplink</a>
                 
                 <!-- NEW LINKS -->
                 <div class="h-px bg-white/10 my-4"></div>
                 
-                <a href="schedule.html" class="menu-link text-cyan-400">Schedule</a>
-                <a href="team.html" class="menu-link">Team</a>
-                <a href="theme.html" class="menu-link">Theme</a>
+                <a href="schedule.html" class="menu-link text-sm">Schedule</a>
+                <a href="team.html" class="menu-link text-sm">Team</a>
+                <a href="theme.html" class="menu-link text-sm">Theme</a>
                 <a href="terms.html" class="menu-link text-sm">Terms & Conditions</a>
                 <a href="booking.html" class="menu-link text-sm">How to Book</a>
                 <a href="help.html" class="menu-link text-sm">Get Help</a>
@@ -377,6 +378,33 @@
                                     <button onclick="toggleEvent(101, 'EDM Night (Add-on)', 200, true); checkUpsell();" class="btn-outline hover:bg-white hover:text-black rounded">Get Pass (₹200)</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NEW MERCH DROP PREVIEW SECTION -->
+            <section class="py-20 border-y border-white/5 bg-zinc-950/80 relative z-20 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1 reveal">
+                        <div class="relative w-full h-[400px] rounded-lg overflow-hidden border border-white/10 group cursor-pointer" onclick="switchView('merch')">
+                            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-6 left-6">
+                                <h3 class="text-3xl font-display text-white mb-1">VIBHRAM DROP 01</h3>
+                                <p class="text-xs text-gray-400 font-mono">Limited Edition Apparel</p>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest shadow-lg animate-pulse">Now Live</div>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 reveal md:delay-100">
+                        <h2 class="text-4xl font-display text-white mb-6 uppercase tracking-wider">Cyber Store</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                            Wear the glitch. The official Spectrum '26 merchandise is now available for pre-order. High-quality streetwear designed for the digital age.
+                        </p>
+                        <div class="flex gap-4">
+                            <button onclick="switchView('merch')" class="btn-primary rounded">Enter Store</button>
+                            <span class="text-xs text-gray-500 self-center font-mono uppercase tracking-widest">*Limited Stock</span>
                         </div>
                     </div>
                 </div>
@@ -997,8 +1025,8 @@
         let currentMerchItem = null;
         
         // UPI ROTATION LOGIC
-        const upiList = ["chyasar2004-2@oksbi", "merchant2@upi", "merchant3@upi"]; // Add your real 3 IDs here
-        let activeUPI = upiList[Math.floor(Math.random() * upiList.length)]; 
+        let upiList = ["chyasar2004-2@oksbi"]; // Default fallback
+        let activeUPI = upiList[0]; 
 
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1013,8 +1041,18 @@
             } else { runTerminalIntro(); }
             loadCart(); filterEvents('all'); 
             
-            // Initial QR Load
-            updateQRImages();
+            // --- UPI CONFIG LISTENER FIXED ---
+            db.ref('system_config/upi_id').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if(val) {
+                    // Split comma-separated values, trim spaces, and filter empty strings
+                    upiList = val.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                    if(upiList.length > 0) {
+                        activeUPI = upiList[Math.floor(Math.random() * upiList.length)];
+                        updateQRImages();
+                    }
+                }
+            });
 
             auth.onAuthStateChanged((user) => {
                 if (user) {
@@ -1102,7 +1140,28 @@
 
         function toggleLogs() { const s = document.getElementById('logs-sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('translate-x-full')) { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('log-dot').classList.add('hidden'); } else { s.classList.add('translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
         
-        function openMerchModal(itemName, itemPrice) { if(!currentUser) { alert("Login required for store access."); handleAccountClick(); return; } currentMerchItem = { name: itemName, price: itemPrice }; document.getElementById('merch-item-name').innerText = `${itemName} [₹${itemPrice}]`; document.getElementById('merch-modal').classList.remove('hidden'); document.getElementById('merch-modal').style.display = 'flex'; }
+        function openMerchModal(itemName, itemPrice) { 
+            if(!currentUser) { 
+                alert("Login required for store access."); 
+                handleAccountClick(); 
+                return; 
+            } 
+            
+            // CHECK PURCHASE LIMIT (1 Per Item Rule)
+            if(userDataDB && userDataDB.merch_orders) {
+                const hasOrdered = Object.values(userDataDB.merch_orders).some(order => order.item === itemName);
+                if(hasOrdered) {
+                    alert("Limit Reached: You have already purchased this item.");
+                    return;
+                }
+            }
+
+            currentMerchItem = { name: itemName, price: itemPrice }; 
+            document.getElementById('merch-item-name').innerText = `${itemName} [₹${itemPrice}]`; 
+            document.getElementById('merch-modal').classList.remove('hidden'); 
+            document.getElementById('merch-modal').style.display = 'flex'; 
+        }
+
         function closeMerchModal() { document.getElementById('merch-modal').style.display = 'none'; }
         
         // SQUAD LOGIC
@@ -1193,6 +1252,7 @@
             }); 
             
             closeMerchModal(); 
+            openModal(); // Ensure main modal wrapper is open
             showPayment(); // Go directly to payment
         }
         
@@ -1364,7 +1424,15 @@
         function showPayment() { 
             if(!currentUser) { alert("Login Required"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; } 
             if (finalTotal === 0) { completePayment(true); return; } 
-            document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-payment').classList.remove('hidden'); 
+            
+            // Ensure Modal is open and in correct state (Added this part)
+            document.getElementById('auth-modal').classList.remove('hidden'); 
+            document.getElementById('auth-modal').style.display='flex';
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-profile').classList.add('hidden');
+            document.getElementById('view-receipt').classList.add('hidden'); 
+            document.getElementById('view-payment').classList.remove('hidden'); 
+            
             const upiString = `upi://pay?pa=${activeUPI}&pn=Spectrum26&am=${finalTotal}&cu=INR`;
             document.getElementById('payment-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`; 
         }
@@ -1387,11 +1455,14 @@
             let finalEvents = cart.events; 
             if(hasExistingPass && userDataDB.order && userDataDB.order.events) { finalEvents = [...userDataDB.order.events, ...cart.events]; } 
             
+            // Fix for "Unknown" pass issue
+            let passName = cart.pass ? cart.pass.name : (cart.events.some(e => e.id === 102) ? "Fashion Show Ticket" : (userDataDB?.order?.pass || "Visitor Access"));
+
             const payload = { 
                 paymentStatus: "Pending", 
                 utr: utr, 
                 order: { 
-                    pass: cart.pass ? cart.pass.name : (cart.events.some(e => e.id === 102) ? "Fashion Show Ticket" : "Unknown"), 
+                    pass: passName, 
                     events: finalEvents, 
                     total: (userDataDB?.order?.total || 0) + finalTotal, 
                     promo: promoApplied ? promoApplied.code : "None", 
@@ -1450,13 +1521,27 @@
             idCardSection.classList.remove('hidden');
             document.getElementById('card-name').innerText = userDataDB.name; 
             document.getElementById('card-id').innerText = userDataDB.spectrumId; 
-            document.getElementById('card-access').innerText = userDataDB.order ? userDataDB.order.pass : "REGISTERED"; 
+            
+            // SMART PASS DETECTION (FIX FOR UNKNOWN)
+            let displayPass = "REGISTERED";
+            if (userDataDB.order && userDataDB.order.pass) {
+                displayPass = userDataDB.order.pass;
+                // If it's explicitly "Unknown", try to infer from total paid
+                if (displayPass === "Unknown") {
+                    const totalPaid = parseInt(userDataDB.order.total || 0);
+                    if (totalPaid >= 499) displayPass = "NEXUS PRIME";
+                    else if (totalPaid >= 299) displayPass = "CYBER ENTRY";
+                    else if (userDataDB.paymentStatus === 'Verified') displayPass = "VISITOR";
+                }
+            }
+            document.getElementById('card-access').innerText = displayPass; 
+            
             document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
 
             if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden');
             if(userDataDB.order) { document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; } 
             
-            // PAYMENT STATUS LOGIC (Only affects Ticket Visual & Pending Warnings)
+            // PAYMENT STATUS LOGIC
             if(userDataDB.paymentStatus==="Verified"){ 
                 document.getElementById('ticket-verified').classList.remove('hidden'); 
                 document.getElementById('ticket-qr').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${userDataDB.spectrumId}`; 
