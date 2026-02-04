@@ -374,7 +374,7 @@
                                 <div class="flex items-center gap-4 flex-wrap">
                                     <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹30k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
                                     <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2500, true); checkUpsell();" class="btn-primary rounded">Register (₹2500)</button>
-                                    <button onclick="toggleInfo(102)" class="btn-outline rounded hover:bg-white/10">More Info</button>
+                                    <button onclick="window.location.href='fashion.html'" class="btn-outline rounded hover:bg-white/10">More Info</button>
                                 </div>
                                 
                                 <!-- MORE INFO SECTION -->
@@ -382,7 +382,7 @@
                                     <p class="mb-2"><strong class="text-white">Participants:</strong> 8-12 Members per team.</p>
                                     <p class="mb-2"><strong class="text-white">Theme:</strong> Vibhram (Illusion & Distortion).</p>
                                     <p class="mb-2">Registration includes team entry and backstage access. Prize pool split among top 3 teams.</p>
-                                    <a href="#" class="text-cyan-400 hover:text-white underline flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> Download Rulebook</a>
+                                    <button onclick="window.location.href='rulebook.html'" class="mt-2 btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black text-[10px] py-2 px-4 rounded">Rulebook</button>
                                 </div>
                             </div>
                         </div>
@@ -503,25 +503,90 @@
             </section>
 
             <!-- FOOTER -->
-            <footer class="py-20 bg-[#0a0a0a] border-t border-white/5 reveal relative z-20">
-                <div class="max-w-4xl mx-auto text-center px-6">
-                    <div class="flex justify-center items-center gap-6 mb-10 opacity-70 hover:opacity-100 transition-opacity">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/NIFT_logo.svg/1200px-NIFT_logo.svg.png" class="h-12 mix-blend-screen bg-white/10 rounded p-1" alt="NIFT">
-                        <div class="h-12 w-12 border border-white/30 rounded flex items-center justify-center bg-black/50 backdrop-blur">
-                            <span class="text-[8px] text-cyan-400 font-bold">VIBHRAM</span>
+            <footer class="py-16 bg-[#050505] border-t border-white/10 reveal relative z-20 font-sans">
+                <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
+                    
+                    <!-- Column 1: Brand -->
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/NIFT_logo.svg/1200px-NIFT_logo.svg.png" class="h-8 bg-white/90 rounded p-0.5" alt="NIFT">
+                            <div class="h-8 w-8 border border-white/30 rounded flex items-center justify-center bg-black/50 backdrop-blur">
+                                <span class="text-[6px] text-cyan-400 font-bold">VIBHRAM</span>
+                            </div>
+                            <h3 class="font-display text-lg text-white tracking-wider"><span class="text-blue-500">SPEC</span>TRUM</h3>
                         </div>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            The official annual techno-cultural fest of National Institute of Fashion Technology, Jodhpur. Where entropy meets perception.
+                        </p>
+                        <div class="flex gap-4">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        </div>
+                        <p class="text-gray-600 text-[10px] uppercase tracking-wider mt-4">© 2026 Spectrum NIFT Jodhpur.</p>
                     </div>
-                    <h2 class="font-display text-3xl text-white mb-8 tracking-widest">NIFT JODHPUR</h2>
-                    <div class="flex flex-col md:flex-row justify-center gap-8 mb-12 text-gray-500 text-[10px] uppercase font-bold tracking-widest">
-                        <a href="mailto:spectrum@nift.ac.in" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> spectrum@nift.ac.in</a>
-                        <a href="#" class="hover:text-white transition-colors flex items-center justify-center gap-2"><i data-lucide="phone" class="w-3 h-3"></i> +91 98765 43210</a>
+
+                    <!-- Column 2: Navigation -->
+                    <div>
+                        <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Navigation</h4>
+                        <ul class="space-y-3 text-gray-400 text-xs">
+                            <li><a href="#" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Home</a></li>
+                            <li><a href="#" onclick="switchView('events')" class="hover:text-blue-400 transition-colors">Events</a></li>
+                            <li><a href="schedule.html" class="hover:text-blue-400 transition-colors">Schedule</a></li>
+                            <li><a href="team.html" class="hover:text-blue-400 transition-colors">Our Team</a></li>
+                            <li><a href="fashion.html" class="hover:text-blue-400 transition-colors">Fashion Show</a></li>
+                        </ul>
                     </div>
-                    <div class="flex justify-center gap-8 mb-12">
-                        <a href="#" class="text-white/50 hover:text-blue-500 transition-all hover:scale-125"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        <a href="#" class="text-white/50 hover:text-red-500 transition-all hover:scale-125"><i data-lucide="youtube" class="w-5 h-5"></i></a>
-                        <a href="#" class="text-white/50 hover:text-cyan-500 transition-all hover:scale-125"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+
+                    <!-- Column 3: Key Contacts -->
+                    <div>
+                        <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Key Contacts</h4>
+                        <ul class="space-y-4 text-gray-400 text-xs">
+                            <li>
+                                <span class="block text-gray-500 text-[9px] uppercase">Registration Head</span>
+                                <span class="text-white hover:text-blue-400 cursor-pointer">Contact Info</span>
+                            </li>
+                            <li>
+                                <span class="block text-gray-500 text-[9px] uppercase">Key Coordination</span>
+                                <span class="text-white hover:text-blue-400 cursor-pointer">Contact Info</span>
+                            </li>
+                            <li>
+                                <span class="block text-gray-500 text-[9px] uppercase">Web & Tech Head</span>
+                                <span class="text-cyan-400 font-bold">Yasar CH</span>
+                            </li>
+                            <li>
+                                <span class="block text-gray-500 text-[9px] uppercase">Official Email</span>
+                                <a href="mailto:spectrum@nift.ac.in" class="hover:text-white">spectrum@nift.ac.in</a>
+                            </li>
+                        </ul>
                     </div>
-                    <p class="text-[9px] text-gray-800 font-mono uppercase tracking-widest">Designed by Spectrum Tech Team Head YASAR CH © 2026</p>
+
+                    <!-- Column 4: Legal & Help -->
+                    <div>
+                        <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Legal & Location</h4>
+                        <ul class="space-y-3 text-gray-400 text-xs">
+                            <li><a href="terms.html" class="hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                            <li><a href="#" class="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-blue-400 transition-colors">Refund Policy</a></li>
+                            <li class="pt-2">
+                                <a href="https://maps.app.goo.gl/YourMapLinkHere" target="_blank" class="flex items-start gap-2 hover:text-cyan-400 transition-colors group">
+                                    <i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-red-500 group-hover:text-cyan-400 transition-colors"></i>
+                                    <span>NIFT Jodhpur, Karwar, Rajasthan 342037</span>
+                                </a>
+                            </li>
+                            <li class="mt-6">
+                                <a href="help.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-2.5 rounded font-bold uppercase text-[10px] tracking-widest hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all transform hover:-translate-y-1 w-full justify-center md:w-auto">
+                                    <i data-lucide="help-circle" class="w-3 h-3"></i> Get Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                
+                <!-- Credits Line -->
+                <div class="border-t border-white/5 mt-16 pt-8 text-center">
+                    <p class="text-[9px] text-gray-600 font-mono uppercase tracking-widest">Designed by Spectrum Tech Team Head YASAR CH © 2026</p>
                 </div>
             </footer>
         </main>
@@ -613,7 +678,7 @@
                         </div>
                     </div>
 
-                    <div id="pass-fash" class="glass-panel p-6 cursor-not-allowed opacity-50 transition-all group rounded-lg border-white/5" onclick="selectPass('Vogue Gala', 199, 'special', 'pass-fash')">
+                    <div id="pass-fash" class="glass-panel p-6 cursor-not-allowed opacity-50 transition-all group rounded-lg border-white/5" onclick="alert('Tickets will update soon.')">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-lg font-bold uppercase text-gray-500">Vogue Gala (Audience)</h3>
                             <span class="text-[9px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">COMING SOON</span>
