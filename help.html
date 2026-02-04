@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Help | SPECTRUM '26</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;300;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* VIBHRAM THEME: Consistent with Main Page */
+        :root { 
+            --bg-dark: #050505; 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(5, 10, 20, 0.85); 
+        }
+        
+        body { background-color: var(--bg-dark); color: #e5e5e5; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* Background Noise */
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; opacity: 0.04; background-image: url('https://grainy-gradients.vercel.app/noise.svg'); filter: contrast(150%) brightness(100%); }
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 50%, rgba(29, 78, 216, 0.15), transparent 70%); }
+
+        /* UI Components */
+        .glass-panel { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-gradient { background: linear-gradient(to right, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .faq-item { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .faq-item:hover { border-color: rgba(59, 130, 246, 0.3); background: rgba(255,255,255,0.02); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0, 1, 0, 1); }
+        .faq-item.active .faq-answer { max-height: 500px; transition: max-height 0.5s ease-in-out; }
+        .faq-item.active i.toggle-icon { transform: rotate(180deg); }
+
+        .btn-back {
+            position: fixed; top: 2rem; left: 2rem; z-index: 50;
+            display: flex; items-center; gap: 0.5rem;
+            color: rgba(255,255,255,0.6); font-family: 'Space Mono', monospace; font-size: 0.75rem; uppercase;
+            padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.1); rounded-full;
+            backdrop-filter: blur(10px); transition: all 0.3s;
+        }
+        .btn-back:hover { color: white; border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen p-6 md:p-12 pb-32">
+
+    <div class="noise-overlay"></div>
+    <div class="bg-glow"></div>
+
+    <a href="index.html" class="btn-back">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to Mainframe
+    </a>
+
+    <main class="max-w-4xl mx-auto mt-20 md:mt-32">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-4">SYSTEM <span class="text-gradient">SUPPORT</span></h1>
+            <p class="text-gray-400 font-mono text-xs md:text-sm tracking-widest uppercase">Troubleshooting & Logistics Database</p>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div class="mb-16 relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
+            <div class="relative flex items-center bg-black border border-white/10 rounded-lg p-4">
+                <i data-lucide="search" class="text-gray-500 w-5 h-5 ml-2"></i>
+                <input type="text" placeholder="Search Query (e.g., 'Payment', 'Refund', 'Teams')" class="w-full bg-transparent border-none outline-none text-white ml-4 font-mono text-sm uppercase placeholder-gray-600" onkeyup="filterFAQ(this.value)">
+            </div>
+        </div>
+
+        <!-- FAQ SECTIONS -->
+        <div class="space-y-12" id="faq-container">
+            
+            <!-- SECTION 1: REGISTRATION & PASSES -->
+            <div>
+                <h3 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-6 border-b border-blue-500/30 pb-2 inline-block">01 // Registration & Passes</h3>
+                <div class="space-y-4">
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">How do I register for events?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>1. Create an account using the 'Login' button.<br>2. Go to 'Buy Tickets' and purchase a Base Pass (Cyber Entry or Nexus Prime).<br>3. Once your pass is active, browse 'Events' and add your desired competitions to your pass.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Can I enter without a pass?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>No. Entry to the NIFT campus during Spectrum is restricted to pass holders only. You must have at least a Cyber Entry pass or a specific event ticket (like Vogue Gala) to enter.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Is the Fashion Show included in the pass?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>No. The Vogue Gala (Fashion Show) requires a separate registration. There are two types:<br>1. <b>Participant Team:</b> ₹2500 per team (8-12 members).<br>2. <b>Audience:</b> ₹199 per person.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Can NIFT students participate for free?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes! NIFT students must register using their official `@nift.ac.in` email address to unlock the "Nexus Prime (NIFT)" pass for free. However, they may still need to pay for specific premium add-ons or team registrations if applicable.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Can I upgrade my pass later?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes. If you bought a Cyber Entry pass, you can upgrade to Nexus Prime by paying the difference (₹200) via your profile dashboard.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: EVENTS & COMPETITIONS -->
+            <div>
+                <h3 class="text-cyan-400 font-bold uppercase tracking-widest text-xs mb-6 border-b border-cyan-500/30 pb-2 inline-block">02 // Events & Competitions</h3>
+                <div class="space-y-4">
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">How do I register a team for group events?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>The team leader must purchase the pass and add the event. Once registered, go to "Squad Uplink" in the sidebar or profile to add the Spectrum IDs of your teammates.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">What are the rules for the Fashion Show?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Teams must have 8-12 members. The theme is 'Vibhram' (Illusion/Distortion). Time limit is 10 minutes. Detailed rulebook is available on the Fashion Show page.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Are there cash prizes?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes, major flagship events like Vogue Gala, Battle of Bands, and Valorant have significant cash prize pools. Check individual event cards for prize details.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Can I participate in multiple events?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes, provided the timings do not clash. Please check the schedule page before registering for overlapping events.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Do I need to bring my own equipment?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>For gaming events (Valorant/BGMI), basic peripherals are provided, but you are allowed to bring your own mouse/keyboard. For Battle of Bands, a standard drum kit is provided; please bring your own guitars/processors.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PAYMENTS & REFUNDS -->
+            <div>
+                <h3 class="text-purple-400 font-bold uppercase tracking-widest text-xs mb-6 border-b border-purple-500/30 pb-2 inline-block">03 // Payments & Finance</h3>
+                <div class="space-y-4">
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">My payment is still "Pending".</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Payments are verified manually by our finance team to ensure security. This usually takes 2-4 hours. If it takes longer than 24 hours, please use the 'Report Issue' button in your profile.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Can I get a refund?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>All ticket sales are final. Refunds are only processed if an event is cancelled by the organizers. In case of accidental double payment, contact the technical head immediately with transaction proof.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Which payment modes are accepted?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>We accept payments via UPI (GPay, PhonePe, Paytm) primarily. You must upload the transaction screenshot and enter the UTR number for verification.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">I forgot to upload the screenshot!</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Don't worry. Your registration will remain pending. Contact the registration desk or email us at spectrum@nift.ac.in with your Spectrum ID and the payment proof to manually verify it.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: LOGISTICS -->
+            <div>
+                <h3 class="text-green-400 font-bold uppercase tracking-widest text-xs mb-6 border-b border-green-500/30 pb-2 inline-block">04 // Logistics & Venue</h3>
+                <div class="space-y-4">
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Is accommodation provided?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Accommodation is available for outstation participants on a first-come, first-served basis within the NIFT Campus or partnered hostels. Charges apply separately and must be booked in advance.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">How to reach NIFT Jodhpur?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>We are located at Karwar, Jodhpur. It is approximately 20km from the Jodhpur Railway Station. Pre-paid taxis and Auto-rickshaws are readily available from the station and airport.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Is there parking available?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes, limited parking is available for visitors near the main gate. Please follow the security personnel's instructions.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Are food stalls available?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Yes, a variety of food stalls serving snacks, beverages, and meals will be set up within the festival grounds. Cash and UPI are both accepted.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: TECH & ACCOUNT -->
+            <div>
+                <h3 class="text-red-400 font-bold uppercase tracking-widest text-xs mb-6 border-b border-red-500/30 pb-2 inline-block">05 // Technical Issues</h3>
+                <div class="space-y-4">
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">I forgot my password.</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Click on the 'Forgot Password?' link on the login screen. A reset link will be sent to your registered email address.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Where is my Spectrum ID?</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Your Spectrum ID (e.g., SPEC-AB123) is visible on your profile card and digital ticket once you log in. You must show this ID at the entrance.</p></div></div>
+                    </div>
+
+                    <div class="faq-item bg-white/5 rounded-lg p-6 cursor-pointer" onclick="toggleFAQ(this)">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">The QR code isn't scanning.</h4><i data-lucide="chevron-down" class="toggle-icon text-gray-500 transition-transform duration-300"></i></div>
+                        <div class="faq-answer text-gray-400 text-xs md:text-sm leading-relaxed"><div class="pt-4 border-t border-white/5 mt-4"><p>Try increasing your phone brightness. If it still doesn't work, click the "Report Anomaly" or "QR Error" button on the payment page to switch to a backup UPI ID.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DIRECT CONTACT -->
+        <div class="mt-20 border-t border-white/10 pt-16 text-center">
+            <h2 class="text-2xl font-display text-white mb-8">Need Advanced Support?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                <div class="glass-panel p-6 rounded-lg hover:border-blue-500 transition-colors">
+                    <i data-lucide="mail" class="w-8 h-8 text-blue-500 mx-auto mb-4"></i>
+                    <h4 class="text-white font-bold uppercase text-xs mb-1">Email Us</h4>
+                    <a href="mailto:spectrum@nift.ac.in" class="text-gray-400 text-xs hover:text-white">spectrum@nift.ac.in</a>
+                </div>
+                <div class="glass-panel p-6 rounded-lg hover:border-cyan-500 transition-colors">
+                    <i data-lucide="phone" class="w-8 h-8 text-cyan-500 mx-auto mb-4"></i>
+                    <h4 class="text-white font-bold uppercase text-xs mb-1">Registration Desk</h4>
+                    <p class="text-gray-400 text-xs mb-2">+91 81679 80825</p>
+                    <a href="https://wa.me/918167980825" target="_blank" class="inline-flex items-center gap-1 text-[10px] bg-green-600/20 text-green-400 px-2 py-1 rounded hover:bg-green-600/40 transition-colors">
+                        <i data-lucide="message-circle" class="w-3 h-3"></i> WhatsApp
+                    </a>
+                </div>
+                <div class="glass-panel p-6 rounded-lg hover:border-purple-500 transition-colors">
+                    <i data-lucide="code" class="w-8 h-8 text-purple-500 mx-auto mb-4"></i>
+                    <h4 class="text-white font-bold uppercase text-xs mb-1">Tech Support</h4>
+                    <p class="text-gray-400 text-xs mb-2">Yasar CH</p>
+                    <a href="https://wa.me/918167980825" target="_blank" class="inline-flex items-center gap-1 text-[10px] bg-green-600/20 text-green-400 px-2 py-1 rounded hover:bg-green-600/40 transition-colors">
+                        <i data-lucide="message-circle" class="w-3 h-3"></i> WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleFAQ(element) {
+            const isActive = element.classList.contains('active');
+            
+            // Close all others
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Toggle clicked
+            if (!isActive) {
+                element.classList.add('active');
+            }
+        }
+
+        function filterFAQ(query) {
+            query = query.toLowerCase();
+            const items = document.querySelectorAll('.faq-item');
+            
+            items.forEach(item => {
+                const question = item.querySelector('h4').innerText.toLowerCase();
+                const answer = item.querySelector('.faq-answer').innerText.toLowerCase();
+                
+                if (question.includes(query) || answer.includes(query)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
