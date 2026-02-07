@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Desk | Spectrum '26</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QR Code Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyATPWBVx5bqqIrbgaXm44KDAy29b4ru6NY",
+            authDomain: "spectram-234f7.firebaseapp.com",
+            projectId: "spectram-234f7",
+            storageBucket: "spectram-234f7.firebasestorage.app",
+            messagingSenderId: "192476382126",
+            appId: "1:192476382126:web:26422db3e948165933be3f",
+            measurementId: "G-SK3RN0FDZK",
+            databaseURL: "https://spectram-234f7-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // Cloudinary Config
+        const CLOUD_NAME = "diksl1q87"; 
+        const UPLOAD_PRESET = "spectrum_uploads"; 
+
+        let currentUserData = null;
+        let stream = null;
+        let qrScanner = null;
+
+        // --- AUTH ---
+        window.onload = () => {
+            lucide.createIcons();
+            auth.onAuthStateChanged(user => {
+                if(user) {
+                    checkStaffAccess(user.email);
+                } else {
+                    document.getElementById('login-modal').classList.remove('hidden');
+                }
+            });
+        };
+
+        function checkStaffAccess(email) {
+            const safeEmail = email.replace(/\./g, ',');
+            db.ref('staff_access/' + safeEmail).once('value').then(snap => {
+                if(snap.exists()) {
+                    document.getElementById('login-modal').classList.add('hidden');
+                    loadRecentCheckins();
+                } else {
+                    alert("Access Denied");
+                    auth.signOut();
+                }
+            });
+        }
+
+        // --- QR SCANNER LOGIC ---
+        function openQRScanner() {
+            document.getElementById('qr-modal').classList.remove('hidden');
+            
+            if (!qrScanner) {
+                qrScanner = new Html5Qrcode("qr-reader");
+            }
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            qrScanner.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                console.error("Error starting QR scanner", err);
+                alert("Camera permission required for QR scanning. Please allow camera access.");
+                closeQRScanner();
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the scanned code
+            if (qrScanner) {
+                qrScanner.stop().then(() => {
+                    document.getElementById('qr-modal').classList.add('hidden');
+                    console.log(`Scan result: ${decodedText}`);
+                    
+                    // Populate search and trigger
+                    document.getElementById('search-input').value = decodedText.trim().toUpperCase();
+                    searchUser();
+                }).catch(err => console.error("Failed to stop scanner", err));
+            }
+        }
+
+        function closeQRScanner() {
+            document.getElementById('qr-modal').classList.add('hidden');
+            if (qrScanner) {
+                qrScanner.stop().then(() => {
+                    qrScanner.clear();
+                }).catch(err => console.log("Scanner stop error", err));
+            }
+        }
+
+        // --- SEARCH USER ---
+        function searchUser() {
+            const id = document.getElementById('search-input').value.trim().toUpperCase();
+            if(!id) return alert("Enter Spectrum ID");
+
+            document.getElementById('loader').classList.remove('hidden');
+            
+            // Search by SpectrumID
+            db.ref('users').once('value').then(snap => {
+                const users = snap.val();
+                let foundKey = null;
+                if(users) {
+                    for(const [key, u] of Object.entries(users)) {
+                        if(u.spectrumId === id) { foundKey = key; currentUserData = { ...u, key: key }; break; }
+                    }
+                }
+
+                document.getElementById('loader').classList.add('hidden');
+
+                if(foundKey) {
+                    renderUserCard(currentUserData);
+                } else {
+                    alert("User not found!");
+                    document.getElementById('user-card').classList.add('hidden');
+                }
+            });
+        }
+
+        function playAlertSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            function beep(freq, type, duration, delay) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = type;
+                osc.frequency.value = freq;
+                osc.start(ctx.currentTime + delay);
+                osc.stop(ctx.currentTime + delay + duration);
+            }
+
+            // Triple Beep Alarm
+            beep(800, 'square', 0.2, 0);
+            beep(800, 'square', 0.2, 0.3);
+            beep(800, 'square', 0.4, 0.6);
+        }
+
+        function renderUserCard(u) {
+            document.getElementById('user-card').classList.remove('hidden');
+            document.getElementById('u-name').innerText = u.name;
+            document.getElementById('u-id').innerText = u.spectrumId;
+            document.getElementById('u-college').innerText = u.collegeName || 'N/A';
+            document.getElementById('u-pass').innerText = u.order?.pass || 'No Pass';
+            
+            // Check Payment
+            const payStatus = document.getElementById('u-payment');
+            if(u.paymentStatus === 'Verified') {
+                payStatus.innerHTML = '<span class="text-green-500 flex items-center gap-1"><i data-lucide="check-circle" class="w-4"></i> Verified</span>';
+            } else {
+                payStatus.innerHTML = `<span class="text-red-500 flex items-center gap-1"><i data-lucide="alert-circle" class="w-4"></i> ${u.paymentStatus}</span>`;
+            }
+            
+            // Check previous check-in
+            if(u.checkedIn) {
+                // TRIGGER ALERTS
+                playAlertSound();
+                document.getElementById('dup-by').innerText = u.checkedInBy || 'Unknown Staff';
+                document.getElementById('dup-time').innerText = new Date(u.checkInTime).toLocaleString();
+                document.getElementById('duplicate-modal').classList.remove('hidden');
+
+                document.getElementById('already-checked-msg').classList.remove('hidden');
+                document.getElementById('action-area').classList.add('hidden');
+            } else {
+                document.getElementById('already-checked-msg').classList.add('hidden');
+                document.getElementById('action-area').classList.remove('hidden');
+                document.getElementById('checkin-remarks').value = ""; // Reset remarks
+                startCamera();
+            }
+            lucide.createIcons();
+        }
+
+        function closeDuplicateModal() {
+            document.getElementById('duplicate-modal').classList.add('hidden');
+        }
+
+        // --- CAMERA LOGIC ---
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                const video = document.getElementById('camera-feed');
+                video.srcObject = stream;
+                video.play();
+                document.getElementById('camera-container').classList.remove('hidden');
+                document.getElementById('captured-preview').classList.add('hidden');
+            } catch (err) {
+                console.error("Camera Error", err);
+                alert("Camera access denied or unavailable.");
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('camera-feed');
+            const canvas = document.getElementById('capture-canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            // Show preview
+            document.getElementById('camera-feed').classList.add('hidden');
+            document.getElementById('captured-preview').src = canvas.toDataURL('image/jpeg');
+            document.getElementById('captured-preview').classList.remove('hidden');
+            
+            // Toggle Buttons
+            document.getElementById('btn-capture').classList.add('hidden');
+            document.getElementById('btn-retake').classList.remove('hidden');
+            document.getElementById('btn-confirm').disabled = false;
+            document.getElementById('btn-confirm').classList.remove('opacity-50');
+        }
+
+        function retakePhoto() {
+            document.getElementById('camera-feed').classList.remove('hidden');
+            document.getElementById('captured-preview').classList.add('hidden');
+            document.getElementById('btn-capture').classList.remove('hidden');
+            document.getElementById('btn-retake').classList.add('hidden');
+            document.getElementById('btn-confirm').disabled = true;
+            document.getElementById('btn-confirm').classList.add('opacity-50');
+        }
+
+        // --- SUBMIT CHECK-IN ---
+        async function confirmCheckIn() {
+            if(!currentUserData) return;
+
+            const remarks = document.getElementById('checkin-remarks').value;
+            const btn = document.getElementById('btn-confirm');
+            btn.innerText = "Uploading ID...";
+            btn.disabled = true;
+
+            try {
+                // 1. Upload to Cloudinary
+                const canvas = document.getElementById('capture-canvas');
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+                const formData = new FormData();
+                formData.append('file', blob);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST', body: formData
+                });
+                const data = await res.json();
+                const imageUrl = data.secure_url;
+
+                // 2. Update Firebase
+                btn.innerText = "Verifying...";
+                await db.ref(`users/${currentUserData.key}`).update({
+                    checkedIn: true,
+                    checkInTime: new Date().toISOString(),
+                    idProofUrl: imageUrl,
+                    checkedInBy: auth.currentUser.email,
+                    checkInRemarks: remarks || "None"
+                });
+
+                alert("Check-In Successful!");
+                stopCamera();
+                resetUI();
+
+            } catch (err) {
+                console.error(err);
+                alert("Check-in failed: " + err.message);
+                btn.innerText = "Confirm Check-In";
+                btn.disabled = false;
+            }
+        }
+
+        function stopCamera() {
+            if(stream) stream.getTracks().forEach(track => track.stop());
+        }
+
+        function resetUI() {
+            document.getElementById('user-card').classList.add('hidden');
+            document.getElementById('search-input').value = '';
+            document.getElementById('btn-confirm').innerText = "Confirm Check-In";
+            document.getElementById('checkin-remarks').value = "";
+            retakePhoto(); // Reset camera UI state
+        }
+
+        // --- HISTORY & EXPORT ---
+        function loadRecentCheckins() {
+            db.ref('users').orderByChild('checkedIn').equalTo(true).limitToLast(50).on('value', snap => {
+                const list = document.getElementById('checkin-list');
+                list.innerHTML = '';
+                const data = snap.val();
+                
+                if(data) {
+                    // Convert to array and reverse to show newest first
+                    const arr = Object.values(data).sort((a,b) => new Date(b.checkInTime) - new Date(a.checkInTime));
+                    
+                    arr.forEach(u => {
+                        const time = new Date(u.checkInTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        list.innerHTML += `
+                        <div class="bg-gray-900 border border-gray-700 p-3 rounded flex justify-between items-center text-sm">
+                            <div>
+                                <div class="font-bold text-white">${u.name}</div>
+                                <div class="text-xs text-blue-400 font-mono">${u.spectrumId}</div>
+                                ${u.checkInRemarks && u.checkInRemarks !== "None" ? `<div class="text-[10px] text-yellow-500 italic mt-1">Note: ${u.checkInRemarks}</div>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <a href="${u.idProofUrl}" target="_blank" class="text-blue-400 text-[10px] hover:underline block mb-1">View ID</a>
+                                <div class="text-[10px] text-gray-500">${time}</div>
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    list.innerHTML = '<p class="text-center text-gray-500 text-sm">No check-ins yet.</p>';
+                }
+            });
+        }
+
+        function exportCSV() {
+            db.ref('users').orderByChild('checkedIn').equalTo(true).once('value').then(snap => {
+                const data = snap.val();
+                if(!data) return alert("No data to export");
+
+                let csv = "Name,Spectrum ID,College,Check-In Time,Remarks,ID Proof URL,Verified By\n";
+                Object.values(data).forEach(u => {
+                    const remarks = (u.checkInRemarks || "None").replace(/,/g, " "); // Clean commas for CSV
+                    csv += `"${u.name}","${u.spectrumId}","${u.collegeName || ''}","${u.checkInTime}","${remarks}","${u.idProofUrl}","${u.checkedInBy}"\n`;
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `CheckIn_Report_${new Date().toISOString().slice(0,10)}.csv`;
+                link.click();
+            });
+        }
+
+        function handleLogin() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        }
+    </script>
+</head>
+<body class="bg-black text-white h-screen flex flex-col font-sans">
+
+    <!-- DUPLICATE ALERT MODAL -->
+    <div id="duplicate-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-red-900/90 backdrop-blur-sm">
+        <div class="bg-black border-4 border-red-600 p-8 rounded-2xl shadow-[0_0_100px_rgba(220,38,38,0.5)] text-center max-w-md animate-pulse">
+            <i data-lucide="alert-octagon" class="w-24 h-24 text-red-500 mx-auto mb-4"></i>
+            <h1 class="text-4xl font-black text-white mb-2">STOP!</h1>
+            <h2 class="text-xl font-bold text-red-400 mb-6">ALREADY CHECKED IN</h2>
+            <div class="bg-red-950/50 p-4 rounded mb-6 text-left border border-red-800">
+                 <p class="text-xs text-red-300 uppercase">Verified By:</p>
+                 <p id="dup-by" class="text-white font-mono mb-2">...</p>
+                 <p class="text-xs text-red-300 uppercase">Time:</p>
+                 <p id="dup-time" class="text-white font-mono">...</p>
+            </div>
+            <button onclick="closeDuplicateModal()" class="bg-white text-red-900 font-black py-4 px-8 rounded text-lg hover:scale-105 transition-transform w-full">ACKNOWLEDGE</button>
+        </div>
+    </div>
+
+    <!-- QR SCANNER MODAL -->
+    <div id="qr-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div class="w-full max-w-sm bg-[#0a0a0a] border border-purple-500/50 rounded-xl p-6 relative">
+            <button onclick="closeQRScanner()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
+            <h3 class="text-xl font-bold text-white mb-4 text-center">Scan Participant QR</h3>
+            <div id="qr-reader" class="w-full h-64 bg-black rounded overflow-hidden"></div>
+            <p class="text-xs text-gray-500 text-center mt-4">Point camera at the ticket QR code</p>
+        </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div class="w-full max-w-sm p-8 border border-gray-800 rounded-xl text-center">
+            <h1 class="text-2xl font-bold mb-6">REGISTRATION DESK</h1>
+            <input type="email" id="email" placeholder="Staff Email" class="w-full bg-gray-900 border border-gray-700 p-3 rounded mb-3 text-sm outline-none">
+            <input type="password" id="password" placeholder="Password" class="w-full bg-gray-900 border border-gray-700 p-3 rounded mb-6 text-sm outline-none">
+            <button onclick="handleLogin()" class="w-full bg-blue-600 font-bold py-3 rounded text-sm hover:bg-blue-500">START SHIFT</button>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="p-4 border-b border-gray-800 flex justify-between items-center bg-[#0a0a0a]">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600/20 p-2 rounded text-blue-400"><i data-lucide="scan-line" class="w-5 h-5"></i></div>
+            <h1 class="font-bold tracking-wide">REGISTRATION DESK</h1>
+        </div>
+        <button onclick="exportCSV()" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 border border-gray-600">
+            <i data-lucide="download" class="w-3 h-3"></i> Export CSV
+        </button>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- LEFT: SCAN & VERIFY -->
+        <div class="flex-1 p-6 overflow-y-auto border-r border-gray-800 bg-[#050505]">
+            
+            <!-- SEARCH -->
+            <div class="flex gap-2 mb-8">
+                <input type="text" id="search-input" placeholder="Scan or Enter Spectrum ID" class="flex-1 bg-gray-900 border border-gray-700 p-4 rounded text-lg font-mono text-center uppercase tracking-widest outline-none focus:border-blue-500">
+                <button onclick="searchUser()" class="bg-blue-600 px-6 rounded font-bold hover:bg-blue-500"><i data-lucide="search"></i></button>
+                <button onclick="openQRScanner()" class="bg-purple-600 px-4 rounded font-bold hover:bg-purple-500"><i data-lucide="qr-code"></i></button>
+            </div>
+
+            <!-- LOADER -->
+            <div id="loader" class="hidden text-center py-10"><div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div></div>
+
+            <!-- USER CARD -->
+            <div id="user-card" class="hidden max-w-md mx-auto bg-[#0a0a0a] border border-gray-700 rounded-xl overflow-hidden shadow-2xl">
+                <!-- Header Info -->
+                <div class="p-6 border-b border-gray-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 id="u-name" class="text-2xl font-bold">Name</h2>
+                            <p id="u-id" class="text-blue-400 font-mono text-sm mt-1">ID</p>
+                        </div>
+                        <div id="u-payment" class="text-xs font-bold bg-gray-900 px-2 py-1 rounded"></div>
+                    </div>
+                    <p id="u-college" class="text-gray-400 text-sm mt-4 truncate">College</p>
+                    <p class="text-gray-500 text-xs mt-1">Pass: <span id="u-pass" class="text-white">...</span></p>
+                </div>
+
+                <!-- ALREADY CHECKED IN WARNING -->
+                <div id="already-checked-msg" class="hidden p-8 text-center bg-green-900/10">
+                    <i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto mb-2"></i>
+                    <h3 class="text-green-400 font-bold text-lg">Already Checked In</h3>
+                    <p class="text-gray-500 text-xs mt-1">This user has already been verified.</p>
+                </div>
+
+                <!-- ACTION AREA (CAMERA) -->
+                <div id="action-area" class="p-6">
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Verify Identity (Govt/College ID)</label>
+                        <div id="camera-container" class="relative bg-black rounded-lg overflow-hidden h-48 border border-gray-700">
+                            <video id="camera-feed" autoplay playsinline class="w-full h-full object-cover"></video>
+                            <img id="captured-preview" class="w-full h-full object-cover hidden">
+                            <canvas id="capture-canvas" class="hidden"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mb-4">
+                        <button id="btn-capture" onclick="capturePhoto()" class="flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded font-bold text-sm flex justify-center gap-2"><i data-lucide="camera" class="w-4 h-4"></i> Capture ID</button>
+                        <button id="btn-retake" onclick="retakePhoto()" class="hidden flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded font-bold text-sm flex justify-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Retake</button>
+                    </div>
+
+                    <!-- REMARKS FIELD -->
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Admin Remarks (Optional)</label>
+                        <input type="text" id="checkin-remarks" placeholder="e.g. Verified via DigiLocker, Late Entry" class="w-full bg-black border border-gray-700 p-3 rounded text-sm text-white outline-none focus:border-blue-500 placeholder-gray-700">
+                    </div>
+
+                    <button id="btn-confirm" onclick="confirmCheckIn()" disabled class="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-500 transition-all opacity-50 shadow-lg disabled:cursor-not-allowed">
+                        Confirm Check-In
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: RECENT HISTORY -->
+        <div class="w-full md:w-80 bg-[#0a0a0a] border-l border-gray-800 flex flex-col">
+            <div class="p-4 border-b border-gray-800">
+                <h3 class="font-bold text-sm text-gray-400 uppercase tracking-wider">Live Feed</h3>
+            </div>
+            <div id="checkin-list" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <p class="text-center text-gray-600 text-xs mt-4">Loading history...</p>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
