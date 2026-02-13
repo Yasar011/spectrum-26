@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vogue Gala | Fashion Show</title>
+    <title>Vogue Gala | VIBHRAM Fashion Show</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -37,17 +37,45 @@
 
         .btn-back {
             position: fixed; top: 2rem; left: 2rem; z-index: 50;
-            display: flex; items-center; gap: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
             color: rgba(255,255,255,0.6); font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase;
-            padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.1); rounded-full;
+            padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 999px;
             backdrop-filter: blur(10px); transition: all 0.3s;
         }
         .btn-back:hover { color: white; border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+
+        /* Blinking Animation for Dates */
+        @keyframes date-pulse {
+            0%, 100% { 
+                border-color: rgba(59, 130, 246, 0.3); 
+                box-shadow: 0 0 0px rgba(59, 130, 246, 0);
+            }
+            50% { 
+                border-color: rgba(59, 130, 246, 1); 
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+                transform: scale(1.02);
+            }
+        }
+        .date-blink-container {
+            animation: date-pulse 2s infinite ease-in-out;
+            transition: all 0.3s ease;
+        }
 
         /* Timeline Styles */
         .timeline-container { position: relative; padding-left: 2rem; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 1rem; }
         .timeline-item { position: relative; margin-bottom: 3rem; }
         .timeline-dot { position: absolute; left: -2.35rem; top: 0; width: 0.75rem; height: 0.75rem; background: #3b82f6; border-radius: 50%; box-shadow: 0 0 15px #3b82f6; }
+        
+        .date-badge {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            font-family: 'Space Mono', monospace;
+        }
     </style>
 </head>
 <body class="selection:bg-purple-500 selection:text-white">
@@ -65,30 +93,33 @@
         </div>
 
         <div class="relative z-10">
-            <span class="text-purple-400 font-mono text-xs uppercase tracking-[0.3em] mb-4 block animate-pulse">The Flagship Event</span>
+            <span class="text-blue-400 font-mono text-xs uppercase tracking-[0.4em] mb-4 block animate-pulse font-bold">Official Fashion Show Event</span>
             <h1 class="text-6xl md:text-9xl font-display font-bold text-white mb-2 tracking-widest">VOGUE GALA</h1>
-            <p class="text-2xl md:text-4xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-white to-purple-300 italic mb-8">"Synesthesia"</p>
+            <p class="text-3xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-white to-purple-300 italic mb-8">"VIBHRAM"</p>
             
-            <div class="flex flex-wrap justify-center gap-6 text-xs font-mono text-gray-300 border-t border-b border-white/10 py-6 max-w-3xl mx-auto bg-black/40 backdrop-blur-sm rounded-full px-8">
-                <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Feb 28</div>
-                <div class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-purple-500"></i> 6:00 PM</div>
-                <div class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-cyan-500"></i> Main Amphitheater</div>
+            <!-- BLINKING DATE CONTAINER -->
+            <div class="date-blink-container flex flex-wrap justify-center gap-6 text-xs font-mono text-white border border-white/20 py-6 max-w-3xl mx-auto bg-blue-900/20 backdrop-blur-md rounded-full px-12">
+                <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> FEB 16, 20, 24</div>
+                <div class="w-px h-4 bg-white/20 hidden md:block"></div>
+                <div class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-purple-500"></i> 6:00 PM ONWARDS</div>
+                <div class="w-px h-4 bg-white/20 hidden md:block"></div>
+                <div class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-cyan-500"></i> MAIN AMPHITHEATER</div>
             </div>
             
-            <p class="text-[10px] text-red-500 mt-4 uppercase font-bold tracking-widest opacity-70">*Details are subject to change</p>
-            <button onclick="alert('Venue link will update soon')" class="mt-6 border border-white/20 text-white text-[10px] font-bold uppercase py-2 px-6 hover:bg-white hover:text-black transition-colors rounded-full">View Venue Layout</button>
+            <p class="text-[10px] text-red-500 mt-6 uppercase font-bold tracking-[0.2em] opacity-90">*Only one member from the team needs to register</p>
+            <button onclick="window.scrollTo({top: document.getElementById('register-now').offsetTop, behavior: 'smooth'})" class="mt-8 bg-white text-black text-[11px] font-bold uppercase py-3 px-10 hover:bg-blue-500 hover:text-white transition-all rounded-full tracking-widest shadow-xl">Secure Your Spot</button>
         </div>
     </header>
 
-    <!-- THEME OVERVIEW (VIBHRAM LINK) -->
+    <!-- THEME OVERVIEW -->
     <section class="py-16 px-6 border-b border-white/5">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl font-display text-white mb-6">The Spirit of <span class="text-gradient">VIBHRAM</span></h2>
             <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-2xl mx-auto">
-                Vibhram is the art of distortion, the beautiful glitch in reality. As we explore the theme of "Synesthesia" for the Vogue Gala, we invite you to visualize sound and hear colors. Delve deeper into the core philosophy of our fest.
+                Vibhram is the art of distortion, the beautiful glitch in reality. As we explore the theme of "VIBHRAM" for the Vogue Gala, we invite you to experience the beautiful blur between perception and reality. 
             </p>
             <a href="theme.html" class="inline-flex items-center gap-2 border border-white/20 hover:border-white text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:bg-white/5">
-                Explore Theme <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                Explore Theme Philosophy <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
     </section>
@@ -98,53 +129,61 @@
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="glass-panel p-8 rounded-lg text-center border-t-2 border-t-yellow-500">
                 <i data-lucide="trophy" class="w-8 h-8 text-yellow-500 mx-auto mb-4"></i>
-                <h3 class="text-3xl font-display text-white mb-1">₹30,000</h3>
+                <h3 class="text-3xl font-display text-white mb-1">₹50,000</h3>
                 <p class="text-xs text-gray-400 uppercase tracking-widest">Prize Pool</p>
             </div>
             <div class="glass-panel p-8 rounded-lg text-center border-t-2 border-t-cyan-500">
                 <i data-lucide="users" class="w-8 h-8 text-cyan-500 mx-auto mb-4"></i>
-                <h3 class="text-2xl font-display text-white mb-1">3 Designers</h3>
-                <p class="text-xs text-gray-400 uppercase tracking-widest">+ 1 Stylist (Max Team)</p>
+                <h3 class="text-2xl font-display text-white mb-1">Team Entry</h3>
+                <p class="text-xs text-gray-400 uppercase tracking-widest">Only 1 registration needed</p>
             </div>
             <div class="glass-panel p-8 rounded-lg text-center border-t-2 border-t-purple-500">
                 <i data-lucide="ticket" class="w-8 h-8 text-purple-500 mx-auto mb-4"></i>
-                <h3 class="text-2xl font-display text-white mb-1">₹2499</h3>
-                <p class="text-xs text-gray-400 uppercase tracking-widest">Registration Fee</p>
+                <h3 class="text-2xl font-display text-white mb-1">₹2999</h3>
+                <p class="text-xs text-gray-400 uppercase tracking-widest">Per Team</p>
             </div>
         </div>
     </section>
 
     <!-- ROUNDS TIMELINE -->
     <section class="py-20 px-6 max-w-4xl mx-auto">
-        <h2 class="text-4xl font-display text-white mb-12 text-center">Event Timeline</h2>
+        <h2 class="text-4xl font-display text-white mb-12 text-center">Fashion Show Timeline</h2>
         
         <div class="timeline-container">
             <!-- Round 1 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <h3 class="text-xl font-bold text-white mb-2">Round 1: Conceptualization</h3>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xl font-bold text-white">Round 1: Conceptualization</h3>
+                    <span class="date-badge">Feb 16</span>
+                </div>
                 <p class="text-gray-400 text-xs mb-4 uppercase tracking-widest">Review Meeting 1</p>
                 <div class="text-sm text-gray-300 leading-relaxed bg-white/5 p-4 rounded border border-white/10">
-                    <p class="mb-2">Participants must present to the jury panel:</p>
+                    <p class="mb-2 text-blue-400">Presentation Checklist:</p>
                     <ul class="list-disc pl-5 space-y-1 text-gray-400">
                         <li>Fashion illustrations of all 7 garments.</li>
-                        <li>Theme, Mood, and Colour Boards aligning with "Synesthesia".</li>
+                        <li>Theme, Mood, and Colour Boards aligning with "VIBHRAM".</li>
                     </ul>
-                    <p class="mt-2 text-red-400 text-xs font-bold">Presentation Time: 5 Minutes. Disqualification if concept does not align with theme.</p>
+                    <!-- Added Warning Back -->
+                    <p class="mt-4 text-red-400 text-xs font-bold border-t border-red-500/20 pt-2">
+                        <i data-lucide="alert-triangle" class="w-3 h-3 inline-block mr-1"></i>
+                        Presentation Time: 5 Minutes. Disqualification if concept does not align with theme.
+                    </p>
                 </div>
             </div>
 
             <!-- Round 2 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <h3 class="text-xl font-bold text-white mb-2">Round 2: Prototype & Walk</h3>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xl font-bold text-white">Round 2: Prototype & Walk</h3>
+                    <span class="date-badge">Feb 20</span>
+                </div>
                 <p class="text-gray-400 text-xs mb-4 uppercase tracking-widest">Review Meeting 2</p>
                 <div class="text-sm text-gray-300 leading-relaxed bg-white/5 p-4 rounded border border-white/10">
-                    <p class="mb-2">Teams required to present:</p>
                     <ul class="list-disc pl-5 space-y-1 text-gray-400">
                         <li>Two (2) finished garments/accessories on models.</li>
                         <li>Ramp walk choreography demonstration.</li>
-                        <li>Downloaded music and video files for the show.</li>
                     </ul>
                 </div>
             </div>
@@ -152,15 +191,21 @@
             <!-- Round 3 -->
             <div class="timeline-item">
                 <div class="timeline-dot bg-purple-500 shadow-[0_0_15px_#a855f7]"></div>
-                <h3 class="text-xl font-bold text-white mb-2">Round 3: Final Showdown</h3>
-                <p class="text-gray-400 text-xs mb-4 uppercase tracking-widest">Final Review & Show Day</p>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xl font-bold text-white">Round 3: Grand Finale</h3>
+                    <span class="date-badge">Feb 24</span>
+                </div>
+                <p class="text-gray-400 text-xs mb-4 uppercase tracking-widest">Final Show Day</p>
                 <div class="text-sm text-gray-300 leading-relaxed bg-white/5 p-4 rounded border border-white/10">
-                    <p class="mb-2">Final presentation requirements:</p>
+                    <p class="mb-2">Requirements:</p>
                     <ul class="list-disc pl-5 space-y-1 text-gray-400">
                         <li>All 7 garments/accessories completed.</li>
-                        <li>Final video and audio with changes suggested by faculty.</li>
+                        <li class="text-white font-bold">Submission of Video and Audio files (Mandatory on this day).</li>
                     </ul>
-                    <p class="mt-2 text-red-400 text-xs font-bold">Teams failing to meet manufacturing or choreography standards will be eliminated.</p>
+                    <!-- Added Warning Back -->
+                    <p class="mt-4 text-red-400 text-xs font-bold border-t border-red-500/20 pt-2">
+                        Teams failing to meet manufacturing or choreography standards will be eliminated.
+                    </p>
                 </div>
             </div>
         </div>
@@ -175,9 +220,9 @@
                 </h3>
                 <div class="glass-panel p-6 rounded-lg">
                     <ol class="list-decimal pl-5 space-y-3 text-sm text-gray-300">
-                        <li><b class="text-white">Concept & Theme:</b> Depth of interpretation of "Synesthesia".</li>
-                        <li><b class="text-white">Aesthetics:</b> Garment overall look, construction quality, and styling.</li>
-                        <li><b class="text-white">Performance:</b> Choreography, music sync, and stage presentation.</li>
+                        <li><b class="text-white">Concept & Theme:</b> Depth of interpretation of "VIBHRAM".</li>
+                        <li><b class="text-white">Aesthetics:</b> Garment overall look and styling.</li>
+                        <li><b class="text-white">Performance:</b> Choreography and stage presentation.</li>
                     </ol>
                 </div>
 
@@ -193,12 +238,12 @@
                 </h3>
                 <div class="glass-panel p-6 rounded-lg border-l-4 border-l-red-500">
                     <ul class="space-y-3 text-xs text-gray-400 leading-relaxed font-mono">
-                        <li class="flex gap-2"><span class="text-red-500">01.</span> Audio/Video files submission deadline: 26/02/25.</li>
-                        <li class="flex gap-2"><span class="text-red-500">02.</span> Collection can be 100% self-stitched or up to 50% outsourced.</li>
-                        <li class="flex gap-2"><span class="text-red-500">03.</span> Copyright infringement leads to immediate disqualification.</li>
-                        <li class="flex gap-2"><span class="text-red-500">04.</span> Inappropriate content (songs/choreography) results in disqualification.</li>
-                        <li class="flex gap-2"><span class="text-red-500">05.</span> Reporting time: 1 Hour prior to event at backstage.</li>
-                        <li class="flex gap-2"><span class="text-red-500">06.</span> Construction quality must meet required standards.</li>
+                        <li class="flex gap-2"><span class="text-red-500">01.</span> <b class="text-white">Team Registration:</b> Only one member registers for the whole team.</li>
+                        <li class="flex gap-2"><span class="text-red-500">02.</span> Audio/Video files must be submitted on 24/02/25.</li>
+                        <li class="flex gap-2"><span class="text-red-500">03.</span> Construction quality must meet professional standards.</li>
+                        <li class="flex gap-2"><span class="text-red-500">04.</span> Reporting time: 1 Hour prior to event.</li>
+                        <li class="flex gap-2"><span class="text-red-500">05.</span> Copyright infringement leads to immediate disqualification.</li>
+                        <li class="flex gap-2"><span class="text-red-500">06.</span> Collection can be 100% self-stitched or up to 50% outsourced.</li>
                     </ul>
                 </div>
             </div>
@@ -226,12 +271,12 @@
     </section>
 
     <!-- REGISTRATION CTA -->
-    <section class="py-20 px-6 border-t border-white/10 bg-gradient-to-b from-[#0a0a0a] to-blue-900/10">
+    <section id="register-now" class="py-20 px-6 border-t border-white/10 bg-gradient-to-b from-[#0a0a0a] to-blue-900/10">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-5xl font-display text-white mb-6">Ready to Walk the Ramp?</h2>
-            <p class="text-gray-400 text-sm mb-8 max-w-xl mx-auto">Secure your spot in the most anticipated fashion event of the year. Limited slots available for teams.</p>
+            <p class="text-gray-400 text-sm mb-8 max-w-xl mx-auto">Registration fee: ₹2999 per team. <br>Note: <span class="text-white font-bold">Only one team member</span> needs to register to secure the team's spot.</p>
             
-            <a href="index.html" class="inline-block bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+            <a href="index.html" class="inline-block bg-white text-black px-12 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 shadow-2xl">
                 Register Now
             </a>
 
@@ -256,7 +301,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-16 bg-[#050505] border-t border-white/10 font-sans">
+    <footer class="py-16 bg-[#050505] border-t border-white/10 reveal relative z-20 font-sans">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
             
             <!-- Column 1: Brand -->
@@ -269,12 +314,10 @@
                     <h3 class="font-display text-lg text-white tracking-wider"><span class="text-blue-500">SPEC</span>TRUM</h3>
                 </div>
                 <p class="text-gray-400 text-xs leading-relaxed">
-                    The official annual techno-cultural fest of National Institute of Fashion Technology, Jodhpur. Where entropy meets perception.
+                    The official annual cultural fest of National Institute of Fashion Technology, Jodhpur. Where entropy meets perception.
                 </p>
                 <div class="flex gap-4">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="https://www.instagram.com/spectrum_niftjodhpur?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-gray-400 hover:text-white transition-colors" target="_blank"><i data-lucide="instagram" class="w-5 h-5"></i></a>
                 </div>
                 <p class="text-gray-600 text-[10px] uppercase tracking-wider mt-4">© 2026 Spectrum NIFT Jodhpur.</p>
             </div>
@@ -296,20 +339,22 @@
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Key Contacts</h4>
                 <ul class="space-y-4 text-gray-400 text-xs">
                     <li>
-                        <span class="block text-gray-500 text-[9px] uppercase">Registration Head</span>
-                        <span class="text-white hover:text-blue-400 cursor-pointer">Contact Info</span>
+                        <span class="block text-gray-500 text-[9px] uppercase">Web & Registration Head</span>
+                        <span class="text-white hover:text-blue-400 cursor-pointer">Yasar C H</span>
+                        <span class="text-white hover:text-blue-400 cursor-pointer block">8157980825</span>
                     </li>
                     <li>
-                        <span class="block text-gray-500 text-[9px] uppercase">Key Coordination</span>
-                        <span class="text-white hover:text-blue-400 cursor-pointer">Contact Info</span>
-                    </li>
-                    <li>
-                        <span class="block text-gray-500 text-[9px] uppercase">Web & Tech Head</span>
-                        <span class="text-cyan-400 font-bold">Yasar CH</span>
+                        <span class="block text-gray-500 text-[9px] uppercase">Management</span>
+                        <span class="text-white hover:text-blue-400 cursor-pointer">Chanthan</span>
+                        <span class="text-white hover:text-blue-400 cursor-pointer block">78607 89521</span>
                     </li>
                     <li>
                         <span class="block text-gray-500 text-[9px] uppercase">Official Email</span>
-                        <a href="mailto:spectrum@nift.ac.in" class="hover:text-white">spectrum@nift.ac.in</a>
+                        <a href="mailto:spectrum.jodhpur@nift.ac.in" class="hover:text-white">spectrum.jodhpur@nift.ac.in</a>
+                    </li>
+                    <li>
+                        <span class="block text-gray-500 text-[9px] uppercase">Support Email</span>
+                        <a href="mailto:support@spectrumniftj.com" class="hover:text-white">support@spectrumniftj.com</a>
                     </li>
                 </ul>
             </div>
