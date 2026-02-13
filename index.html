@@ -372,8 +372,8 @@
                                 <h3 class="text-4xl font-serif text-white mb-2">VOGUE GALA</h3>
                                 <p class="text-gray-400 text-xs mb-6 max-w-sm">The ultimate runway showdown. Distort reality with your design.</p>
                                 <div class="flex items-center gap-4 flex-wrap">
-                                    <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹30k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
-                                    <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2500, true); checkUpsell();" class="btn-primary rounded">Register (₹2500)</button>
+                                    <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹50k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
+                                    <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2999, true); checkUpsell();" class="btn-primary rounded">Register (₹2999)</button>
                                     <button onclick="window.location.href='fashion.html'" class="btn-outline rounded hover:bg-white/10">More Info</button>
                                 </div>
                                 
@@ -1706,11 +1706,14 @@
         const eventsData = [
             // FLAGSHIP (With Prizes)
             { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 200, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: '#', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
-            { id: 102, club: 'entertainment', title: 'Fashion Show (Participant)', price: 2500, prize: '₹30,000', isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹30,000.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Participant)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹30,000.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
             
             // ADVENTURE & PHOTO
-            { id: 9, club: 'adventure', title: 'Photo Walk', price: 30, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '8:00 AM', venue: 'Campus Gate' },
-            { id: 10, club: 'adventure', title: 'Treasure Hunt', price: 50, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Central Courtyard' },
+            { id: 9, club: 'adventure', title: 'Photography', price: 100, prize: '₹7000' ,  img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'online' },
+            { id: 10, club: 'adventure', title: 'Short Film', price: 100, prize: '₹7000', img: 'https://static.wixstatic.com/media/9690b1_f32e7522eea54c59bee657e9200bec57~mv2.jpg/v1/fill/w_1254,h_836,al_c/9690b1_f32e7522eea54c59bee657e9200bec57~mv2.jpg', members: '2-4', desc: 'Capture the essence of the fest', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'Online' },
+             {id: 20, club: 'adventure', title: 'Match the Picture', price: 100, prize: '₹4500',img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '3:00 PM- onwards', venue: ' basketball court alley ' },
+            { id: 10, club: 'adventure', title: 'Treasure Hunt', price: 100, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Central Courtyard' },
+
 
             // CULTURAL (Selected Prizes)
             { id: 1, club: 'culture', title: 'Street Battle', price: 50, prize: '₹8,000', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo/Duo', desc: '1v1 and 2v2 Street Dance Battles.', rules: '#', day: 'Day 1', time: '4:00 PM', venue: 'Amphi' },
@@ -1721,7 +1724,7 @@
             // ENVIRONMENTAL (No Cash Prize, just certs/trophies)
             { id: 13, club: 'environment', title: 'Eco Drive', price: 20, img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600', members: 'Solo', desc: 'Sustainable Art Workshop.', rules: '#', day: 'Day 2', time: '10:00 AM', venue: 'Workshop Block' },
             { id: 15, club: 'environment', title: 'Trash to Art', price: 30, img: 'https://images.unsplash.com/photo-1536599018102-9f80331440fb?w=600', members: 'Solo', desc: 'Create art from waste materials.', rules: '#', day: 'Day 2', time: '2:00 PM', venue: 'Design Studios' },
-
+            { id: 10, club: 'environment', title: 'Treasure Hunt', price: 100, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '4-5', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'NIFT Campus' },
             // LITERARY
             { id: 11, club: 'lit', title: 'Debate War', price: 30, prize: '₹3,000', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
             { id: 12, club: 'lit', title: 'Open Mic', price: 30, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#', day: 'Day 2', time: '3:00 PM', venue: 'Amphi' },
@@ -1732,10 +1735,13 @@
             { id: 18, club: 'essc', title: 'Nukkad Natak', price: 100, prize: '₹6,000', img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600', members: 'Group', desc: 'Street Play competition.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Canteen Area' },
 
             // SPORTS (Selected Prizes)
-            { id: 6, club: 'sports', title: 'Valorant', price: 50, prize: '₹10,000', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '5', desc: '5v5 Valorant Tournament.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Computer Lab' },
-            { id: 8, club: 'sports', title: 'Box Cricket', price: 100, prize: '₹8,000', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '6-8', desc: 'Underarm cricket tournament.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
-            { id: 7, club: 'sports', title: 'FIFA 26', price: 50, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
-            { id: 19, club: 'sports', title: 'BGMI', price: 50, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '4', desc: 'Battle Royale Squad Mode.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Computer Lab' }
+            { id: 6, club: 'sports', title: 'Futsal mix', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '8', desc: '4 boys + 2 girls +2 extra', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Computer Lab' },
+            { id: 8, club: 'sports', title: 'Volleyball', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '8', desc: '4 boys +2 girls +2 extra.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
+            { id: 19, club: 'sports', title: 'BBasketball', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '8', desc: '4 boys +2 girls +2 extra.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Computer Lab' }
+            { id: 19, club: 'sports', title: 'Throwball', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '', desc: 'Battle Royale Squad Mode.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Computer Lab' }
+            { id: 7, club: 'sports', title: 'Throwball', price: 100, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
+            { id: 7, club: 'sports', title: 'Throwball', price: 100, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
+            { id: 7, club: 'sports', title: 'Throwball', price: 100, img: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600', members: 'Solo', desc: '1v1 FIFA Console Gaming.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
         ];
 
         function filterEvents(cat) { 
