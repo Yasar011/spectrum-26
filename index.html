@@ -388,15 +388,15 @@
                         </div>
 
                         <!-- EDM NIGHT -->
-                        <div class="glass-panel p-0 group overflow-hidden relative reveal md:delay-100 rounded-lg cursor-not-allowed opacity-75">
-                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80" class="w-full h-[500px] object-cover opacity-30 group-hover:opacity-30 transition-all duration-700">
+                        <div class="glass-panel p-0 group overflow-hidden relative reveal md:delay-100 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-60 transition-all duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-2">Pro Show</span>
-                                <h3 class="text-4xl font-display text-gray-400 mb-2">NEON PULSE</h3>
-                                <p class="text-gray-500 text-xs mb-6 max-w-sm">Lose yourself in the sound. A night of pure auditory hallucination.</p>
+                                <h3 class="text-4xl font-display text-white mb-2">NEON PULSE</h3>
+                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Lose yourself in the sound. A night of pure auditory hallucination.</p>
                                 <div class="flex items-center gap-4">
                                     <div class="bg-white/5 px-4 py-2 border border-white/5"><span class="text-gray-500 font-bold text-lg">Mar 1</span> <span class="text-[9px] text-gray-500 uppercase">Night</span></div>
-                                    <button onclick="alert('Tickets will update soon.')" class="btn-outline border-gray-600 text-gray-500 hover:bg-transparent hover:text-gray-500 rounded cursor-not-allowed">Coming Soon</button>
+                                    <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 799, true); checkUpsell();" class="btn-primary rounded">Add Pass (₹799)</button>
                                 </div>
                             </div>
                         </div>
@@ -648,53 +648,75 @@
 
                 <!-- Pass Selection -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20" id="pass-selection-container">
-                    <div id="pass-gen" class="glass-panel p-6 cursor-not-allowed opacity-50 transition-all group rounded-lg" onclick="selectPass('Cyber Entry', 299, 'base', 'pass-gen')">
-                        <h3 class="text-lg font-bold uppercase text-gray-500 group-hover:text-gray-500 transition-colors">Cyber Entry</h3>
-                        <p class="text-[10px] text-gray-500 mt-2 h-8">Entry Only. Add Events separately.</p>
+                    <!-- General Pass -->
+                    <div id="pass-gen" class="glass-panel p-6 cursor-pointer transition-all group rounded-lg hover:border-cyan-500" onclick="selectPass('General Pass', 399, 'base', 'pass-gen')">
+                        <h3 class="text-lg font-bold uppercase text-white group-hover:text-cyan-400 transition-colors">General Pass</h3>
+                        <p class="text-[10px] text-gray-400 mt-2">Entry + <b>1 Free Event</b>.<br>No Flagship/EDM Access.</p>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center mt-4">
-                            <span class="text-lg font-bold text-gray-500">₹299</span>
+                            <span class="text-lg font-bold text-white">₹399</span>
                             <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-gen"></div>
                         </div>
                     </div>
                     
-                    <div id="pass-std" class="glass-panel p-6 border-white/5 cursor-not-allowed opacity-50 rounded-lg" onclick="selectPass('Nexus Prime', 499, 'base', 'pass-std')">
+                    <!-- Gold Pass -->
+                    <div id="pass-gold" class="glass-panel p-6 border-white/5 cursor-pointer rounded-lg hover:border-cyan-500" onclick="selectPass('Gold Pass', 599, 'base', 'pass-gold')">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-lg font-bold uppercase text-gray-500">Nexus Prime</h3>
-                            <span class="text-[9px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">COMING SOON</span>
+                            <h3 class="text-lg font-bold uppercase text-white">Gold Pass</h3>
+                            <span class="text-[9px] bg-yellow-600/50 text-yellow-200 px-2 py-0.5 rounded">POPULAR</span>
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-2 h-8">Entry + <b>2 Regular Events FREE</b>.</p>
+                        <p class="text-[10px] text-gray-400 mt-2">Entry + <b>2 Free Events</b>.<br>1 Flagship Audience Access.</p>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center mt-4">
-                            <span class="text-xl font-bold text-gray-600">₹499</span>
-                            <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-std"></div>
+                            <span class="text-xl font-bold text-white">₹599</span>
+                            <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-gold"></div>
                         </div>
                     </div>
 
-                    <div id="pass-edm" class="glass-panel p-6 cursor-not-allowed opacity-50 transition-all group rounded-lg" onclick="selectPass('Neon Pulse', 199, 'special', 'pass-edm')">
-                        <h3 class="text-lg font-bold uppercase text-gray-500">Neon Pulse</h3>
-                        <p class="text-[10px] text-gray-500 mt-2 h-8">EDM Night ONLY. No other events.</p>
+                    <!-- Premium Pass -->
+                    <div id="pass-prem" class="glass-panel p-6 border-blue-500/20 cursor-pointer rounded-lg hover:border-blue-400" onclick="selectPass('Premium Pass', 999, 'base', 'pass-prem')">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-bold uppercase text-white">Premium Pass</h3>
+                            <span class="text-[9px] bg-blue-600 text-white px-2 py-0.5 rounded">ELITE</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-2">Entry + <b>3 Free Events</b>.<br>All Flagship Audience Access.</p>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center mt-4">
-                            <span class="text-lg font-bold text-gray-500">₹199</span>
-                            <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-edm"></div>
+                            <span class="text-xl font-bold text-white">₹999</span>
+                            <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-prem"></div>
                         </div>
                     </div>
 
-                    <div id="pass-fash" class="glass-panel p-6 cursor-not-allowed opacity-50 transition-all group rounded-lg border-white/5" onclick="alert('Tickets will update soon.')">
+                    <!-- Fashion Show -->
+                    <div id="pass-fash" class="glass-panel p-6 cursor-pointer transition-all group rounded-lg border-white/5 hover:border-cyan-500" onclick="selectPass('Fashion Show Audience', 299, 'special', 'pass-fash')">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-lg font-bold uppercase text-gray-500">Vogue Gala (Audience)</h3>
-                            <span class="text-[9px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">COMING SOON</span>
+                            <h3 class="text-lg font-bold uppercase text-white">Fashion Show</h3>
+                            <span class="text-[9px] bg-purple-900/50 text-purple-200 px-2 py-0.5 rounded">AUDIENCE</span>
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-2 h-8">General Access. Watch the show.</p>
+                        <p class="text-[10px] text-gray-400 mt-2">Entry 1hr before event only.<br>No other access.</p>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center mt-4">
-                            <span class="text-lg font-bold text-gray-500">₹199</span>
+                            <span class="text-lg font-bold text-white">₹299</span>
                             <div class="w-3 h-3 rounded-full border border-gray-600" id="radio-pass-fash"></div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- EDM ADDON BANNER -->
+                 <div class="glass-panel p-4 mb-12 rounded-lg border border-blue-500/20 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-900/30 rounded flex items-center justify-center text-blue-400"><i data-lucide="music" class="w-6 h-6"></i></div>
+                        <div>
+                            <h3 class="text-white font-bold uppercase text-sm">Neon Pulse (EDM Night)</h3>
+                            <p class="text-[10px] text-gray-400">Add-on available for ALL passes. Must be purchased separately.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-bold text-white">₹799</span>
+                        <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 799, true); checkUpsell();" class="bg-white text-black px-6 py-2 rounded text-[10px] font-bold uppercase hover:bg-blue-400 hover:text-white transition-colors">Add to Cart</button>
+                    </div>
+                 </div>
 
                 <!-- Status Messages -->
                 <div id="nift-message" class="hidden text-center mb-12 p-6 bg-green-900/10 border border-green-500/30 rounded backdrop-blur">
                     <h3 class="text-lg font-bold text-green-400 mb-1">NIFT AUTHORIZED</h3>
-                    <p class="text-gray-400 text-xs">Nexus Prime Pass Active. Select your events.</p>
+                    <p class="text-gray-400 text-xs">Premium Access Active. Select your events.</p>
                 </div>
                 <div id="existing-user-message" class="hidden text-center mb-12 p-6 bg-blue-900/10 border border-blue-500/30 rounded backdrop-blur">
                     <h3 class="text-lg font-bold text-blue-400 mb-1">PASS ACTIVE</h3>
@@ -927,16 +949,18 @@
                 <i data-lucide="shield-alert" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
                 <h3 class="text-xl font-bold text-white uppercase mb-2">Access Restricted</h3>
                 <p class="text-sm text-gray-400 mb-8">You need a <b>Base Pass</b> to add events. Only Merchandise can be purchased without a pass.</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="selectPassFromWarning('Cyber Entry', 299, 'base')" class="bg-white/5 border border-white/10 p-4 hover:border-white transition-all text-left rounded">
-                        <div class="text-[9px] text-gray-400 uppercase">Basic</div>
-                        <div class="text-lg font-bold text-white">Cyber</div>
-                        <div class="text-blue-500 font-bold">₹299</div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectPassFromWarning('General Pass', 399, 'base')" class="bg-white/5 border border-white/10 p-3 hover:border-white transition-all text-left rounded">
+                        <div class="text-[8px] text-gray-400 uppercase">General</div>
+                        <div class="text-blue-500 font-bold">₹399</div>
                     </button>
-                    <button onclick="selectPassFromWarning('Nexus Prime', 499, 'base')" class="bg-blue-900/20 border border-blue-500/50 p-4 hover:bg-blue-900/40 transition-all text-left rounded">
-                        <div class="text-[9px] text-blue-300 uppercase font-bold">Pro</div>
-                        <div class="text-lg font-bold text-white">Nexus</div>
-                        <div class="text-blue-500 font-bold">₹499</div>
+                    <button onclick="selectPassFromWarning('Gold Pass', 599, 'base')" class="bg-yellow-900/20 border border-yellow-500/50 p-3 hover:bg-yellow-900/40 transition-all text-left rounded">
+                        <div class="text-[8px] text-yellow-300 uppercase font-bold">Gold</div>
+                        <div class="text-yellow-500 font-bold">₹599</div>
+                    </button>
+                    <button onclick="selectPassFromWarning('Premium Pass', 999, 'base')" class="bg-blue-900/20 border border-blue-500/50 p-3 hover:bg-blue-900/40 transition-all text-left rounded">
+                        <div class="text-[8px] text-blue-300 uppercase font-bold">Prem</div>
+                        <div class="text-blue-500 font-bold">₹999</div>
                     </button>
                 </div>
             </div>
@@ -1093,7 +1117,7 @@
             let html = '';
             eventsToShow.forEach(e => {
                 html += `
-                <div class="slide-card min-w-[260px] glass-panel p-0 relative group hover:border-blue-500 transition-colors cursor-pointer overflow-hidden rounded-lg" onclick="alert('Event booking opens soon')">
+                <div class="slide-card min-w-[260px] glass-panel p-0 relative group hover:border-blue-500 transition-colors cursor-pointer overflow-hidden rounded-lg" onclick="switchView('tickets')">
                     <div class="h-48 overflow-hidden relative">
                         <img src="${e.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-80">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
@@ -1105,7 +1129,7 @@
                             <span>₹${e.price}</span>
                             <span>${e.members}</span>
                         </div>
-                        <button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent cursor-not-allowed rounded">Coming Soon</button>
+                        <button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent hover:text-white hover:border-white transition-colors rounded">Register Now</button>
                     </div>
                 </div>`;
             });
@@ -1232,6 +1256,28 @@
             document.getElementById('report-modal').classList.add('hidden'); 
         }
         
+        function toggleSidebar() { 
+            const s = document.getElementById('sidebar'); 
+            const o = document.getElementById('sidebar-overlay'); 
+            const l = document.getElementById('logs-sidebar');
+            
+            // If logs sidebar is open, close it (since overlay click triggers this)
+            if (!l.classList.contains('translate-x-full')) {
+                toggleLogs();
+                return;
+            }
+
+            if(s.classList.contains('-translate-x-full')) { 
+                s.classList.remove('-translate-x-full'); 
+                o.classList.remove('hidden'); 
+                setTimeout(()=>o.classList.remove('opacity-0'),10); 
+            } else { 
+                s.classList.add('-translate-x-full'); 
+                o.classList.add('opacity-0'); 
+                setTimeout(()=>o.classList.add('hidden'),300); 
+            } 
+        }
+
         function triggerAdmin() { adminTriggerCount++; if(adminTriggerCount >= 3) { adminTriggerCount = 0; window.open(ADMIN_URL, '_blank'); } }
 
         function toggleLogs() { const s = document.getElementById('logs-sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('translate-x-full')) { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('log-dot').classList.add('hidden'); } else { s.classList.add('translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
@@ -1240,28 +1286,6 @@
             // BLOCK MERCH FOR NOW
             alert("Merch Store will update later.");
             return;
-            
-            /*
-            if(!currentUser) { 
-                alert("Login required for store access."); 
-                handleAccountClick(); 
-                return; 
-            } 
-            
-            // CHECK PURCHASE LIMIT (1 Per Item Rule)
-            if(userDataDB && userDataDB.merch_orders) {
-                const hasOrdered = Object.values(userDataDB.merch_orders).some(order => order.item === itemName);
-                if(hasOrdered) {
-                    alert("Limit Reached: You have already purchased this item.");
-                    return;
-                }
-            }
-
-            currentMerchItem = { name: itemName, price: itemPrice }; 
-            document.getElementById('merch-item-name').innerText = `${itemName} [₹${itemPrice}]`; 
-            document.getElementById('merch-modal').classList.remove('hidden'); 
-            document.getElementById('merch-modal').style.display = 'flex'; 
-            */
         }
 
         function closeMerchModal() { document.getElementById('merch-modal').style.display = 'none'; }
@@ -1363,14 +1387,11 @@
         function activateAddOnMode(user) { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('existing-user-message').classList.remove('hidden'); if(user.order && user.order.pass) { cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' }; saveCart(); } updateCartUI(); }
         
         function selectPass(name, price, type, elementId) { 
-            // RESTRICT PASSES (Only Allow Fashion Show)
-            if(!isNift) {
-                alert("Tickets will update soon.");
-                return;
-            }
-
             if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Transaction Verification in Progress. Please wait for admin approval."); 
-            ['pass-gen', 'pass-std', 'pass-edm', 'pass-fash'].forEach(id => { document.getElementById(id).classList.remove('selected-pass'); }); 
+            ['pass-gen', 'pass-gold', 'pass-prem', 'pass-fash'].forEach(id => { 
+                const el = document.getElementById(id);
+                if(el) el.classList.remove('selected-pass'); 
+            }); 
             document.getElementById(elementId).classList.add('selected-pass'); 
             cart.pass = { name, price, type }; 
             if(type === 'special') { cart.events = []; } 
@@ -1379,14 +1400,13 @@
         }
         
         function toggleEvent(id, title, price, isPremium) { 
-            // RESTRICT EVENTS (Only Allow Fashion Show / ID 102)
-            if(id !== 102) {
-                alert("This event will open soon.");
-                return;
-            }
-
             if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Transaction Verification in Progress. Please wait for admin approval before adding new events."); 
-            if (cart.pass && cart.pass.type === 'special' && !hasExistingPass) return alert("Special Passes exclude add-ons."); 
+            
+            // STRICT BLOCK: Fashion Show Audience Pass cannot have ANY add-ons (including EDM)
+            if (cart.pass && cart.pass.type === 'special' && !hasExistingPass) {
+                return alert("The Fashion Show Audience Pass is for specific entry only. You cannot add other events or EDM Night to this pass."); 
+            }
+            
             if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("Already acquired."); 
             const index = cart.events.findIndex(e => e.id === id); 
             if (index > -1) { cart.events.splice(index, 1); } else { if (cart.events.length >= 5) return alert("Max 5 events limit."); cart.events.push({ id, title, price, isPremium }); } 
@@ -1394,11 +1414,58 @@
             updateCartUI(); 
         }
         
-        function updateCartUI() { const bar = document.getElementById('cart-bar'); if ((cart.pass) || cart.events.length > 0) { bar.classList.remove('translate-y-[200%]'); let total = cart.pass ? cart.pass.price : 0; let usedFreeSlots = 0; if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) { usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length; } cart.events.forEach((e) => { if (isNift) return; if (cart.pass && (cart.pass.name.includes('Nexus Prime')) && !e.isPremium) { if (usedFreeSlots < 2) { usedFreeSlots++; } else { total += e.price; } } else { total += e.price; } }); document.getElementById('cart-total').innerText = "₹" + total; let desc = cart.pass ? cart.pass.name : "Pass Pending"; if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`; document.getElementById('cart-desc').innerText = desc; } else { bar.classList.add('translate-y-[200%]'); } }
+        function updateCartUI() { 
+            const bar = document.getElementById('cart-bar'); 
+            if ((cart.pass) || cart.events.length > 0) { 
+                bar.classList.remove('translate-y-[200%]'); 
+                let total = cart.pass ? cart.pass.price : 0; 
+                let usedFreeSlots = 0; 
+                
+                // Determine max free slots based on pass
+                let maxFree = 0;
+                if(cart.pass) {
+                    if(cart.pass.name === 'General Pass') maxFree = 1;
+                    if(cart.pass.name === 'Gold Pass') maxFree = 2;
+                    if(cart.pass.name === 'Premium Pass') maxFree = 3;
+                    if(isNift || cart.pass.name.includes('NIFT')) maxFree = 99;
+                }
+
+                if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) { 
+                    // Count how many free slots user already used in previous orders
+                    // (Assuming logic: previous non-premium events counted towards free slots)
+                    // Simplified: We reset logic for current cart based on current pass status
+                    // Better: If existing user, we rely on the pass they bought.
+                } 
+                
+                cart.events.forEach((e) => { 
+                    if (isNift) {
+                        // NIFT Logic
+                        if(e.id === 101 || e.id === 102) total += 0; // Flagship free for NIFT too? Usually yes.
+                        else total += 0;
+                    } else {
+                        // Free Event Logic
+                        if (!e.isPremium && usedFreeSlots < maxFree) {
+                            usedFreeSlots++;
+                            // Price is 0
+                        } else {
+                            total += e.price;
+                        }
+                    }
+                }); 
+                
+                document.getElementById('cart-total').innerText = "₹" + total; 
+                let desc = cart.pass ? cart.pass.name : "Pass Pending"; 
+                if(cart.events.length > 0) desc += ` + ${cart.events.length} Events`; 
+                document.getElementById('cart-desc').innerText = desc; 
+            } else { 
+                bar.classList.add('translate-y-[200%]'); 
+            } 
+        }
         
         function checkUpsell() { 
             if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Transaction Pending. Check Profile.");
             const hasStandalone = cart.events.some(e => e.id === 102 || e.id === 101); 
+            // Allow if standalone events exist (like EDM) OR if pass exists OR Nift/Existing
             if (!cart.pass && !hasStandalone && !isNift && !hasExistingPass) { 
                 document.getElementById('pass-warning-modal').classList.remove('hidden'); 
                 document.getElementById('pass-warning-modal').style.display = 'flex'; 
@@ -1406,10 +1473,31 @@
             } 
             initiateCheckout(); 
         }
-        function selectPassFromWarning(name, price, type) { cart.pass = { name, price, type }; const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std' }; selectPass(name, price, type, map[name]); document.getElementById('pass-warning-modal').classList.add('hidden'); saveCart(); initiateCheckout(); }
+        function selectPassFromWarning(name, price, type) { 
+            cart.pass = { name, price, type }; 
+            const map = { 'General Pass': 'pass-gen', 'Gold Pass': 'pass-gold', 'Premium Pass': 'pass-prem' }; 
+            selectPass(name, price, type, map[name]); 
+            document.getElementById('pass-warning-modal').classList.add('hidden'); 
+            saveCart(); 
+            initiateCheckout(); 
+        }
         
         function saveCart() { localStorage.setItem('spectrum_cart', JSON.stringify(cart)); }
-        function loadCart() { const saved = localStorage.getItem('spectrum_cart'); if(saved) { cart = JSON.parse(saved); if(cart.pass && cart.pass.type) { const map = { 'Cyber Entry': 'pass-gen', 'Nexus Prime': 'pass-std', 'Neon Pulse': 'pass-edm', 'Vogue Gala': 'pass-fash' }; const elId = map[cart.pass.name]; if(elId) { document.getElementById(elId).classList.add('selected-pass'); } } updateCartUI(); } }
+        function loadCart() { 
+            const saved = localStorage.getItem('spectrum_cart'); 
+            if(saved) { 
+                cart = JSON.parse(saved); 
+                if(cart.pass && cart.pass.type) { 
+                    const map = { 'General Pass': 'pass-gen', 'Gold Pass': 'pass-gold', 'Premium Pass': 'pass-prem', 'Fashion Show Audience': 'pass-fash' }; 
+                    const elId = map[cart.pass.name]; 
+                    if(elId) { 
+                        const el = document.getElementById(elId);
+                        if(el) el.classList.add('selected-pass'); 
+                    } 
+                } 
+                updateCartUI(); 
+            } 
+        }
         function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
         
         // NEW REMOVE FUNCTIONS
@@ -1435,8 +1523,17 @@
             let passPrice = cart.pass ? cart.pass.price : 0;
             let total = isNift ? 0 : (hasExistingPass ? 0 : passPrice); 
             let eventHtml = ""; 
-            let usedFreeSlots = 0; 
-            if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events) { usedFreeSlots = userDataDB.order.events.filter(e => !e.isPremium).length; }
+            
+            // Determine max free slots
+            let maxFree = 0;
+            if(cart.pass) {
+                if(cart.pass.name === 'General Pass') maxFree = 1;
+                if(cart.pass.name === 'Gold Pass') maxFree = 2;
+                if(cart.pass.name === 'Premium Pass') maxFree = 3;
+            }
+            if(isNift) maxFree = 99;
+
+            let usedFreeSlots = 0;
             
             // Render Pass
             if(cart.pass) {
@@ -1454,15 +1551,24 @@
                     ${removeBtn}
                  </div>`;
             } else if (cart.events.length > 0 && !hasExistingPass && !isNift) {
-                // Warning state if no pass but events exist (shouldn't happen due to checkUpsell but safe to handle)
-                eventHtml += `<div class="text-red-500 text-[10px] bg-red-900/20 p-2 rounded mb-2">⚠️ Pass Required for Events</div>`;
+                // Check if only standalone events are present
+                const allStandalone = cart.events.every(e => e.id === 101 || e.id === 102); // EDM or Fashion
+                if(!allStandalone) {
+                    eventHtml += `<div class="text-red-500 text-[10px] bg-red-900/20 p-2 rounded mb-2">⚠️ Pass Required for Regular Events</div>`;
+                }
             }
 
             // Render Events
             cart.events.forEach((e, index) => { 
                 let cost = e.price; 
                 let label = `₹${e.price}`; 
-                if(isNift) { cost = 0; label = "FREE (NIFT)"; } else if (cart.pass && cart.pass.name.includes('Nexus Prime') && !e.isPremium) { if (usedFreeSlots < 2) { cost = 0; label = "FREE (Prime)"; usedFreeSlots++; } } 
+                
+                if(isNift) { 
+                    cost = 0; label = "FREE (NIFT)"; 
+                } else if (!e.isPremium && usedFreeSlots < maxFree) {
+                    cost = 0; label = "FREE (Pass)"; usedFreeSlots++; 
+                }
+                
                 total += cost; 
                 
                 eventHtml += `
@@ -1660,8 +1766,9 @@
                 // If it's explicitly "Unknown", try to infer from total paid
                 if (displayPass === "Unknown") {
                     const totalPaid = parseInt(userDataDB.order.total || 0);
-                    if (totalPaid >= 499) displayPass = "NEXUS PRIME";
-                    else if (totalPaid >= 299) displayPass = "CYBER ENTRY";
+                    if (totalPaid >= 999) displayPass = "PREMIUM PASS";
+                    else if (totalPaid >= 599) displayPass = "GOLD PASS";
+                    else if (totalPaid >= 399) displayPass = "GENERAL PASS";
                     else if (userDataDB.paymentStatus === 'Verified') displayPass = "VISITOR";
                 }
             }
@@ -1669,7 +1776,7 @@
             
             document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
 
-            if (userDataDB.order && userDataDB.order.pass === "Cyber Entry") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden');
+            if (userDataDB.order && userDataDB.order.pass === "General Pass") upgradeBtn.classList.remove('hidden'); else upgradeBtn.classList.add('hidden');
             if(userDataDB.order) { document.getElementById('ticket-info-plan').innerText = userDataDB.order.pass; const evs = userDataDB.order.events ? userDataDB.order.events.map(e => e.title).join(", ") : "No Events"; document.getElementById('ticket-info-events').innerText = evs.substring(0, 50) + "..."; } 
             
             // PAYMENT STATUS LOGIC
@@ -1700,47 +1807,47 @@
         function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> CONNECTING TO MAINFRAME...", "> DECRYPTING VIBHRAM PROTOCOL...", "> SYSTEM ONLINE."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=500; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),2000); }
         function enterSite(){ sessionStorage.setItem('introDone', 'true'); const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{ i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').style.opacity='1'; const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); setTimeout(() => showToast("Welcome to Vibhram."), 1500); },800); }
         function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
-        function toggleSidebar(){ const s=document.getElementById('sidebar'); const o=document.getElementById('sidebar-overlay'); if(s.classList.contains('-translate-x-full')){s.classList.remove('-translate-x-full');o.classList.remove('hidden');setTimeout(()=>o.classList.remove('opacity-0'),10);}else{s.classList.add('-translate-x-full');o.classList.add('opacity-0');setTimeout(()=>o.classList.add('hidden'),300);} }
         function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('hidden'); }
 
         const eventsData = [
-            // --- FLAGSHIP EVENTS ----
-            { id: 101, club: 'entertainment', title: 'EDM Night (Add-on)', price: 100, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: '#', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
-            { id: 102, club: 'entertainment', title: 'Fashion Show ', price: 100, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹30,000.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
+            // --- FLAGSHIP EVENTS (MAIN) ----
+            { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 799, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs.', rules: '#', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
             
             // --- ADVENTURE & PHOTO ---
             { id: 1, club: 'adventure', title: 'Photography', price: 100, prize: '₹7000' ,  img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'online' },
-            { id: 2, club: 'adventure', title: 'Short Film', price: 100, prize: '₹7000', img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600', members: '2-4', desc: 'Capture the essence of the fest', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'Online' },
+            { id: 2, club: 'adventure', title: 'Short Film', price: 150, prize: '₹7000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600', members: '2-4', desc: 'Capture the essence of the fest', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'Online' },
             { id: 3, club: 'adventure', title: 'Match the Picture', price: 100, prize: '₹4500',img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '3:00 PM- onwards', venue: 'Basketball Alley' },
             { id: 9, club: 'adventure', title: 'Mini Adventure', price: 100, prize: '₹4,500', img: 'https://katha-o-kahiniprakashani.in/uploads/2025/04/how-to-start-your-adventure-journey.webp', members: 'Solo', desc: 'Quick adventure challenges.', rules: '#', day: 'Day 1', time: '11:00 AM onwards', venue: 'A Gate Stretch' },
-            { id: 4, club: 'adventure', title: 'Treasure Hunt', price: 100, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Central Courtyard' },
+            { id: 4, club: 'adventure', title: 'Treasure Hunt', price: 150, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Central Courtyard' },
 
-            // --- CULTURAL (Updated) ---
+            // --- CULTURAL ---
             { id: 5, club: 'culture', title: 'Solo Dance', price: 100, prize: '₹18,000', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo', desc: 'Showcase your rhythm and moves.', rules: '#', day: 'Day 1', time: '4:00 PM', venue: 'Amphi' },
-            { id: 306, club: 'culture', title: 'Group Dance', price: 100, prize: '₹40,000', img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: 'Group', desc: 'Sync your steps, steal the show.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 306, club: 'culture', title: 'Group Dance', price: 100, prize: '₹40,000', isPremium: true, img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: 'Group', desc: 'Sync your steps, steal the show.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
             { id: 6, club: 'culture', title: 'Solo Singing', price: 100, prize: '₹18,000', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Voice of Spectrum.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Audi' },
-            { id: 8, club: 'culture', title: 'Battle of Bands', price: 100, prize: '₹40,000', img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
-            { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 100, prize: '₹25,000', img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600', members: 'Solo', desc: 'The face of the fest.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Stage' },
+            { id: 8, club: 'culture', title: 'Battle of Bands', price: 100, prize: '₹40,000', isPremium: true, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 100, prize: '₹25,000', isPremium: true, img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600', members: 'Solo', desc: 'The face of the fest.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Stage' },
+            
             // --- ENVIRONMENTAL ---
-            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 100, prize: '₹26,000', img: 'https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600', members: '2-4', desc: 'Express your art on the walls.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Mini OAT / OAT' },
-            { id: 302, club: 'environment', title: 'Env. Treasure Hunt', price: 100, prize: '₹5,000', img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '4-5', desc: 'Hunt for nature\'s secrets.', rules: '#', day: 'Day 2', time: '10:00 AM', venue: 'NIFT Campus' },
+            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 150, prize: '₹26,000', isPremium: true, img: 'https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600', members: '2-4', desc: 'Express your art on the walls.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Mini OAT / OAT' },
+            { id: 302, club: 'environment', title: 'Env. Treasure Hunt', price: 150, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '4-5', desc: 'Hunt for nature\'s secrets.', rules: '#', day: 'Day 2', time: '10:00 AM', venue: 'NIFT Campus' },
             { id: 303, club: 'environment', title: 'Eco Trivia', price: 100, prize: '₹4,500', img: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600', members: 'Solo', desc: 'Test your green knowledge.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Classroom' },
             { id: 304, club: 'environment', title: 'Musical Chairs', price: 100, prize: '₹4,500', img: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', members: 'Solo', desc: 'Fun survival game.', rules: '#', day: 'Day 1', time: '3:00 PM', venue: 'Flag Hosting Area' },
             { id: 305, club: 'environment', title: 'Trumbling', price: 100, prize: '₹2,000', img: 'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?w=600', members: 'Solo', desc: 'Balance and precision game.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Classroom' },
 
             // --- LITERARY ---
-            { id: 11, club: 'lit', title: 'Debate War', price: 100, prize: '₹3,000', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
-            { id: 12, club: 'lit', title: 'Open Mic', price: 100, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#', day: 'Day 2', time: '3:00 PM', venue: 'Amphi' },
+            { id: 11, club: 'lit', title: 'Debate War', price: 150, prize: '₹3,000', isPremium: true, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
+            { id: 12, club: 'lit', title: 'Open Mic', price: 150, isPremium: true, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#', day: 'Day 2', time: '3:00 PM', venue: 'Amphi' },
             { id: 16, club: 'lit', title: 'Creative Writing', price: 100, img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', members: 'Solo', desc: 'Express through ink.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Library' },
 
             // --- ESSC ---
-            { id: 17, club: 'essc', title: 'Social Case Study', price: 100, prize: '₹4,000', img: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', members: '2-3', desc: 'Solve real-world social problems.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Conf Hall' },
-            { id: 18, club: 'essc', title: 'Nukkad Natak', price: 100, prize: '₹6,000', img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600', members: 'Group', desc: 'Street Play competition.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Canteen Area' },
+            { id: 17, club: 'essc', title: 'Social Case Study', price: 150, prize: '₹4,000', isPremium: true, img: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', members: '2-3', desc: 'Solve real-world social problems.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Conf Hall' },
+            { id: 18, club: 'essc', title: 'Nukkad Natak', price: 150, prize: '₹6,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600', members: 'Group', desc: 'Street Play competition.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Canteen Area' },
 
             // --- SPORTS ---
-            { id: 201, club: 'sports', title: 'Futsal Mix', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Futsal Tournament.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Sports Ground' },
-            { id: 202, club: 'sports', title: 'Volleyball Mix', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Volleyball Tournament.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
-            { id: 203, club: 'sports', title: 'Basketball Mix', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Basketball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Basketball Court' },
+            { id: 201, club: 'sports', title: 'Futsal Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Futsal Tournament.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Sports Ground' },
+            { id: 202, club: 'sports', title: 'Volleyball Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Volleyball Tournament.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
+            { id: 203, club: 'sports', title: 'Basketball Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Basketball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Basketball Court' },
             { id: 204, club: 'sports', title: 'Throwball (Girls)', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600', members: '6G + 2 Extra', desc: 'Girls Throwball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Sports Ground' },
             { id: 205, club: 'sports', title: 'Table Tennis (Boys)', price: 100, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Boys TT Tournament.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
             { id: 206, club: 'sports', title: 'Table Tennis (Girls)', price: 100, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Girls TT Tournament.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
@@ -1782,11 +1889,6 @@
                 
                 let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-auto border ${btnClass} py-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded">${label}</button>`;
                 
-                // Override for coming soon items (preserving existing logic)
-                if (e.id !== 102) {
-                     btnHtml = `<button class="w-full mt-auto border border-gray-600 text-gray-500 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-transparent cursor-not-allowed rounded" onclick="alert('Event booking opens soon')">Coming Soon</button>`;
-                }
-        
                 let prizeHtml = '';
                 if(e.prize) {
                     prizeHtml = `<div class="absolute top-2 left-2 bg-yellow-500/90 text-black px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest flex items-center gap-1 shadow-lg"><i data-lucide="trophy" class="w-3 h-3"></i> ${e.prize}</div>`;
@@ -1808,7 +1910,7 @@
                         </div>
                         
                         <p class="text-[10px] text-gray-400 font-mono mb-2">${priceText}</p>
-                        ${e.isPremium ? '<span class="text-cyan-400 text-[8px] font-bold uppercase tracking-widest mb-2 block">★ Premium</span>' : ''}
+                        ${e.isPremium ? '<span class="text-cyan-400 text-[8px] font-bold uppercase tracking-widest mb-2 block">★ Flagship</span>' : ''}
                         
                         <!-- NEW SCHEDULE INFO -->
                         <div class="grid grid-cols-2 gap-2 text-[9px] text-gray-400 font-mono border-t border-white/10 pt-2 mb-3">
@@ -1819,7 +1921,7 @@
 
                         <div id="info-${e.id}" class="hidden text-[10px] text-gray-300 mb-3 p-2 bg-white/5 rounded">
                             <p class="mb-2 leading-relaxed">${e.desc}</p>
-                            <a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-cyan-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> Rules</a>
+                            <a href="${e.rules}" target="_blank" class="flex items-center gap-1 text-cyan-400 hover:text-white transition-colors"><i data-lucide=\"file-text\" class=\"w-3 h-3\"></i> Rules</a>
                         </div>
                         
                         ${btnHtml}
