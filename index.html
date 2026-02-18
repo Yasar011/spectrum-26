@@ -245,7 +245,7 @@
             <div class="flex flex-col mt-8 mb-auto gap-1">
                 <a onclick="switchView('home'); toggleSidebar()" class="menu-link">Home</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Buy Tickets</a>
-                <a onclick="switchView('events'); toggleSidebar()" class="menu-link">Events</a>
+                <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Events</a>
                 <a onclick="alert('Merch Store is opening soon.'); toggleSidebar()" class="menu-link">Merch Store (Coming Soon)</a>
                 <a onclick="openSquadModal(); toggleSidebar()" class="menu-link text-cyan-400">Squad Uplink</a>
                 
@@ -370,7 +370,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-blue-400 font-bold text-[10px] uppercase tracking-widest mb-2">Main Event</span>
                                 <h3 class="text-4xl font-serif text-white mb-2">VOGUE GALA</h3>
-                                <p class="text-gray-400 text-xs mb-6 max-w-sm">The ultimate runway showdown. Distort reality with your design.</p>
+                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Fashion Show Competition. The ultimate runway showdown. Distort reality with your design.</p>
                                 <div class="flex items-center gap-4 flex-wrap">
                                     <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹50k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
                                     <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2999, true); checkUpsell();" class="btn-primary rounded">Register (₹2999)</button>
@@ -393,10 +393,10 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-2">Pro Show</span>
                                 <h3 class="text-4xl font-display text-white mb-2">NEON PULSE</h3>
-                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Lose yourself in the sound. A night of pure auditory hallucination.</p>
+                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Star-Studded EDM Night. Lose yourself in the sound. A night of pure auditory hallucination.</p>
                                 <div class="flex items-center gap-4">
                                     <div class="bg-white/5 px-4 py-2 border border-white/5"><span class="text-gray-500 font-bold text-lg">Mar 1</span> <span class="text-[9px] text-gray-500 uppercase">Night</span></div>
-                                    <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 799, true); checkUpsell();" class="btn-primary rounded">Add Pass (₹799)</button>
+                                    <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 759, true); checkUpsell();" class="btn-primary rounded">Add Pass (₹759)</button>
                                 </div>
                             </div>
                         </div>
@@ -530,7 +530,7 @@
                         <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Navigation</h4>
                         <ul class="space-y-3 text-gray-400 text-xs">
                             <li><a href="#" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Home</a></li>
-                            <li><a href="#" onclick="switchView('events')" class="hover:text-blue-400 transition-colors">Events</a></li>
+                            <li><a href="#" onclick="switchView('tickets')" class="hover:text-blue-400 transition-colors">Events</a></li>
                             <li><a href="schedule.html" class="hover:text-blue-400 transition-colors">Schedule</a></li>
                             <li><a href="team.html" class="hover:text-blue-400 transition-colors">Our Team</a></li>
                             <li><a href="fashion.html" class="hover:text-blue-400 transition-colors">Fashion Show</a></li>
@@ -868,7 +868,7 @@
                     </div>
 
                     <div id="form-register" class="space-y-3 hidden">
-                        <div class="bg-yellow-500/10 border border-yellow-500/20 p-2 text-[9px] text-yellow-500 text-center font-bold mb-2 rounded">⚠️ NIFT Students: Use @nift.ac.in for FREE Access</div>
+                        <!-- Removed NIFT Warning Banner -->
                         <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
                         <input id="reg-email" type="email" placeholder="Email" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
                         <div class="flex gap-2">
@@ -877,10 +877,31 @@
                         </div>
                         <input id="reg-phone" type="tel" placeholder="Phone Number" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
                         <div class="flex gap-2">
-                            <input id="reg-college" type="text" placeholder="College Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
-                            <input id="reg-id" type="text" placeholder="ID Number" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                            <input id="reg-college" type="text" placeholder="College / School Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                            <input id="reg-id" type="text" placeholder="Roll No. / ID Number" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
                         </div>
-                        <button onclick="userRegister()" class="btn-primary w-full mt-2 rounded">Create Identity</button>
+                        
+                        <!-- ID CARD UPLOAD -->
+                        <div class="bg-white/5 border border-white/10 p-3 rounded mt-1">
+                             <label class="block text-[9px] text-gray-400 uppercase mb-2 font-bold">Upload College/School ID (Mandatory)</label>
+                             <input type="file" id="reg-id-card" accept="image/*" class="block w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-500/20 file:text-blue-400 hover:file:bg-blue-500/30">
+                             <p id="reg-upload-status" class="text-[9px] text-green-400 hidden mt-1 animate-pulse">Uploading verification document...</p>
+                        </div>
+
+                        <!-- NEW WARNING AND T&C -->
+                        <div class="bg-red-900/10 border border-red-500/20 p-3 rounded mt-2">
+                            <p class="text-[9px] text-red-400 font-bold uppercase mb-1">⚠️ Entry Policy Warning</p>
+                            <p class="text-[9px] text-gray-400 leading-tight mb-2">Entry restricted to College/School Students ONLY. A valid physical ID Card is mandatory at the venue entry gate. <span class="text-white font-bold">Tickets are Non-Refundable.</span></p>
+                            
+                            <div class="flex items-start gap-2 pt-1 border-t border-white/5">
+                                <input type="checkbox" id="reg-agree" class="mt-0.5 accent-blue-500 cursor-pointer">
+                                <label for="reg-agree" class="text-[9px] text-gray-300 cursor-pointer select-none leading-tight">
+                                    I agree to the <a href="terms.html" target="_blank" class="text-blue-400 hover:underline">Terms & Conditions</a> and understand the No-Refund policy.
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="btn-register-submit" onclick="userRegister()" class="btn-primary w-full mt-2 rounded">Create Identity</button>
                     </div>
                 </div>
 
@@ -1122,6 +1143,12 @@
             const eventsToShow = eventsData.filter(e => e.id !== 101 && e.id !== 102);
             let html = '';
             eventsToShow.forEach(e => {
+                // Logic for Zero Cost/On-Spot Events in Slideshow
+                let btnHtml = `<button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent hover:text-white hover:border-white transition-colors rounded">Register Now</button>`;
+                if (e.price === 0) {
+                    btnHtml = `<div class="w-full border border-white/5 bg-white/5 text-gray-500 text-[10px] font-bold uppercase py-2 rounded text-center cursor-default">On-Spot Reg</div>`;
+                }
+
                 html += `
                 <div class="slide-card min-w-[260px] glass-panel p-0 relative group hover:border-blue-500 transition-colors cursor-pointer overflow-hidden rounded-lg" onclick="switchView('tickets')">
                     <div class="h-48 overflow-hidden relative">
@@ -1132,10 +1159,10 @@
                     <div class="p-4">
                         <h3 class="text-lg font-display text-white mb-1 uppercase truncate">${e.title}</h3>
                         <div class="flex justify-between text-xs text-gray-400 font-mono mb-3">
-                            <span>₹${e.price}</span>
+                            <span>${e.price === 0 ? 'Free' : '₹'+e.price}</span>
                             <span>${e.members}</span>
                         </div>
-                        <button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent hover:text-white hover:border-white transition-colors rounded">Register Now</button>
+                        ${btnHtml}
                     </div>
                 </div>`;
             });
@@ -1771,7 +1798,84 @@
         }
         
         function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `SPEC${namePart}${phonePart}${randPart}`; }
-        function userRegister(){ const e=document.getElementById('reg-email').value, p=document.getElementById('reg-pass').value, cp=document.getElementById('reg-confirm-pass').value, n=document.getElementById('reg-name').value, ph=document.getElementById('reg-phone').value, c=document.getElementById('reg-college').value, i=document.getElementById('reg-id').value; if(!e||!p||!n||!ph) return alert("Incomplete Data"); if(p !== cp) return alert("Password Mismatch"); auth.createUserWithEmailAndPassword(e,p).then(crd=>{ crd.user.sendEmailVerification(); const sID = generateSpectrumID(n, ph); db.ref('users/'+e.replace(/\./g,',')).set({ name:n, email:e, phone:ph, collegeName:c, collegeId:i, uid:crd.user.uid, spectrumId: sID, paymentStatus:"None" }); auth.signOut().then(() => { alert("Registration Complete. Verify Email."); switchAuthMode('login'); }); }).catch(err=>alert(err.message)); }
+        
+        // Generic Upload Function
+        async function uploadFileGeneric(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            try {
+                const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+                const data = await response.json();
+                return data.secure_url;
+            } catch (error) {
+                console.error("Upload Error:", error);
+                return null;
+            }
+        }
+
+        async function userRegister() { 
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-pass').value;
+            const cp = document.getElementById('reg-confirm-pass').value;
+            const n = document.getElementById('reg-name').value;
+            const ph = document.getElementById('reg-phone').value;
+            const c = document.getElementById('reg-college').value;
+            const i = document.getElementById('reg-id').value;
+            const idCardFile = document.getElementById('reg-id-card').files[0];
+            const agreed = document.getElementById('reg-agree').checked;
+            const btn = document.getElementById('btn-register-submit');
+
+            if(!e || !p || !n || !ph || !c || !i) return alert("Incomplete Data. All fields are required.");
+            if(p !== cp) return alert("Password Mismatch");
+            if(!idCardFile) return alert("Please upload your College/School ID Card.");
+            if(!agreed) return alert("You must agree to the Terms & Conditions and Refund Policy to register.");
+
+            btn.innerText = "Uploading ID...";
+            btn.disabled = true;
+            document.getElementById('reg-upload-status').classList.remove('hidden');
+
+            // Upload ID Card
+            const idCardUrl = await uploadFileGeneric(idCardFile);
+            
+            if(!idCardUrl) {
+                btn.innerText = "Create Identity";
+                btn.disabled = false;
+                document.getElementById('reg-upload-status').classList.add('hidden');
+                return alert("ID Card Upload Failed. Please try again.");
+            }
+
+            btn.innerText = "Creating Account...";
+
+            auth.createUserWithEmailAndPassword(e, p).then(crd => { 
+                crd.user.sendEmailVerification(); 
+                const sID = generateSpectrumID(n, ph); 
+                db.ref('users/' + e.replace(/\./g, ',')).set({ 
+                    name: n, 
+                    email: e, 
+                    phone: ph, 
+                    collegeName: c, 
+                    collegeId: i, 
+                    idCardImage: idCardUrl,
+                    uid: crd.user.uid, 
+                    spectrumId: sID, 
+                    paymentStatus: "None" 
+                }); 
+                auth.signOut().then(() => { 
+                    alert("Registration Complete. Please verify your email before logging in."); 
+                    switchAuthMode('login'); 
+                    btn.innerText = "Create Identity";
+                    btn.disabled = false;
+                    document.getElementById('reg-upload-status').classList.add('hidden');
+                }); 
+            }).catch(err => {
+                alert(err.message);
+                btn.innerText = "Create Identity";
+                btn.disabled = false;
+                document.getElementById('reg-upload-status').classList.add('hidden');
+            }); 
+        }
+
         function userLogin(){ const btn = document.getElementById('btn-login-submit'); btn.innerText = "..."; const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ btn.innerText = "Verified"; if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email Unverified"); auth.signOut(); btn.innerText = "Access System"; return; } } closeModal(); btn.innerText = "Access System"; }).catch(err=>{ alert(err.message); btn.innerText = "Access System"; }); }
         function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter Email"); auth.sendPasswordResetEmail(email).then(() => alert("Reset Link Sent")).catch(err => alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
@@ -1846,57 +1950,83 @@
         function showToast(msg) { const t = document.getElementById('notification-toast'); document.getElementById('toast-message').innerText=msg; t.classList.remove('translate-x-[150%]'); setTimeout(()=>t.classList.add('translate-x-[150%]'), 5000); }
         function runTerminalIntro(){ const t=document.getElementById('terminal-output'); if(!t)return; setTimeout(()=>document.getElementById('enter-btn').classList.remove('opacity-0'),3000); const l=["> CONNECTING TO MAINFRAME...", "> DECRYPTING VIBHRAM PROTOCOL...", "> SYSTEM ONLINE."]; let d=0; l.forEach(x=>{ setTimeout(()=>{t.innerHTML+=`<div class='mb-1'>${x}</div>`;t.scrollTop=t.scrollHeight;},d); d+=500; }); setTimeout(()=>document.getElementById('intro-title').classList.remove('opacity-0'),2000); }
         function enterSite(){ sessionStorage.setItem('introDone', 'true'); const i=document.getElementById('intro-screen'); i.style.transition="opacity 0.8s"; i.style.opacity='0'; setTimeout(()=>{ i.style.display='none'; document.getElementById('main-content').classList.remove('hidden'); document.getElementById('main-content').style.opacity='1'; const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('active')})},{threshold:0.1}); document.querySelectorAll('.reveal').forEach(el=>o.observe(el)); setTimeout(() => showToast("Welcome to Vibhram."), 1500); },800); }
-        function switchView(id){ document.querySelectorAll('.view-section').forEach(el=>{el.classList.remove('active'); setTimeout(()=>{if(!el.classList.contains('active'))el.style.display='none';},500);}); const t=document.getElementById(`view-${id}`); t.style.display='block'; setTimeout(()=>{t.classList.add('active'); window.scrollTo(0,0);},50); }
+        
+        function switchView(id){ 
+            const target = document.getElementById(`view-${id}`);
+            if (!target) {
+                console.warn(`View view-${id} not found. Redirecting to home.`);
+                // If the requested view doesn't exist, safely default to home to prevent blank screen
+                switchView('home');
+                return;
+            }
+            
+            document.querySelectorAll('.view-section').forEach(el=>{
+                el.classList.remove('active'); 
+                setTimeout(()=>{
+                    if(!el.classList.contains('active')) el.style.display='none';
+                }, 500);
+            }); 
+            
+            target.style.display='block'; 
+            setTimeout(()=>{
+                target.classList.add('active'); 
+                window.scrollTo(0,0);
+            }, 50); 
+        }
+        
         function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('hidden'); }
 
         const eventsData = [
-            // --- FLAGSHIP EVENTS (MAIN) ----
+            // --- CORE FLAGSHIP EVENTS (ENTRY/SHOWS) ----
             { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600', members: '1', desc: 'The biggest night of the fest. Featuring top DJs. Gold Pass Required.', rules: '#', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
             { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=600', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
-            // NEW AUDIENCE EVENT
             { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: 'https://images.unsplash.com/photo-1537832816519-0439447f0d7d?w=600', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', rules: '#', day: 'Day 1', time: '6:00 PM', venue: 'Audi' },
             
-            // ... existing events ...
-            { id: 1, club: 'adventure', title: 'Photography', price: 100, prize: '₹7000' ,  img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'online' },
-            { id: 2, club: 'adventure', title: 'Short Film', price: 150, prize: '₹7000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600', members: '2-4', desc: 'Capture the essence of the fest', rules: '#', day: 'Day 1', time: '11:00 AM- onwards', venue: 'Online' },
-            { id: 3, club: 'adventure', title: 'Match the Picture', price: 100, prize: '₹4500',img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '3:00 PM- onwards', venue: 'Basketball Alley' },
-            { id: 9, club: 'adventure', title: 'Mini Adventure', price: 100, prize: '₹4,500', img: 'https://katha-o-kahiniprakashani.in/uploads/2025/04/how-to-start-your-adventure-journey.webp', members: 'Solo', desc: 'Quick adventure challenges.', rules: '#', day: 'Day 1', time: '11:00 AM onwards', venue: 'A Gate Stretch' },
-            { id: 4, club: 'adventure', title: 'Treasure Hunt', price: 150, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '2-4', desc: 'Find clues across the campus.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Central Courtyard' },
+            // --- ADVENTURE ---
+            { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1552168324-d612d77725e3?w=600', members: 'Solo', desc: 'Capture the essence of the fest.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Campus' },
+            { id: 2, club: 'adventure', title: 'Short Film', price: 399, prize: '₹12,000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600', members: '2-4', desc: 'Storytelling through the lens.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Online' },
+            { id: 3, club: 'adventure', title: 'Match the Picture', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: 'Solo', desc: 'Visual puzzle challenge.', rules: '#', day: 'Day 1', time: '3:00 PM', venue: 'Basketball Alley' },
+            { id: 9, club: 'adventure', title: 'Mini Adventure', price: 99, prize: '₹4,500', isPremium: false, img: 'https://images.unsplash.com/photo-1533561052604-c3be69019853?w=600', members: 'Solo', desc: 'Quick adventure challenges.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'A Gate Stretch' },
 
             // --- CULTURAL ---
-            { id: 5, club: 'culture', title: 'Solo Dance', price: 100, prize: '₹18,000', img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo', desc: 'Showcase your rhythm and moves.', rules: '#', day: 'Day 1', time: '4:00 PM', venue: 'Amphi' },
-            { id: 306, club: 'culture', title: 'Group Dance', price: 100, prize: '₹40,000', isPremium: true, img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: 'Group', desc: 'Sync your steps, steal the show.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
-            { id: 6, club: 'culture', title: 'Solo Singing', price: 100, prize: '₹18,000', img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Voice of Spectrum.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Audi' },
-            { id: 8, club: 'culture', title: 'Battle of Bands', price: 100, prize: '₹40,000', isPremium: true, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Rock out with your band.', rules: '#', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
-            { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 100, prize: '₹25,000', isPremium: true, img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600', members: 'Solo', desc: 'The face of the fest.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Stage' },
-            
+            { id: 5, club: 'culture', title: 'Solo Dance', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=600', members: 'Solo', desc: 'Rhythm and grace.', rules: '#', day: 'Day 1', time: '4:00 PM', venue: 'Amphi' },
+            { id: 306, club: 'culture', title: 'Group Dance', price: 1199, prize: '₹22,000', isPremium: true, img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: 'Group', desc: 'Sync your steps.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 6, club: 'culture', title: 'Solo Singing', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Voice of Spectrum.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Audi' },
+            { id: 8, club: 'culture', title: 'Battle of Bands', price: 1199, prize: '₹20,000', isPremium: true, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Musical showdown.', rules: '#', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 0, prize: '₹15,000', isPremium: false, img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600', members: 'Solo', desc: 'Personality hunt. Only for NIFT Students.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Stage' },
+
             // --- ENVIRONMENTAL ---
-            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 150, prize: '₹26,000', isPremium: true, img: 'https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600', members: '2-4', desc: 'Express your art on the walls.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Mini OAT / OAT' },
-            { id: 302, club: 'environment', title: 'Env. Treasure Hunt', price: 150, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=600', members: '4-5', desc: 'Hunt for nature\'s secrets.', rules: '#', day: 'Day 2', time: '10:00 AM', venue: 'NIFT Campus' },
-            { id: 303, club: 'environment', title: 'Eco Trivia', price: 100, prize: '₹4,500', img: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600', members: 'Solo', desc: 'Test your green knowledge.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Classroom' },
-            { id: 304, club: 'environment', title: 'Musical Chairs', price: 100, prize: '₹4,500', img: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', members: 'Solo', desc: 'Fun survival game.', rules: '#', day: 'Day 1', time: '3:00 PM', venue: 'Flag Hosting Area' },
-            { id: 305, club: 'environment', title: 'Trumbling', price: 100, prize: '₹2,000', img: 'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?w=600', members: 'Solo', desc: 'Balance and precision game.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Classroom' },
+            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 799, prize: '₹24,000', isPremium: true, img: 'https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600', members: '2-4', desc: 'Art on walls.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Mini OAT / OAT' },
+            { id: 302, club: 'environment', title: 'Treasure Hunt (Env)', price: 499, prize: '₹5,000', isPremium: false, img: 'https://images.unsplash.com/photo-1592483648228-b35146a4330c?w=600', members: '4-5', desc: 'Hunt for nature.', rules: '#', day: 'Day 2', time: '10:00 AM', venue: 'Campus' },
+            { id: 303, club: 'environment', title: 'Eco Trivia', price: 99, prize: '₹2,200', isPremium: false, img: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600', members: 'Solo', desc: 'Green knowledge test.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Classroom' },
+            { id: 304, club: 'environment', title: 'Musical Chairs', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', members: 'Solo', desc: 'Fun survival game.', rules: '#', day: 'Day 1', time: '3:00 PM', venue: 'Flag Area' },
+            { id: 305, club: 'environment', title: 'Trumbling', price: 49, prize: '₹1,000', isPremium: false, img: 'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?w=600', members: 'Solo', desc: 'Balance game.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Classroom' },
 
             // --- LITERARY ---
-            { id: 11, club: 'lit', title: 'Debate War', price: 150, prize: '₹3,000', isPremium: true, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Speak your mind.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
-            { id: 12, club: 'lit', title: 'Open Mic', price: 150, isPremium: true, img: 'https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?w=600', members: 'Solo', desc: 'Poetry, Comedy, and Storytelling.', rules: '#', day: 'Day 2', time: '3:00 PM', venue: 'Amphi' },
-            { id: 16, club: 'lit', title: 'Creative Writing', price: 100, img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', members: 'Solo', desc: 'Express through ink.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Library' },
+            { id: 401, club: 'lit', title: "Devil's Advocate", price: 99, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600', members: 'Solo', desc: 'Debate with a twist.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
+            { id: 402, club: 'lit', title: 'Minute to Win It', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=600', members: 'Duo', desc: 'Quick challenges.', rules: '#', day: 'Day 1', time: '1:00 PM', venue: 'Lounge' },
+            { id: 403, club: 'lit', title: 'Snakes & Ladders', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=600', members: 'Duo', desc: 'Giant board game.', rules: '#', day: 'Day 1', time: '2:00 PM', venue: 'Lounge' },
+            { id: 404, club: 'lit', title: 'Bollymania', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?w=600', members: 'Duo', desc: 'Bollywood quiz.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Lounge' },
 
             // --- ESSC ---
-            { id: 17, club: 'essc', title: 'Social Case Study', price: 150, prize: '₹4,000', isPremium: true, img: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', members: '2-3', desc: 'Solve real-world social problems.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Conf Hall' },
-            { id: 18, club: 'essc', title: 'Nukkad Natak', price: 150, prize: '₹6,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600', members: 'Group', desc: 'Street Play competition.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Canteen Area' },
+            { id: 18, club: 'essc', title: 'Nukkad Natak', price: 1499, prize: '₹25,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600', members: '10', desc: 'Street play.', rules: '#', day: 'Day 1', time: '5:00 PM', venue: 'Canteen Area' },
+            { id: 19, club: 'essc', title: 'Housie', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600', members: '1', desc: 'Classic Tambola.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Canteen' },
+            { id: 20, club: 'essc', title: 'Pong the Palooza', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600', members: '3', desc: 'Pong challenge.', rules: '#', day: 'Day 2', time: '1:00 PM', venue: 'Canteen' },
+            { id: 321, club: 'essc', title: 'Face Painting', price: 199, prize: '₹8,000', isPremium: false, img: 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=600', members: '2', desc: 'Creative makeup art.', rules: '#', day: 'Day 1', time: '2:00 PM', venue: 'Foyer' },
+            { id: 222, club: 'essc', title: 'Poster Making', price: 199, prize: '₹8,000', isPremium: false, img: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600', members: '1', desc: 'Artistic posters.', rules: '#', day: 'Day 1', time: '11:00 AM', venue: 'Foyer' },
 
             // --- SPORTS ---
-            { id: 201, club: 'sports', title: 'Futsal Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Futsal Tournament.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Sports Ground' },
-            { id: 202, club: 'sports', title: 'Volleyball Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Volleyball Tournament.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
-            { id: 203, club: 'sports', title: 'Basketball Mix', price: 150, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Basketball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Basketball Court' },
-            { id: 204, club: 'sports', title: 'Throwball (Girls)', price: 100, prize: '₹7,000', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600', members: '6G + 2 Extra', desc: 'Girls Throwball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Sports Ground' },
-            { id: 205, club: 'sports', title: 'Table Tennis (Boys)', price: 100, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Boys TT Tournament.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
-            { id: 206, club: 'sports', title: 'Table Tennis (Girls)', price: 100, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Girls TT Tournament.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
-            { id: 207, club: 'sports', title: 'Chess', price: 100, img: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600', members: 'Solo', desc: 'Checkmate your opponent.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
-            { id: 208, club: 'sports', title: 'Carrom', price: 100, img: 'https://images.unsplash.com/photo-1632938678233-049830500732?w=600', members: 'Solo/Duo', desc: 'Carrom Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Student Lounge' },
-            { id: 209, club: 'sports', title: 'Tug of War Mix', price: 100, img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600', members: '4B + 4G', desc: 'Test of strength.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Ground' }
+            { id: 201, club: 'sports', title: 'Futsal Mix', price: 1259, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Futsal Tournament.', rules: '#', day: 'Day 1', time: '10:00 AM', venue: 'Sports Ground' },
+            { id: 202, club: 'sports', title: 'Volleyball Mix', price: 1259, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Volleyball Tournament.', rules: '#', day: 'Day 1', time: '9:00 AM', venue: 'Sports Ground' },
+            { id: 203, club: 'sports', title: 'Basketball Mix', price: 1049, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1593305841991-05c29736f0dc?w=600', members: '4B + 2G + 2 Extra', desc: 'Mixed Basketball Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Basketball Court' },
+            { id: 204, club: 'sports', title: 'Throwball (Girls)', price: 1049, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600', members: '6G + 2 Extra', desc: 'Girls Throwball.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Sports Ground' },
+            { id: 205, club: 'sports', title: 'Table Tennis (Boys)', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Boys TT.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
+            { id: 206, club: 'sports', title: 'Table Tennis (Girls)', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600', members: 'Solo', desc: 'Girls TT.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
+            { id: 207, club: 'sports', title: 'Chess', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600', members: 'Solo', desc: 'Checkmate.', rules: '#', day: 'Day 2', time: '11:00 AM', venue: 'Student Lounge' },
+            { id: 208, club: 'sports', title: 'Carrom', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1632938678233-049830500732?w=600', members: 'Solo', desc: 'Carrom Tournament.', rules: '#', day: 'Day 2', time: '12:00 PM', venue: 'Student Lounge' },
+            { id: 209, club: 'sports', title: 'Tug of War Mix', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600', members: '4B + 4G', desc: 'Test of strength.', rules: '#', day: 'Day 2', time: '4:00 PM', venue: 'Main Ground' }
         ];
+        
         function filterEvents(cat) { 
             const grid = document.getElementById('events-grid'); 
             grid.innerHTML=''; 
@@ -1916,20 +2046,31 @@
             filtered.forEach(e => { 
                 let priceText = `₹${e.price}`; 
                 if(isNift) priceText = `FREE`; 
+                
                 let label = "Add to Pass";
                 let btnClass = "border-white/20 text-white hover:bg-white hover:text-black";
+                let isDisabled = false;
                 
-                // Button Logic
-                if(cart.events.some(ev => ev.id == e.id)) { 
+                // --- ZERO COST / ON-SPOT LOGIC ---
+                if (e.price === 0) {
+                    priceText = "Free Entry";
+                    label = "On-Spot Registration";
+                    btnClass = "bg-white/5 text-gray-500 border-white/5 cursor-not-allowed";
+                    isDisabled = true;
+                }
+                // --- REGULAR LOGIC ---
+                else if(cart.events.some(ev => ev.id == e.id)) { 
                     label = "Selected";
                     btnClass = "bg-gradient-primary text-white hover:brightness-110 shadow-[0_0_15px_rgba(37,99,235,0.5)] border-transparent"; 
                 } 
-                if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { 
+                else if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { 
                     label = "Already Owned";
                     btnClass = "bg-green-500/20 text-green-500 cursor-default border-green-500/30"; 
                 } 
                 
-                let btnHtml = `<button id="btn-event-${e.id}" onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})" class="w-full mt-auto border ${btnClass} py-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded">${label}</button>`;
+                let btnAction = isDisabled ? '' : `onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})"`;
+                
+                let btnHtml = `<button id="btn-event-${e.id}" ${btnAction} class="w-full mt-auto border ${btnClass} py-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded">${label}</button>`;
                 
                 let prizeHtml = '';
                 if(e.prize) {
