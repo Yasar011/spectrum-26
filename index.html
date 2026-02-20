@@ -683,6 +683,7 @@
                             <div class="w-4 h-4 rounded-full border border-gray-600" id="radio-pass-gold"></div>
                         </div>
                     </div>
+
                 </div>
                 
                 <!-- ADDON BANNERS -->
@@ -975,18 +976,14 @@
                 <i data-lucide="shield-alert" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
                 <h3 class="text-xl font-bold text-white uppercase mb-2">Access Restricted</h3>
                 <p class="text-sm text-gray-400 mb-8">You need a <b>Base Pass</b> to add events. Only Merchandise can be purchased without a pass.</p>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="selectPassFromWarning('General Pass', 399, 'base')" class="bg-white/5 border border-white/10 p-3 hover:border-white transition-all text-left rounded">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="selectPassFromWarning('General Pass', 349, 'base')" class="bg-white/5 border border-white/10 p-3 hover:border-white transition-all text-left rounded">
                         <div class="text-[8px] text-gray-400 uppercase">General</div>
-                        <div class="text-blue-500 font-bold">₹399</div>
+                        <div class="text-blue-500 font-bold">₹349</div>
                     </button>
-                    <button onclick="selectPassFromWarning('Gold Pass', 599, 'base')" class="bg-yellow-900/20 border border-yellow-500/50 p-3 hover:bg-yellow-900/40 transition-all text-left rounded">
+                    <button onclick="selectPassFromWarning('Gold Pass', 659, 'base')" class="bg-yellow-900/20 border border-yellow-500/50 p-3 hover:bg-yellow-900/40 transition-all text-left rounded">
                         <div class="text-[8px] text-yellow-300 uppercase font-bold">Gold</div>
-                        <div class="text-yellow-500 font-bold">₹599</div>
-                    </button>
-                    <button onclick="selectPassFromWarning('Premium Pass', 999, 'base')" class="bg-blue-900/20 border border-blue-500/50 p-3 hover:bg-blue-900/40 transition-all text-left rounded">
-                        <div class="text-[8px] text-blue-300 uppercase font-bold">Prem</div>
-                        <div class="text-blue-500 font-bold">₹999</div>
+                        <div class="text-yellow-500 font-bold">₹659</div>
                     </button>
                 </div>
             </div>
@@ -1056,7 +1053,8 @@
                 <div class="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded mb-6 text-left">
                     <p class="text-[10px] text-yellow-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i> Important Notice</p>
                     <p class="text-[11px] text-gray-300 leading-relaxed">
-                        <b class="text-white">Payment Verification</b> and <b class="text-white">QR Code Verification</b> will <b class="text-red-400">ONLY</b> be done at the time of your arrival at the College Registration Desk. Please keep your screenshot ready.
+                        <b class="text-white">Payment Verification</b> and <b class="text-white">QR Code Verification</b> will <b class="text-red-400">ONLY</b> be done at the time of your arrival at the College Registration Desk. Please keep your screenshot ready.<br><br>
+                        <span class="text-cyan-400">Team Events:</span> You can link your squad members in the Profile section <b>only after</b> your payment is verified by the admin.
                     </p>
                 </div>
 
@@ -1359,6 +1357,10 @@
         function openSquadModal() {
             if(!userDataDB || !userDataDB.order || !userDataDB.order.events) {
                 alert("No registered events found. Please buy tickets first.");
+                return;
+            }
+            if(userDataDB.paymentStatus !== 'Verified') {
+                alert("Your payment must be VERIFIED by the admin before you can link your squad members.");
                 return;
             }
             
