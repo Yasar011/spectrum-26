@@ -1355,6 +1355,15 @@
         
         // SQUAD LOGIC
         function openSquadModal() {
+            // NEW: Automatically prompt user to log in if they aren't authenticated
+            if(!currentUser) {
+                alert("Please log in to access the Squad Uplink.");
+                openModal();
+                document.getElementById('view-profile').classList.add('hidden');
+                document.getElementById('view-auth').classList.remove('hidden');
+                switchAuthMode('login');
+                return;
+            }
             if(!userDataDB || !userDataDB.order || !userDataDB.order.events) {
                 alert("No registered events found. Please buy tickets first.");
                 return;
@@ -1364,18 +1373,24 @@
                 return;
             }
             
-            // Filter only team events (where members > 1 or is explicitly a team event)
-            const teamEvents = userDataDB.order.events.filter(e => 
-                e.title.includes('Valorant') || 
-                e.title.includes('Battle') || 
-                e.title.includes('Hunt') || 
-                e.title.includes('Fashion') ||
-                e.title.includes('Cricket') ||
-                e.members.toLowerCase().includes('group') ||
-                e.members.includes('+') ||
-                e.members.includes('-') ||
-                parseInt(e.members) > 1
-            );
+            // FIX: Bulletproof text filtering for team events!
+            const teamEvents = userDataDB.order.events.filter(e => {
+                const title = String(e.title || '').toLowerCase();
+                const members = String(e.members || '1').toLowerCase();
+                
+                return title.includes('valorant') || 
+                       title.includes('battle') || 
+                       title.includes('hunt') || 
+                       title.includes('fashion') ||
+                       title.includes('cricket') ||
+                       title.includes('group') ||
+                       title.includes('nukkad') ||
+                       title.includes('tug') ||
+                       members.includes('group') ||
+                       members.includes('+') ||
+                       members.includes('-') ||
+                       parseInt(members) > 1;
+            });
 
             const container = document.getElementById('squad-list');
             
@@ -1388,7 +1403,7 @@
                     
                     // --- DYNAMIC SLOT LOGIC ---
                     let maxTeamSize = 12; // default fallback
-                    let str = String(e.members).toUpperCase();
+                    let str = String(e.members || '').toUpperCase();
                     
                     if (str.includes('DUO')) { maxTeamSize = 2; }
                     else if (str.includes('-')) { 
@@ -1416,8 +1431,8 @@
                     }
                     membersHtml += '</div>';
 
-                    // Escape quotes in title for function call
-                    const safeTitle = e.title.replace(/'/g, "\\'");
+                    // Escape quotes in title for function call safely
+                    const safeTitle = String(e.title || '').replace(/'/g, "\\'");
 
                     html += `
                     <div class="bg-white/5 border border-white/10 p-4 rounded mb-4">
@@ -2159,7 +2174,7 @@
 
             // --- CULTURAL ---
             { id: 5, club: 'culture', title: 'Solo Dance', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=600', members: 'Solo', desc: 'Rhythm and grace.', day: 'Day 1', time: '4:00 PM', venue: 'Amphi' },
-            { id: 306, club: 'culture', title: 'Group Dance', price: 1199, prize: '₹22,000', isPremium: true, img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: 'Group', desc: 'Sync your steps.', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 306, club: 'culture', title: 'Group Dance', price: 1199, prize: '₹22,000', isPremium: true, img: 'https://images.unsplash.com/photo-1545959670-b74c5c246f4b?w=600', members: '5-8', desc: 'Sync your steps. Team of 5 to 8.', day: 'Day 1', time: '5:00 PM', venue: 'Main Stage' },
             { id: 6, club: 'culture', title: 'Solo Singing', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600', members: 'Solo', desc: 'Voice of Spectrum.', day: 'Day 1', time: '11:00 AM', venue: 'Audi' },
             { id: 8, club: 'culture', title: 'Battle of Bands', price: 1199, prize: '₹20,000', isPremium: true, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600', members: '3-6', desc: 'Musical showdown.', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
             { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 0, prize: '₹15,000', isPremium: false, img: 'https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?w=600', members: 'Solo', desc: 'Personality hunt. Only for NIFT Students.', day: 'Day 2', time: '4:00 PM', venue: 'Main Stage' },
