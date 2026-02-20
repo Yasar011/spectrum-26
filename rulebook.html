@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum '26 | Official Rulebook</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root { 
+            --bg-base: #030712; 
+        }
+        body { 
+            background-color: var(--bg-base); 
+            color: #fff; 
+            font-family: 'Outfit', sans-serif; 
+            overflow-x: hidden;
+        }
+        .font-display { font-family: 'Oswald', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(24px); 
+        }
+
+        .rule-card {
+            scroll-margin-top: 100px;
+        }
+        .highlight-glow {
+            animation: borderGlow 2s ease-out;
+            border-color: #06b6d4 !important;
+            background: rgba(6, 182, 212, 0.1) !important;
+        }
+
+        @keyframes borderGlow {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(6, 182, 212, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+
+        /* Glitch Effect */
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after { 
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: transparent; opacity: 0.8; mix-blend-mode: screen; 
+        }
+        .glitch-text::before { left: 2px; text-shadow: -2px 0 #06b6d4; animation: glitch-1 3s infinite linear alternate-reverse; }
+        .glitch-text::after { left: -2px; text-shadow: -2px 0 #ec4899; animation: glitch-2 4s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <!-- Header -->
+    <header class="h-[10%] min-h-[80px] flex justify-between items-center px-6 md:px-12 border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-gray-400 hover:text-white transition-colors mr-2">
+                <i data-lucide="arrow-left" class="w-6 h-6"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-display font-bold uppercase tracking-widest glitch-text" data-text="Directives & Protocols">Directives & Protocols</h1>
+                <p class="text-cyan-400 font-mono text-[10px] uppercase tracking-[0.3em]">Spectrum '26 Rulebook</p>
+            </div>
+        </div>
+        <div class="hidden md:block">
+            <input type="text" id="search-input" onkeyup="searchRules()" placeholder="Search Event..." class="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white font-mono focus:outline-none focus:border-cyan-500 transition-colors w-64">
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 border-r border-white/10 bg-black/40 overflow-y-auto hidden md:block shrink-0 p-4">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Categories</h3>
+            <ul class="space-y-2 text-sm font-mono" id="sidebar-nav">
+                <!-- Nav items generated via JS -->
+            </ul>
+        </aside>
+
+        <!-- Rule Content Area -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-12 scroll-smooth" id="rules-container">
+            <!-- General Terms (Always at the top) -->
+            <section id="general-rules" class="mb-16 rule-card">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="shield-alert" class="w-8 h-8 text-red-500"></i>
+                    <h2 class="text-3xl font-display font-bold text-white uppercase tracking-wider">General Terms & Conditions</h2>
+                </div>
+                <div class="glass-panel p-6 md:p-8 rounded-2xl border-l-4 border-l-red-500 shadow-xl">
+                    <ul class="space-y-4 text-gray-300 font-medium list-disc list-inside">
+                        <li>During registration, all participants as well as visitors need to carry their any identity proof (Aadhar card, DL, Voter ID, etc.) and college identity cards.</li>
+                        <li>Registration amount will <strong class="text-red-400">not be refunded</strong> incase the participant fails to secure any position in the event.</li>
+                        <li>If found involved in offensive activities, you will not be allowed to participate and with immediate effect thrown out of the college premises.</li>
+                        <li>Participants need to adhere to the time limit of each event. Failure to do so will result in penalization per rules or disqualification.</li>
+                        <li>Many events have themes/topics; every participant must stick to the topic or face a reduction in marks.</li>
+                        <li><strong>Judge's decision</strong> at the face of any discrepancy or dispute shall be final and binding. No further objections will be entertained.</li>
+                        <li>Use of obscene, disrespectful, indecent, or offensive language, imagery, or implications are strictly prohibited.</li>
+                        <li>Overstepping moral, social, or religious boundaries shall be immediately and strictly penalized.</li>
+                        <li>The organizing committee reserves the right to change the event schedule and timings.</li>
+                        <li>All participants should report to the venue at least <strong>1 hour prior</strong> to the commencement of the event, unless mentioned.</li>
+                        <li>Incase of any disruption, college management holds the right to change the list of winners.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent mb-16"></div>
+
+            <!-- Dynamic Event Rules -->
+            <div id="dynamic-rules" class="space-y-12">
+                <!-- Event cards generated via JS -->
+            </div>
+            
+            <div class="py-20 text-center text-gray-600 font-mono text-xs">
+                End of Directives.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Extracted directly from PDF
+        const rulesData = [
+            {
+                id: 102, category: "Cultural",
+                title: "Fashion Show (Vogue Gala)",
+                members: "5 Designers + 1 Stylist (Min entries: 7)",
+                rules: [
+                    "Theme: VIBHRAM",
+                    "Evaluation: Concept/theme, Garment look/styling, Choreography/presentation.",
+                    "The team needs to develop a range of 7 garments and accessories.",
+                    "Songs and videos must be submitted by 25th February.",
+                    "The collection may be completely self-stitched or 50% outsourced.",
+                    "Copyright infringement will lead to disqualification.",
+                    "Time limit: Max 6 minutes (2 mins setup + 4 mins walk). Exceeding limit forces fade out or point deduction.",
+                    "Inappropriate content (songs, choreography, garments) leads to disqualification.",
+                    "Report backstage 1 hour prior to allotted time.",
+                    "Registration fee is Rs.2999/- per team.",
+                    "Inhouse Jury: 3 rounds (Theme board, 3 finished garments, Final review).",
+                    "Outsider Jury: 2 rounds (Illustrations/Boards, Final garments/choreography)."
+                ]
+            },
+            {
+                id: 307, category: "Cultural",
+                title: "Mr. & Ms. Spectrum",
+                members: "1 (Solo)",
+                rules: [
+                    "Only 10 female and 10 male participants will be chosen for the main event.",
+                    "Participants must submit their videos and audio by 25th February.",
+                    "Copyright infringement or inappropriate choreography/garments will result in disqualification.",
+                    "Report backstage one hour before the allotted time.",
+                    "Round 1: Ramp Walk and Introduction (Judged on Theme, Creativity, Audience engagement).",
+                    "Round 2: Talent Round (90 seconds limit). Bring your own props.",
+                    "Round 3: Q&A Session with Judges (On the spot)."
+                ]
+            },
+            {
+                id: 6, category: "Cultural",
+                title: "Solo Singing",
+                members: "1 (Solo)",
+                rules: [
+                    "Time Limit: 2 minutes setup + 3 minutes performance (5 minutes overall).",
+                    "Medley of two or more songs isn't permitted.",
+                    "Language: Hindi & English.",
+                    "Allowed to accompany with ONE instrumentalist or karaoke track.",
+                    "Background music must be submitted by 25th February.",
+                    "Report to venue 60 minutes before.",
+                    "Judged on: Choice of song, Voice Quality, Pronunciation, Presentation."
+                ]
+            },
+            {
+                id: 5, category: "Cultural",
+                title: "Solo Dancing",
+                members: "1 (Solo)",
+                rules: [
+                    "Time Limit: 3 minutes of performance. Exceeding limits will deduct marks.",
+                    "Music must be submitted (MP3) by 25th February midnight.",
+                    "Music must not contain abusive words.",
+                    "Report to venue 60 minutes prior.",
+                    "Judged on: Stage space, Steps/expressions, Costume/make-up, Overall impact."
+                ]
+            },
+            {
+                id: 306, category: "Cultural",
+                title: "Group Dance (Dance Battle)",
+                members: "5 Minimum - 8 Maximum",
+                rules: [
+                    "Time Limit: 2 minutes setup + 3 minutes performance (5 minutes overall).",
+                    "Music must be submitted (MP3) by 25th February midnight without abusive words.",
+                    "Judgement (10 pts each): Confidence/choreography, Use of props/Stage presence, Costume/makeup, Steps/expressions."
+                ]
+            },
+            {
+                id: 8, category: "Cultural",
+                title: "Battle of Bands",
+                members: "4 Minimum - 6 Maximum",
+                rules: [
+                    "Time Limit: 10 minutes setup + 15 minutes performance.",
+                    "Minimum 3 instrumentalists and 1 lead vocalist is compulsory.",
+                    "Language: English or Hindi.",
+                    "Hate speech, religious insults, or obscene content strictly prohibited.",
+                    "Report 60 minutes before.",
+                    "Judged on: Composition, Stage presence, Audience engagement, Synchronization."
+                ]
+            },
+            {
+                id: 202, category: "Sports",
+                title: "Volleyball (Boys & Girls Mix)",
+                members: "6 on field + 2 substitutes",
+                rules: [
+                    "Mixed team: 4 Boys + 2 Girls actively playing.",
+                    "Best of 3 sets of 5 rally points each (knockouts).",
+                    "Finals and semis: 2 sets of 25 rally points, decider set of 15 points.",
+                    "Two time-outs of 2 minutes each per team.",
+                    "Deuce (Deciding set): 2 point difference required.",
+                    "Deuce (Regular): Max up to 17 or 27 points.",
+                    "Rotation of members is not compulsory."
+                ]
+            },
+            {
+                id: 203, category: "Sports",
+                title: "Basketball (Boys & Girls Mix)",
+                members: "5 on field + 2 substitutes",
+                rules: [
+                    "Mixed team: 3 Boys + 2 Girls actively playing.",
+                    "Match divided into 4 quarters (5 minutes each). Finals: 10 mins each.",
+                    "Breaks: 1 minute between quarters, 2 mins half time.",
+                    "Two time-outs of 2 minutes each per team.",
+                    "Deuce: Extra quarter of 2 minutes.",
+                    "Rules based on FIBA."
+                ]
+            },
+            {
+                id: 201, category: "Sports",
+                title: "Futsal (Boys & Girls Mix)",
+                members: "1 GK + 5 players, 2 subs",
+                rules: [
+                    "Mixed team: 4 Boys + 2 Girls.",
+                    "Total duration 30 mins (15 minute halves). 10 mins half-time.",
+                    "Substitutes on the fly allowed.",
+                    "No offside rule, No slide tackles. Players must not go to the ground to steal possession.",
+                    "Based on AMF rules."
+                ]
+            },
+            {
+                id: 205, category: "Sports", // Groups TT Boys & Girls
+                title: "Table Tennis",
+                members: "1 (Singles)",
+                rules: [
+                    "Best of 3 sets (11 points each). Finals: 5 sets.",
+                    "Knockouts format.",
+                    "Participants must carry their own bats. Ball provided.",
+                    "Deuce deciding set: 2 points difference required.",
+                    "Serve rule: Rest on open palm, tossed at least 6 inches.",
+                    "Net touch during serve is a let serve (re-served)."
+                ]
+            },
+            {
+                id: 208, category: "Sports",
+                title: "Carrom",
+                members: "1 (Singles)",
+                rules: [
+                    "Carrom men of either color: 1 point each.",
+                    "Queen: 5 points.",
+                    "Black: 1 point, White: 2 points.",
+                    "Must pocket a carrom man of any color after the queen to secure queen points."
+                ]
+            },
+            {
+                id: 207, category: "Sports",
+                title: "Chess",
+                members: "1 (Singles)",
+                rules: [
+                    "White moves first. Touch-move rule applies.",
+                    "Chess clock used. Player loses if time runs out.",
+                    "Classical format. Strict conduct: no talking, no outside help, no devices.",
+                    "Win: 1 point, Draw: 0.5 points, Loss: 0 points."
+                ]
+            },
+            {
+                id: 204, category: "Sports",
+                title: "Throw Ball (Only for Girls)",
+                members: "7 + 2 subs",
+                rules: [
+                    "No changes allowed once match starts.",
+                    "Best of three sets, played for 15 points each.",
+                    "Must catch with both hands, return using only ONE hand.",
+                    "Overhand throw released within 5 seconds of whistle.",
+                    "Service ball must not touch the net.",
+                    "Ball must be thrown from above shoulder level."
+                ]
+            },
+            {
+                id: 3, category: "Adventure",
+                title: "Match the Picture (Patch)",
+                members: "1",
+                rules: [
+                    "Memory-based card game. Find and collect matching pairs.",
+                    "Round 1: Five players per game. Take turns flipping two cards.",
+                    "If match found, player keeps pair and plays again.",
+                    "Player with most matched pairs advances to Round 2.",
+                    "External assistance or cheating leads to disqualification."
+                ]
+            },
+            {
+                id: 9, category: "Adventure",
+                title: "Mini Adventure Games",
+                members: "1",
+                rules: [
+                    "5 games/hurdles in total.",
+                    "Three participants compete at a time. Fastest qualifies for finals.",
+                    "Timer starts on signal, stops at finish line.",
+                    "Safety: Players must wear appropriate shoes."
+                ]
+            },
+            {
+                id: 2, category: "Adventure",
+                title: "Short Film",
+                members: "2-4",
+                rules: [
+                    "Theme announced 48 hours before (12:00 AM, 26-02-26).",
+                    "No copyrighted third-party works.",
+                    "English and Hindi only.",
+                    "Length: 60 to 120 seconds. Under 100MB.",
+                    "Submit by 12 PM, 01-03-26 via email.",
+                    "Judged on: Editing, Cinematography, Storytelling, Originality."
+                ]
+            },
+            {
+                id: 1, category: "Adventure",
+                title: "Photography",
+                members: "1",
+                rules: [
+                    "Theme announced 48 hours before.",
+                    "Submit photo story with 3 to 5 original pictures.",
+                    "Basic editing allowed; manipulations/illusions prohibited.",
+                    "Submit JPEG + RAW files with Title and Caption.",
+                    "Submit by 12 PM, 01-03-26 via email."
+                ]
+            },
+            {
+                id: 19, category: "ESSC",
+                title: "Housie",
+                members: "1",
+                rules: [
+                    "Players purchase cards with grid of numbers.",
+                    "Caller announces numbers; players mark them off.",
+                    "First to complete predetermined pattern (straight line, four corners, full house) wins."
+                ]
+            },
+            {
+                id: 18, category: "ESSC",
+                title: "Nukkad Natak",
+                members: "10",
+                rules: [
+                    "5 mins stage setup, 10 mins performance.",
+                    "Content must be original, appropriate, and follow social norms.",
+                    "No abusive/offensive language.",
+                    "Use of mics, speakerphones, and background music is NOT allowed.",
+                    "Teams must carry their own props and costumes."
+                ]
+            },
+            {
+                id: 20, category: "ESSC",
+                title: "Pong the Palooza",
+                members: "3",
+                rules: [
+                    "Throw ping pong ball into opponent's cups.",
+                    "Every ball that goes in has a chit.",
+                    "Thrower decides which opponent group member does the task from the cup.",
+                    "Group with more points wins."
+                ]
+            },
+            {
+                id: 321, category: "ESSC",
+                title: "Face Painting",
+                members: "2 (1 Artist + 1 Model)",
+                rules: [
+                    "Theme provided at reporting time.",
+                    "Time limit: 2.5 hours (including 5 mins concept explanation).",
+                    "Bring your own makeup.",
+                    "Artist is responsible for hygiene and model's safety."
+                ]
+            },
+            {
+                id: 222, category: "ESSC",
+                title: "Poster Making",
+                members: "1",
+                rules: [
+                    "Theme provided at reporting time.",
+                    "Time limit: 3 hours including concept note.",
+                    "Participants bring their own materials; only A3 sheet provided."
+                ]
+            },
+            {
+                id: 302, category: "Environment",
+                title: "Treasure Hunt",
+                members: "5",
+                rules: [
+                    "Allowed: Campus Area. Prohibited: Faculty blocks, Hostels, Classrooms.",
+                    "Use of phones strictly prohibited. No communication with other teams.",
+                    "Colored ribbons allocated to teams. Do not lose them.",
+                    "9 clues lead to final treasure. 60 mins limit.",
+                    "Each team gets unique clue sequence. Must follow order."
+                ]
+            },
+            {
+                id: 303, category: "Environment",
+                title: "Trivia (Multi-Sensory Relay)",
+                members: "4",
+                rules: [
+                    "Relay format: One player completes game before next starts.",
+                    "5 Rounds. Game 5 (Spectrum Cipher) played by all members.",
+                    "Total time limit: 5 Minutes.",
+                    "No mobile phones allowed. Point system applies."
+                ]
+            },
+            {
+                id: 304, category: "Environment",
+                title: "Musical Chair",
+                members: "15 per round",
+                rules: [
+                    "Qualifying rounds: 15 participants, 13 chairs. 2 eliminated per round, 3 qualify.",
+                    "Final round: 9 qualified players.",
+                    "Move while music plays, sit when it stops. One player per chair.",
+                    "Prohibited: Pushing, pulling, holding/dragging chairs, sitting before music stops."
+                ]
+            },
+            {
+                id: 301, category: "Environment",
+                title: "Graffiti Competition",
+                members: "5",
+                rules: [
+                    "Theme announced in advance.",
+                    "Bring own materials (paints, brushes, sprays).",
+                    "Committee provides one thick 5x5 ft sheet.",
+                    "Time limit: 3 hours.",
+                    "Do not damage venue property. No offensive/political content."
+                ]
+            },
+            {
+                id: 305, category: "Environment",
+                title: "Trumbling",
+                members: "2 per team",
+                rules: [
+                    "Tournament structure leading to 1v1 finals.",
+                    "Only ONE hand allowed. Remove one block at a time from below top layer.",
+                    "Place block on top. 30 seconds per move.",
+                    "Tower falls = loss.",
+                    "Surprise twist rules will be announced mid-game."
+                ]
+            },
+            {
+                id: 403, category: "Literary",
+                title: "Snake and Ladder (Human-Sized)",
+                members: "2",
+                rules: [
+                    "5 Rounds cyclically until a team wins.",
+                    "Rounds 1 & 2: Ring Toss onto dice to determine movement.",
+                    "Rounds 3 & 4: Gen-Z Mania (Social media questions dictating movement).",
+                    "Round 5: Betting Round on dice outcome.",
+                    "Speaking out of turn or using gadgets leads to disqualification."
+                ]
+            },
+            {
+                id: 402, category: "Literary",
+                title: "Minute to Win It",
+                members: "2",
+                rules: [
+                    "6 Rounds of fast-paced tasks.",
+                    "Tasks must be completed within 60 seconds.",
+                    "Failure = 0 points. Lowest scoring teams eliminated iteratively.",
+                    "Scores are cumulative."
+                ]
+            },
+            {
+                id: 404, category: "Literary",
+                title: "Bollymania",
+                members: "2",
+                rules: [
+                    "4 Rounds of Bollywood trivia.",
+                    "Details revealed on spot. Unique team names required.",
+                    "No mobile phones.",
+                    "Screaming or disruptive behavior not entertained."
+                ]
+            },
+            {
+                id: 401, category: "Literary",
+                title: "Devil's Advocate",
+                members: "1",
+                rules: [
+                    "Topic: Freedom of Expression Should Have Limits in Art.",
+                    "Assigned FOR or AGAINST randomly. Must defend regardless of personal opinion.",
+                    "Time: 2 mins prep, 2-3 mins speaking.",
+                    "No phones or reference materials.",
+                    "Cross-questioning by others allowed after speech.",
+                    "Hate speech leads to disqualification."
+                ]
+            }
+        ];
+
+        // 1. Generate Sidebar & Content dynamically
+        function renderRules() {
+            const sidebar = document.getElementById('sidebar-nav');
+            const container = document.getElementById('dynamic-rules');
+            
+            // Extract unique categories
+            const categories = [...new Set(rulesData.map(r => r.category))];
+
+            categories.forEach(cat => {
+                // Add Category Label in Sidebar
+                sidebar.innerHTML += `<li class="mt-4 mb-2 text-cyan-500 font-bold uppercase tracking-wider">${cat}</li>`;
+                
+                // Filter events for this category
+                const events = rulesData.filter(r => r.category === cat);
+                
+                events.forEach(event => {
+                    // Add link to sidebar
+                    sidebar.innerHTML += `
+                        <li><a href="#event-${event.id}" class="text-gray-400 hover:text-white transition-colors pl-2 block py-1 border-l-2 border-transparent hover:border-cyan-500">
+                            ${event.title}
+                        </a></li>
+                    `;
+
+                    // Generate Rule Card
+                    let rulesHtml = event.rules.map(r => `
+                        <li class="flex gap-3 items-start">
+                            <i data-lucide="check" class="w-4 h-4 text-cyan-500 shrink-0 mt-1"></i>
+                            <span class="text-gray-300">${r}</span>
+                        </li>
+                    `).join('');
+
+                    container.innerHTML += `
+                        <section id="event-${event.id}" class="rule-card glass-panel p-6 md:p-8 rounded-2xl border border-white/5 transition-all duration-500">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-6 border-b border-white/10 pb-4">
+                                <div>
+                                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest bg-cyan-900/30 px-2 py-1 rounded">${event.category}</span>
+                                    <h3 class="text-2xl font-display font-bold text-white mt-2 uppercase tracking-wide">${event.title}</h3>
+                                </div>
+                                <div class="mt-4 md:mt-0 text-right">
+                                    <span class="text-[10px] text-gray-500 uppercase font-mono block">Team Size</span>
+                                    <span class="text-sm font-bold text-white">${event.members}</span>
+                                </div>
+                            </div>
+                            <ul class="space-y-3 font-medium">
+                                ${rulesHtml}
+                            </ul>
+                        </section>
+                    `;
+                });
+            });
+            
+            lucide.createIcons();
+        }
+
+        // 2. Handle Auto-Scrolling from URL Parameter
+        function handleURL() {
+            const params = new URLSearchParams(window.location.search);
+            const targetId = params.get('id');
+            
+            if (targetId) {
+                const element = document.getElementById(`event-${targetId}`);
+                if (element) {
+                    setTimeout(() => {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        element.classList.add('highlight-glow');
+                        // Remove glow class after animation
+                        setTimeout(() => element.classList.remove('highlight-glow'), 2500);
+                    }, 500);
+                }
+            }
+        }
+
+        // 3. Search Filter Function
+        function searchRules() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.rule-card');
+            
+            cards.forEach(card => {
+                if (card.id === 'general-rules') return; // Keep general rules visible
+                
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRules();
+            handleURL();
+        });
+
+    </script>
+</body>
+</html>
