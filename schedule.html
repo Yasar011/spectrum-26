@@ -3,144 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spectrum '26 | Schedule</title>
+    <title>Spectrum '26 | Event Schedule</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;400;600;700&family=Oswald:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+
     <style>
-        body { background-color: #050505; color: #f0f0f0; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
-        .font-display { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
-        .font-serif { font-family: 'Italiana', serif; }
-        .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d946ef, #06b6d4); z-index: 0; }
-        .timeline-dot { width: 12px; height: 12px; background: #000; border: 2px solid #d946ef; border-radius: 50%; z-index: 10; position: relative; box-shadow: 0 0 10px #d946ef; }
-        .card-glass { background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); transition: 0.3s; }
-        .card-glass:hover { border-color: #06b6d4; transform: translateX(10px); background: rgba(30, 30, 30, 0.8); }
+        :root { 
+            --bg-base: #030712; 
+        }
+        body { 
+            background-color: var(--bg-base); 
+            color: #fff; 
+            font-family: 'Outfit', sans-serif; 
+            overflow-x: hidden;
+        }
+        .font-display { font-family: 'Oswald', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(24px); 
+        }
+
+        /* Glitch Effect */
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after { 
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: transparent; opacity: 0.8; mix-blend-mode: screen; 
+        }
+        .glitch-text::before { left: 2px; text-shadow: -2px 0 #06b6d4; animation: glitch-1 3s infinite linear alternate-reverse; }
+        .glitch-text::after { left: -2px; text-shadow: -2px 0 #ec4899; animation: glitch-2 4s infinite linear alternate-reverse; }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+
+        /* Timeline Specifics */
+        .timeline-container { position: relative; }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 16px; height: 100%; width: 2px;
+            background: linear-gradient(to bottom, #06b6d4, #ec4899);
+            opacity: 0.3;
+        }
+        @media (min-width: 768px) {
+            .timeline-container::before { left: 50%; transform: translateX(-50%); }
+        }
+
+        .timeline-dot {
+            position: absolute; left: 16px; transform: translateX(-50%);
+            width: 16px; height: 16px; border-radius: 50%;
+            background-color: #030712; border: 4px solid #06b6d4;
+            z-index: 10;
+        }
+        @media (min-width: 768px) {
+            .timeline-dot { left: 50%; }
+        }
+        
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn.active { background: linear-gradient(90deg, rgba(6,182,212,0.2), rgba(236,72,153,0.2)); border-color: #06b6d4; color: white; }
+
+        .animate-in { animation: fadeUp 0.5s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="p-6 pb-24">
-    <nav class="flex justify-between items-center mb-16">
-        <a href="theme.html" class="flex items-center gap-2 text-fuchsia-500 hover:text-white transition-colors"><i data-lucide="arrow-left"></i> Back to Home</a>
-        <h1 class="font-display text-2xl tracking-widest text-white">EVENT TIMELINE</h1>
-    </nav>
+<body class="flex flex-col min-h-screen">
 
-    <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <header class="min-h-[80px] flex justify-between items-center px-6 md:px-12 border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-gray-400 hover:text-white transition-colors mr-2">
+                <i data-lucide="arrow-left" class="w-6 h-6"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-display font-bold uppercase tracking-widest glitch-text" data-text="Master Schedule">Master Schedule</h1>
+                <p class="text-cyan-400 font-mono text-[10px] uppercase tracking-[0.3em]">Spectrum '26 • Vibhram</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="flex-1 max-w-5xl mx-auto w-full p-6 md:p-12">
         
-        <!-- Day 1 Header -->
-        <div class="flex items-end gap-4 mb-12 border-b border-zinc-800 pb-4">
-            <h2 class="text-4xl font-display text-white">DAY 01</h2>
-            <span class="text-fuchsia-500 font-mono mb-1">February 27, 2026</span>
+        <!-- Day Toggle Tabs -->
+        <div class="flex gap-4 mb-12 justify-center">
+            <button onclick="switchDay('Day 1')" id="tab-Day 1" class="tab-btn active border border-white/10 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm text-gray-400 hover:text-white shadow-lg">
+                Day 1 <span class="block text-[10px] font-normal text-cyan-400 font-mono">Feb 28</span>
+            </button>
+            <button onclick="switchDay('Day 2')" id="tab-Day 2" class="tab-btn border border-white/10 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm text-gray-400 hover:text-white shadow-lg">
+                Day 2 <span class="block text-[10px] font-normal text-pink-400 font-mono">Mar 1</span>
+            </button>
         </div>
 
-        <div class="relative pl-6 space-y-12 mb-24">
-            <!-- Event 1 -->
-            <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">09:00 AM</span>
-                    <div class="flex-1 card-glass p-5 rounded-lg">
-                        <h4 class="text-xl text-white font-bold uppercase mb-1">Registration & Entry</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Campus Entrance</span>
-                            <span class="text-green-500">Kickoff</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event 2 -->
-             <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">06:30 PM</span>
-                    <div class="flex-1 card-glass p-5 rounded-lg">
-                        <h4 class="text-xl text-white font-bold uppercase mb-1">Inauguration Ceremony</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Rhythm Theatre</span>
-                            <span class="text-fuchsia-500">Main Event</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2 italic">Faculty: Dr. Ruchika Dawar, Dr. Sheetal Soni</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event 3 -->
-            <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot bg-fuchsia-500 border-white"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-fuchsia-400 font-mono text-sm font-bold w-32 pt-1">08:00 PM</span>
-                    <div class="flex-1 bg-zinc-900 border border-fuchsia-500/50 p-5 rounded-lg shadow-[0_0_20px_rgba(217,70,239,0.1)]">
-                        <h4 class="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-cyan-400 font-bold uppercase mb-1">EDM Night</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Main Ground</span>
-                            <span class="text-white bg-fuchsia-600 px-2 rounded">PRO SHOW</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Timeline Container -->
+        <div class="timeline-container relative w-full pb-20" id="schedule-container">
+            <!-- Content injected by JS -->
         </div>
 
-        <!-- Day 2 Header -->
-        <div class="flex items-end gap-4 mb-12 border-b border-zinc-800 pb-4">
-            <h2 class="text-4xl font-display text-white">DAY 02</h2>
-            <span class="text-fuchsia-500 font-mono mb-1">February 28, 2026</span>
-        </div>
+    </main>
 
-        <div class="relative pl-6 space-y-12">
-            <!-- Event 1 -->
-            <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">02:00 PM</span>
-                    <div class="flex-1 card-glass p-5 rounded-lg">
-                        <h4 class="text-xl text-white font-bold uppercase mb-1">Among Us IRL</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> T5 + Campus</span>
-                            <span class="text-yellow-500">Literary Club</span>
-                        </div>
-                         <p class="text-xs text-gray-500 mt-2">Prizes: 4 Gold, 4 Silver, 4 Bronze Medals + Certificates</p>
-                    </div>
-                </div>
-            </div>
+    <script>
+        lucide.createIcons();
 
-            <!-- Event 2 -->
-            <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot group-hover:bg-fuchsia-500 transition-colors"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-cyan-400 font-mono text-sm font-bold w-32 pt-1">06:00 PM</span>
-                    <div class="flex-1 card-glass p-5 rounded-lg">
-                        <h4 class="text-xl text-white font-bold uppercase mb-1">Valedictory Ceremony</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> OAT</span>
-                            <span class="text-gray-400">Closing</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        // Exact Event Data from main website
+        const eventsData = [
+            { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'The biggest night of the fest. Featuring top DJs. Gold Pass Required.', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1469334023215-c574bc2e47bf?w=600&auto=format&fit=crop&q=80', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: 'https://images.unsplash.com/photo-1550614000439-56d8de233b86?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Capture the essence of the fest.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
+            { id: 2, club: 'adventure', title: 'Short Film', price: 399, prize: '₹12,000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Storytelling through the lens.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
+            { id: 3, club: 'adventure', title: 'Match the Picture', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1503602642458-232111445657?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Visual puzzle challenge.', day: 'Day 1', time: '3:00 PM', venue: 'Basketball Alley' },
+            { id: 9, club: 'adventure', title: 'Mini Adventure', price: 99, prize: '₹4,500', isPremium: false, img: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Quick adventure challenges.', day: 'Day 1', time: '11:00 AM', venue: 'A Gate Stretch' },
+            { id: 5, club: 'culture', title: 'Solo Dance', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Rhythm and grace.', day: 'Day 1', time: '12:00 PM', venue: 'Main Stage' },
+            { id: 306, club: 'culture', title: 'Group Dance', price: 1199, prize: '₹22,000', isPremium: true, img: 'https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?w=600&auto=format&fit=crop&q=80', members: '5-8', desc: 'Sync your steps. Team of 5 to 8.', day: 'Day 1', time: '3:30 PM', venue: 'Main Stage' },
+            { id: 6, club: 'culture', title: 'Solo Singing', price: 99, prize: '₹6,000', isPremium: false, img: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Voice of Spectrum.', day: 'Day 2', time: '10:00 AM', venue: 'Main Stage' },
+            { id: 8, club: 'culture', title: 'Battle of Bands', price: 1199, prize: '₹20,000', isPremium: true, img: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=600&auto=format&fit=crop&q=80', members: '3-6', desc: 'Musical showdown.', day: 'Day 2', time: '5:00 PM', venue: 'Main Stage' },
+            { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 0, prize: '₹15,000', isPremium: false, img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Personality hunt. Only for NIFT Students.', day: 'Day 1', time: '8:00 PM', venue: 'Main Stage' },
+            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 799, prize: '₹24,000', isPremium: true, img: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Art on walls.', day: 'Day 1', time: '10:00 AM', venue: 'OAT' },
+            { id: 302, club: 'environment', title: 'Treasure Hunt (Env)', price: 499, prize: '₹5,000', isPremium: false, img: 'https://images.unsplash.com/photo-1508680196726-0e1cebbdcaf4?w=600&auto=format&fit=crop&q=80', members: '4-5', desc: 'Hunt for nature.', day: 'Day 2', time: '10:00 AM', venue: 'Whole Campus' },
+            { id: 303, club: 'environment', title: 'Eco Trivia', price: 99, prize: '₹2,200', isPremium: false, img: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Green knowledge test.', day: 'Day 2', time: '9:00 AM', venue: 'Classroom' },
+            { id: 304, club: 'environment', title: 'Musical Chairs', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Fun survival game.', day: 'Day 1', time: '3:00 PM', venue: 'Flag Area' },
+            { id: 305, club: 'environment', title: 'Trumbling', price: 49, prize: '₹1,000', isPremium: false, img: 'https://images.unsplash.com/photo-1555505019-8c3f1c4abe5b?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Balance game.', day: 'Day 1', time: '1:00 PM', venue: 'RC Area' },
+            { id: 401, club: 'lit', title: "Devil's Advocate", price: 99, prize: '₹5,000', isPremium: true, img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Debate with a twist.', day: 'Day 1', time: '11:00 AM', venue: 'Conf Hall' },
+            { id: 402, club: 'lit', title: 'Minute to Win It', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1495364141860-b0d03dea4520?w=600&auto=format&fit=crop&q=80', members: 'Duo', desc: 'Quick challenges.', day: 'Day 1', time: '11:00 AM', venue: 'Classroom' },
+            { id: 403, club: 'lit', title: 'Snakes & Ladders', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1558021212551-28da5679dcce?w=600&auto=format&fit=crop&q=80', members: 'Duo', desc: 'Giant board game.', day: 'Day 1', time: '2:00 PM', venue: 'Lounge' },
+            { id: 404, club: 'lit', title: 'Bollymania', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80', members: 'Duo', desc: 'Bollywood quiz.', day: 'Day 2', time: '10:00 AM', venue: 'Classroom' },
+            { id: 18, club: 'essc', title: 'Nukkad Natak', price: 1499, prize: '₹25,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80', members: '10', desc: 'Street play.', day: 'Day 1', time: '10:00 AM', venue: 'Event Ground' },
+            { id: 19, club: 'essc', title: 'Housie', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1512805147242-b5b7d41fa75c?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Classic Tambola.', day: 'Day 2', time: '11:00 AM', venue: 'Canteen' },
+            { id: 20, club: 'essc', title: 'Pong the Palooza', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1511511410045-995a127027bc?w=600&auto=format&fit=crop&q=80', members: '3', desc: 'Pong challenge.', day: 'Day 1', time: '12:00 PM', venue: 'Classroom' },
+            { id: 321, club: 'essc', title: 'Face Painting', price: 199, prize: '₹8,000', isPremium: false, img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=80', members: '2', desc: 'Creative makeup art.', day: 'Day 1', time: '2:00 PM', venue: 'Foyer' },
+            { id: 222, club: 'essc', title: 'Poster Making', price: 199, prize: '₹8,000', isPremium: false, img: 'https://images.unsplash.com/photo-1503694978374-8a2fa68b5b70?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Artistic posters.', day: 'Day 1', time: '1:00 PM', venue: 'TD New Hall' },
+            { id: 201, club: 'sports', title: 'Futsal Mix', price: 1259, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1518605368461-1e122b5128ff?w=600&auto=format&fit=crop&q=80', members: '4B + 2G + 2 Extra', desc: 'Mixed Futsal Tournament.', day: 'Day 1', time: '8:00 AM', venue: 'Sports Ground' },
+            { id: 202, club: 'sports', title: 'Volleyball Mix', price: 1259, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&auto=format&fit=crop&q=80', members: '4B + 2G + 2 Extra', desc: 'Mixed Volleyball Tournament.', day: 'Day 1', time: '8:00 AM', venue: 'Sports Ground' },
+            { id: 203, club: 'sports', title: 'Basketball Mix', price: 1049, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=600&auto=format&fit=crop&q=80', members: '4B + 2G + 2 Extra', desc: 'Mixed Basketball Tournament.', day: 'Day 1', time: '8:00 AM', venue: 'Sports Ground' },
+            { id: 204, club: 'sports', title: 'Throwball (Girls)', price: 1049, prize: '₹7,000', isPremium: true, img: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=600&auto=format&fit=crop&q=80', members: '6G + 2 Extra', desc: 'Girls Throwball.', day: 'Day 2', time: '12:00 PM', venue: 'Sports Ground' },
+            { id: 205, club: 'sports', title: 'Table Tennis (Boys)', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Boys TT.', day: 'Day 2', time: '10:00 AM', venue: 'Academic Block' },
+            { id: 206, club: 'sports', title: 'Table Tennis (Girls)', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Girls TT.', day: 'Day 2', time: '10:00 AM', venue: 'Academic Block' },
+            { id: 207, club: 'sports', title: 'Chess', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Checkmate.', day: 'Day 2', time: '10:00 AM', venue: 'Academic Block' },
+            { id: 208, club: 'sports', title: 'Carrom', price: 199, prize: '₹2,000', isPremium: false, img: 'https://images.unsplash.com/photo-1603584173870-7d23f2a032f3?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Carrom Tournament.', day: 'Day 2', time: '10:00 AM', venue: 'Academic Block' },
+            { id: 209, club: 'sports', title: 'Tug of War Mix', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&auto=format&fit=crop&q=80', members: '4B + 4G', desc: 'Test of strength.', day: 'Day 1', time: '5:00 PM', venue: 'Futsal Ground' }
+        ];
+
+        // Helper to convert time strings (like "8:00 AM") to minutes for sorting
+        function parseTime(timeStr) {
+            if (!timeStr) return 9999; 
+            const match = timeStr.match(/(\d+):(\d+)\s+(AM|PM)/i);
+            if (!match) return 9999;
             
-            <!-- Event 3 -->
-            <div class="timeline-item relative pl-8 group">
-                <div class="timeline-line"></div>
-                <div class="absolute left-3 top-2 timeline-dot bg-white border-fuchsia-500"></div>
-                <div class="flex flex-col md:flex-row md:items-start gap-4">
-                    <span class="text-fuchsia-400 font-mono text-sm font-bold w-32 pt-1">07:30 PM</span>
-                    <div class="flex-1 bg-zinc-900 border border-fuchsia-500/50 p-5 rounded-lg shadow-[0_0_20px_rgba(217,70,239,0.1)]">
-                        <h4 class="text-2xl text-white font-bold uppercase mb-1">Fashion Show</h4>
-                        <div class="flex flex-wrap gap-4 text-xs text-gray-400 font-mono uppercase tracking-wide">
-                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Ramp Area</span>
-                            <span class="text-white bg-cyan-600 px-2 rounded">FLAGSHIP</span>
-                        </div>
-                        <p class="text-xs text-yellow-400 mt-2 font-bold">Prize Pool: ₹20,000</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+            let hours = parseInt(match[1], 10);
+            const mins = parseInt(match[2], 10);
+            const period = match[3].toUpperCase();
 
-    </div>
-    <script>lucide.createIcons();</script>
+            if (period === 'PM' && hours !== 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+
+            return (hours * 60) + mins;
+        }
+
+        // Render Schedule for a Specific Day
+        function renderSchedule(dayFilter) {
+            const container = document.getElementById('schedule-container');
+            container.innerHTML = '';
+            
+            // Filter and Sort Events
+            const dayEvents = eventsData
+                .filter(e => e.day === dayFilter)
+                .sort((a, b) => parseTime(a.time) - parseTime(b.time));
+
+            if(dayEvents.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-500 py-20 font-mono">No events scheduled for ${dayFilter}.</div>`;
+                return;
+            }
+
+            // Generate Timeline HTML
+            let html = '';
+            let animationDelay = 0;
+
+            dayEvents.forEach((event, index) => {
+                // Alternate left/right alignment on desktop
+                const isEven = index % 2 === 0;
+                const rowAlignClass = isEven ? 'md:flex-row-reverse' : 'md:flex-row';
+                const textColClass = isEven ? 'md:text-right md:mr-12' : 'md:ml-12';
+                const timeColClass = isEven ? 'md:text-left md:ml-12' : 'md:text-right md:mr-12';
+                
+                // Colors based on premium/club
+                const highlightColor = event.isPremium ? 'text-pink-400' : 'text-cyan-400';
+                const dotColorClass = event.isPremium ? 'border-pink-500' : 'border-cyan-500';
+
+                html += `
+                <div class="relative flex flex-col md:flex-row items-center w-full mb-8 animate-in pl-12 md:pl-0" style="animation-delay: ${animationDelay}s;">
+                    <!-- Timeline Dot -->
+                    <div class="timeline-dot ${dotColorClass}"></div>
+                    
+                    <!-- Time Display -->
+                    <div class="w-full md:w-1/2 ${timeColClass} mb-2 md:mb-0 hidden md:block">
+                        <span class="text-xl font-display font-bold text-white tracking-widest">${event.time}</span>
+                    </div>
+
+                    <!-- Event Card -->
+                    <div class="w-full md:w-1/2 ${textColClass}">
+                        <div class="glass-panel p-6 rounded-2xl hover:border-white/30 transition-colors inline-block w-full text-left">
+                            <div class="flex items-center gap-3 mb-3 md:hidden">
+                                <i data-lucide="clock" class="w-4 h-4 text-gray-400"></i>
+                                <span class="text-sm font-mono font-bold text-white">${event.time}</span>
+                            </div>
+                            
+                            <span class="text-[9px] font-bold uppercase tracking-widest bg-white/10 px-2 py-1 rounded text-gray-300 mb-2 inline-block">${event.club}</span>
+                            ${event.isPremium ? '<span class="text-[9px] font-bold uppercase tracking-widest bg-pink-500/20 px-2 py-1 rounded text-pink-400 mb-2 inline-block ml-2"><i data-lucide="star" class="w-3 h-3 inline pb-0.5"></i> Flagship</span>' : ''}
+                            
+                            <h3 class="text-2xl font-bold text-white mb-2">${event.title}</h3>
+                            
+                            <div class="space-y-1 text-xs text-gray-400 font-mono">
+                                <p class="flex items-center gap-2 ${isEven ? 'md:justify-end' : ''}"><i data-lucide="map-pin" class="w-3 h-3 ${highlightColor}"></i> ${event.venue}</p>
+                                <p class="flex items-center gap-2 ${isEven ? 'md:justify-end' : ''}"><i data-lucide="users" class="w-3 h-3 text-blue-400"></i> ${event.members}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                
+                animationDelay += 0.05; // Staggered entrance animation
+            });
+
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Tab Switcher
+        function switchDay(day) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${day}`).classList.add('active');
+            renderSchedule(day);
+        }
+
+        // Initialize with Day 1
+        document.addEventListener('DOMContentLoaded', () => {
+            switchDay('Day 1');
+        });
+
+    </script>
 </body>
 </html>
