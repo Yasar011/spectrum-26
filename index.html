@@ -1061,6 +1061,25 @@
                 <button onclick="closeSuccessModal()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs rounded hover:bg-green-500 transition-colors shadow-lg shadow-green-900/20">Understood</button>
             </div>
         </div>
+        
+        <!-- EMAIL VERIFY MODAL -->
+        <div id="verify-email-modal" class="fixed inset-0 z-[400] hidden items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/95 backdrop-blur-md" onclick="closeVerifyEmailModal()"></div>
+            <div class="relative z-10 w-full max-w-sm glass-panel p-8 text-center rounded-lg border border-yellow-500/30 shadow-[0_0_50px_rgba(234,179,8,0.2)]">
+                <i data-lucide="mail-warning" class="w-16 h-16 text-yellow-500 mx-auto mb-4"></i>
+                <h3 class="text-2xl font-display text-white uppercase mb-2">Verify Email</h3>
+                <p class="text-xs text-gray-300 mb-6">We've sent a verification link to your email.</p>
+                
+                <div class="bg-red-500/10 border border-red-500/30 p-4 rounded mb-6 text-left">
+                    <p class="text-[10px] text-red-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Check Spam Folder</p>
+                    <p class="text-[11px] text-gray-300 leading-relaxed">
+                        If you don't see it in your inbox, it is highly likely in your <b class="text-white">SPAM</b> or <b class="text-white">JUNK</b> folder. You <b class="text-red-400">must</b> verify your email before you can log in.
+                    </p>
+                </div>
+
+                <button onclick="closeVerifyEmailModal()" class="w-full bg-yellow-600 text-black font-bold uppercase py-3 text-xs rounded hover:bg-yellow-500 transition-colors shadow-lg shadow-yellow-900/20">I Understand</button>
+            </div>
+        </div>
 
     </div>
 
@@ -1351,6 +1370,12 @@
             document.getElementById('success-modal').style.display = 'none';
             document.getElementById('success-modal').classList.add('hidden');
             window.location.reload(); // Reload to refresh profile state
+        }
+        
+        function closeVerifyEmailModal() {
+            document.getElementById('verify-email-modal').style.display = 'none';
+            document.getElementById('verify-email-modal').classList.add('hidden');
+            switchAuthMode('login');
         }
         
         // SQUAD LOGIC
@@ -2046,8 +2071,10 @@
                     paymentStatus: "None" 
                 }); 
                 auth.signOut().then(() => { 
-                    alert("Registration Complete. Please verify your email before logging in."); 
-                    switchAuthMode('login'); 
+                    document.getElementById('verify-email-modal').classList.remove('hidden');
+                    document.getElementById('verify-email-modal').style.display = 'flex';
+                    lucide.createIcons();
+                    
                     btn.innerText = "Create Identity";
                     btn.disabled = false;
                     document.getElementById('reg-upload-status').classList.add('hidden');
@@ -2060,7 +2087,27 @@
             }); 
         }
 
-        function userLogin(){ const btn = document.getElementById('btn-login-submit'); btn.innerText = "..."; const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e,p).then(c=>{ btn.innerText = "Verified"; if(!c.user.emailVerified) { if (e.endsWith('@nift.ac.in')) { } else { alert("Email Unverified"); auth.signOut(); btn.innerText = "Access System"; return; } } closeModal(); btn.innerText = "Access System"; }).catch(err=>{ alert(err.message); btn.innerText = "Access System"; }); }
+        function userLogin(){ 
+            const btn = document.getElementById('btn-login-submit'); 
+            btn.innerText = "..."; 
+            const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
+            auth.signInWithEmailAndPassword(e,p).then(c=>{ 
+                btn.innerText = "Verified"; 
+                if(!c.user.emailVerified) { 
+                    if (e.endsWith('@nift.ac.in')) { } else { 
+                        alert("Email Unverified!\n\nPlease check your SPAM or JUNK folder for the verification link."); 
+                        auth.signOut(); 
+                        btn.innerText = "Access System"; 
+                        return; 
+                    } 
+                } 
+                closeModal(); 
+                btn.innerText = "Access System"; 
+            }).catch(err=>{ 
+                alert(err.message); 
+                btn.innerText = "Access System"; 
+            }); 
+        }
         function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter Email"); auth.sendPasswordResetEmail(email).then(() => alert("Reset Link Sent")).catch(err => alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
         
