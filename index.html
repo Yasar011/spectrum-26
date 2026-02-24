@@ -246,15 +246,14 @@
                 <a onclick="switchView('home'); toggleSidebar()" class="menu-link">Home</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Buy Tickets</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Events</a>
-                <a onclick="alert('Merch Store is coming soon!'); toggleSidebar()" class="menu-link">Merch Store (Coming Soon)</a>
                 <a onclick="openSquadModal(); toggleSidebar()" class="menu-link text-cyan-400">Squad Uplink</a>
                 
                 <!-- NEW LINKS -->
                 <div class="h-px bg-white/10 my-4"></div>
                 
-                <a onclick="showToast('Schedule Update Incoming...')" class="menu-link text-sm text-gray-500 hover:text-white">Schedule</a>
-                <a onclick="showToast('Team Roster Loading...')" class="menu-link text-sm text-gray-500 hover:text-white">Team</a>
-                <a onclick="showToast('Theme: Vibhram')" class="menu-link text-sm text-gray-500 hover:text-white">Theme</a>
+                <a href="schedule.html" class="menu-link text-sm text-gray-300 hover:text-white">Schedule</a>
+                <a href="#about" onclick="switchView('home'); toggleSidebar()" class="menu-link text-sm text-gray-300 hover:text-white">Theme</a>
+                <a onclick="showToast('Team Roster Loading...')" class="menu-link text-sm text-gray-500 hover:text-white cursor-pointer">Team</a>
                 <a href="terms.html" target="_blank" class="menu-link text-sm">Terms & Conditions</a>
                 <a href="help.html" class="menu-link text-sm text-gray-500 hover:text-white">Get Help</a>
             </div>
@@ -365,7 +364,7 @@
                     <div class="grid md:grid-cols-2 gap-8">
                         <!-- FASHION SHOW -->
                         <div class="glass-panel p-0 group overflow-hidden relative reveal rounded-lg">
-                            <img src="Screenshot 2026-02-19 040708.png" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
+                            <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=800&q=80" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-blue-400 font-bold text-[10px] uppercase tracking-widest mb-2">Main Event</span>
                                 <h3 class="text-4xl font-serif text-white mb-2">VOGUE GALA</h3>
@@ -374,14 +373,6 @@
                                     <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹50k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
                                     <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2999, true); checkUpsell();" class="btn-primary rounded">Register (₹2999)</button>
                                     <button onclick="window.location.href='fashion.html'" class="btn-outline rounded hover:bg-white/10">More Info</button>
-                                </div>
-                                
-                                <!-- MORE INFO SECTION -->
-                                <div id="info-102" class="hidden mt-4 bg-black/80 backdrop-blur border border-white/10 p-4 rounded text-xs text-gray-300 leading-relaxed">
-                                    <p class="mb-2"><strong class="text-white">Participants:</strong> 8-12 Members per team.</p>
-                                    <p class="mb-2"><strong class="text-white">Theme:</strong> Vibhram (Illusion & Distortion).</p>
-                                    <p class="mb-2">Registration includes team entry and backstage access. Prize pool split among top 3 teams.</p>
-                                    <button onclick="window.location.href='rulebook.html?id=102'" class="mt-2 btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black text-[10px] py-2 px-4 rounded">Rulebook</button>
                                 </div>
                             </div>
                         </div>
@@ -398,34 +389,6 @@
                                     <button onclick="alert('EDM Night bookings are temporarily paused. Check back later!')" class="bg-gray-800 text-gray-500 font-bold uppercase tracking-widest px-6 py-3 text-[10px] cursor-not-allowed rounded">Temporarily Paused</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- NEW MERCH DROP PREVIEW SECTION -->
-            <section class="py-20 border-y border-white/5 bg-zinc-950/80 relative z-20 overflow-hidden">
-                <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-                    <div class="order-2 md:order-1 reveal">
-                        <div class="relative w-full h-[400px] rounded-lg overflow-hidden border border-white/10 group cursor-not-allowed" onclick="alert('Merch coming soon!')">
-                            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" class="w-full h-full object-cover grayscale opacity-50 transition-transform duration-700 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                            <div class="absolute bottom-6 left-6">
-                                <h3 class="text-3xl font-display text-white mb-1">VIBHRAM DROP 01</h3>
-                                <p class="text-xs text-gray-400 font-mono">Limited Edition Apparel</p>
-                            </div>
-                            <div class="absolute top-4 right-4 bg-gray-600 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest shadow-lg">Coming Soon</div>
-                        </div>
-                    </div>
-                    <div class="order-1 md:order-2 reveal md:delay-100">
-                        <h2 class="text-4xl font-display text-white mb-6 uppercase tracking-wider">Cyber Store</h2>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-8">
-                            Wear the glitch. The official Spectrum '26 merchandise is now available for pre-order. High-quality streetwear designed for the digital age. <br><br>
-                            <span class="text-blue-400 font-bold uppercase text-xs tracking-widest">Merch Coming Soon</span>
-                        </p>
-                        <div class="flex gap-4">
-                            <button onclick="alert('Merch coming soon!')" class="btn-outline text-gray-400 border-gray-600 hover:bg-transparent hover:text-gray-400 cursor-not-allowed rounded">Coming Soon</button>
-                            <span class="text-xs text-gray-600 self-center font-mono uppercase tracking-widest">*Limited Stock</span>
                         </div>
                     </div>
                 </div>
@@ -453,17 +416,17 @@
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 h-[600px] reveal max-w-7xl mx-auto">
                     <div class="col-span-2 row-span-2 relative overflow-hidden group">
-                        <img src="_DSC1083.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                         <div class="absolute inset-0 bg-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7050.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-2 relative overflow-hidden group">
-                        <img src="_MG_7174.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7189.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                 </div>
             </section>
@@ -530,7 +493,8 @@
                         <ul class="space-y-3 text-gray-400 text-xs">
                             <li><a href="#" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Home</a></li>
                             <li><a href="#" onclick="switchView('tickets')" class="hover:text-blue-400 transition-colors">Events</a></li>
-                            <li><a onclick="showToast('Schedule coming soon...')" class="hover:text-blue-400 transition-colors cursor-pointer">Schedule</a></li>
+                            <li><a href="schedule.html" class="hover:text-blue-400 transition-colors">Schedule</a></li>
+                            <li><a href="#about" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Theme</a></li>
                             <li><a onclick="showToast('Team roster loading...')" class="hover:text-blue-400 transition-colors cursor-pointer">Our Team</a></li>
                             <li><a href="fashion.html" class="hover:text-blue-400 transition-colors">Fashion Show</a></li>
                         </ul>
@@ -591,50 +555,6 @@
             </footer>
         </main>
 
-        <!-- VIEW: MERCH -->
-        <section id="view-merch" class="view-section min-h-screen pt-32 px-6 pb-24">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex justify-between items-end mb-12 border-b border-white/10 pb-6 reveal active">
-                    <div>
-                        <span class="text-blue-500 text-[10px] font-bold uppercase tracking-widest mb-2 block">Apparel</span>
-                        <h2 class="text-5xl font-display text-white">Cyber Store (Updates Later)</h2>
-                    </div>
-                    <button onclick="switchView('home')" class="btn-outline rounded-full">Back</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass-panel p-0 overflow-hidden group relative rounded-lg">
-                        <div class="h-96 bg-zinc-800 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-                            <div class="absolute top-4 right-4 bg-blue-600 text-white text-[9px] font-bold px-3 py-1 uppercase tracking-widest shadow-lg">Limited</div>
-                        </div>
-                        <div class="p-8 absolute bottom-0 w-full">
-                            <h3 class="text-3xl font-display text-white mb-1">Vibhram Hoodie</h3>
-                            <p class="text-xs text-gray-400 font-mono mb-6">Heavyweight cotton / Puff Print</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl text-white font-bold">₹799</span>
-                                <button onclick="openMerchModal('Vibhram Hoodie', 799)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-colors rounded">Pre-Order</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="glass-panel p-0 overflow-hidden group relative rounded-lg">
-                        <div class="h-96 bg-zinc-800 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-                        </div>
-                        <div class="p-8 absolute bottom-0 w-full">
-                            <h3 class="text-3xl font-display text-white mb-1">Illusion Tee</h3>
-                            <p class="text-xs text-gray-400 font-mono mb-6">Oversized / Reflective Text</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl text-white font-bold">₹499</span>
-                                <button onclick="openMerchModal('Illusion Oversized Tee', 499)" class="bg-white text-black px-6 py-2 text-xs font-bold uppercase hover:bg-cyan-500 hover:text-white transition-colors rounded">Pre-Order</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- VIEW: TICKETS/EVENTS -->
         <section id="view-tickets" class="view-section min-h-screen pt-32 px-6 pb-24">
             <div class="max-w-7xl mx-auto">
@@ -642,12 +562,27 @@
                     <div>
                         <span class="text-blue-500 text-[10px] font-bold uppercase tracking-widest mb-2 block">Access Control</span>
                         <h2 class="text-5xl font-display text-white">Select Pass</h2>
+                        <div class="mt-3 inline-block bg-red-900/30 border border-red-500/50 px-3 py-1.5 rounded">
+                            <p class="text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i> Both passes are strictly for College & School Students Only
+                            </p>
+                        </div>
                     </div>
                     <button onclick="switchView('home')" class="btn-outline rounded-full">Back</button>
                 </div>
 
                 <!-- Pass Selection -->
                 <div class="grid md:grid-cols-2 gap-6 mb-20 max-w-4xl mx-auto" id="pass-selection-container">
+                    
+                    <!-- ALREADY REGISTERED CONDITION -->
+                    <div class="md:col-span-2 text-center bg-cyan-950/20 border border-cyan-500/30 p-6 rounded-lg mb-2 flex flex-col items-center justify-center">
+                        <h3 class="text-cyan-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="user-check" class="w-5 h-5"></i> I Already Have A Pass</h3>
+                        <p class="text-[11px] text-gray-400 mb-4 font-mono max-w-lg leading-relaxed">If you have already registered and want to purchase additional events, please log in. You will only pay for the new events you add, without needing to buy a base pass again.</p>
+                        <button onclick="openModal(); switchAuthMode('login');" class="bg-cyan-600 text-black px-6 py-2.5 rounded font-bold uppercase tracking-widest hover:bg-cyan-500 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                            Log In to Add Events
+                        </button>
+                    </div>
+
                     <!-- General Pass -->
                     <div id="pass-gen" class="glass-panel p-8 cursor-pointer transition-all group rounded-lg hover:border-cyan-500 border-l-4 border-l-gray-600" onclick="selectPass('General Pass', 349, 'base', 'pass-gen')">
                         <div class="flex justify-between items-center mb-4">
@@ -676,7 +611,7 @@
                             <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> Entry for Both Days</li>
                             <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> <b>No Exit Restrictions</b></li>
                             <li class="flex gap-2"><i data-lucide="star" class="w-4 h-4 text-yellow-500"></i> Includes Flagship Audience Access</li>
-                            <li class="flex gap-2"><i data-lucide="unlock" class="w-4 h-4 text-cyan-400"></i> Unlocks EDM Pass Purchase</li>
+                            <li class="flex gap-2"><i data-lucide="unlock" class="w-4 h-4 text-cyan-400"></i> Unlocks EDM Pass <span class="text-[10px] text-red-400">(Temporarily Paused)</span></li>
                         </ul>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center">
                             <span class="text-3xl font-bold text-white">₹659</span>
@@ -694,12 +629,12 @@
                             <div class="w-10 h-10 bg-blue-900/30 rounded flex items-center justify-center text-blue-400"><i data-lucide="music" class="w-5 h-5"></i></div>
                             <div>
                                 <h3 class="text-white font-bold uppercase text-sm">EDM Pass (Neon Pulse)</h3>
-                                <p class="text-[9px] text-gray-400">Requires Gold Pass</p>
+                                <p class="text-[9px] text-gray-400">Requires Gold Pass <span class="text-red-400 font-bold ml-1">(Temporarily Paused)</span></p>
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-gray-500">₹759</span>
-                            <button onclick="alert('EDM Night bookings are temporarily paused.')" class="bg-gray-800 border border-gray-600 text-gray-500 px-4 py-2 rounded text-[9px] font-bold uppercase cursor-not-allowed">Paused</button>
+                            <span class="text-xl font-bold text-gray-400">₹759</span>
+                            <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 759, true); checkUpsell();" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded text-[9px] font-bold uppercase hover:bg-blue-600 transition-colors">Add to Pass</button>
                         </div>
                      </div>
 
@@ -743,6 +678,14 @@
                             <button onclick="filterEvents('sports')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2 border border-white/20 text-white rounded hover:bg-white/10 transition-colors">Sports</button>
                         </div>
                     </div>
+                    
+                    <!-- FLASHING PRIZE POOL WARNING -->
+                    <div class="w-full text-center mb-6">
+                        <span class="inline-flex items-center gap-2 bg-red-900/20 border border-red-500/40 text-red-400 text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i> Prize pools will decrease if minimum event registrations are not met.
+                        </span>
+                    </div>
+
                     <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
             </div>
@@ -861,23 +804,23 @@
                     </div>
                     
                     <div id="form-login" class="space-y-4">
-                        <input id="login-email" type="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 transition-colors rounded">
-                        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 transition-colors rounded">
+                        <input id="login-email" type="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 transition-colors rounded">
+                        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 transition-colors rounded">
                         <div class="text-right"><a href="#" onclick="forgotPass()" class="text-[9px] text-gray-400 hover:text-white uppercase tracking-wider">Forgot Password?</a></div>
                         <button id="btn-login-submit" onclick="userLogin()" class="btn-primary w-full rounded">Access System</button>
                     </div>
 
                     <div id="form-register" class="space-y-3 hidden">
                         <!-- Removed NIFT Warning Banner -->
-                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
-                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                        <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
+                        <input id="reg-email" type="email" placeholder="Email" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
                         <div class="flex gap-2">
-                            <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
-                            <input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                            <input id="reg-pass" type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
+                            <input id="reg-confirm-pass" type="password" placeholder="Confirm" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
                         </div>
-                        <input id="reg-phone" type="tel" placeholder="Phone Number" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                        <input id="reg-phone" type="tel" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Phone Number (10 Digits)" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
                         <div class="flex gap-2">
-                            <input id="reg-college" type="text" placeholder="College / School Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
+                            <input id="reg-college" type="text" placeholder="College / School Name" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white outline-none focus:border-blue-500 rounded">
                             <input id="reg-id" type="text" placeholder="Roll No. / ID Number" class="w-full bg-white/5 border border-white/10 p-3 text-xs text-white uppercase outline-none focus:border-blue-500 rounded">
                         </div>
                         
@@ -975,7 +918,7 @@
             <div class="relative z-10 w-full max-w-md bg-[#0f0f0f] border border-red-500/50 p-8 shadow-[0_0_50px_rgba(239,68,68,0.2)] text-center rounded-lg">
                 <i data-lucide="shield-alert" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
                 <h3 class="text-xl font-bold text-white uppercase mb-2">Access Restricted</h3>
-                <p class="text-sm text-gray-400 mb-8">You need a <b>Base Pass</b> to add events. Only Merchandise can be purchased without a pass.</p>
+                <p class="text-sm text-gray-400 mb-8">You need a <b>Base Pass</b> to register for events.</p>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="selectPassFromWarning('General Pass', 349, 'base')" class="bg-white/5 border border-white/10 p-3 hover:border-white transition-all text-left rounded">
                         <div class="text-[8px] text-gray-400 uppercase">General</div>
@@ -985,32 +928,6 @@
                         <div class="text-[8px] text-yellow-300 uppercase font-bold">Gold</div>
                         <div class="text-yellow-500 font-bold">₹659</div>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MERCH MODAL (FIXED) -->
-        <div id="merch-modal" class="fixed inset-0 z-[260] hidden items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeMerchModal()"></div>
-            <div class="relative z-10 w-full max-w-sm glass-panel p-8 shadow-2xl rounded-lg border border-blue-500/30">
-                <button onclick="closeMerchModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
-                <h3 class="text-xl font-display text-white mb-1">Secure Pre-Order</h3>
-                <p id="merch-item-name" class="text-sm text-blue-400 font-bold mb-8 font-mono"></p>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] uppercase text-gray-500 block mb-2 font-bold">Select Size</label>
-                        <select id="merch-size" class="w-full bg-black/50 border border-white/20 text-white p-3 text-xs outline-none rounded focus:border-blue-500">
-                            <option value="S">Small (S)</option>
-                            <option value="M">Medium (M)</option>
-                            <option value="L">Large (L)</option>
-                            <option value="XL">Extra Large (XL)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase text-gray-500 block mb-2 font-bold">Delivery Location</label>
-                        <input id="merch-address" type="text" placeholder="Hostel / Room No." class="w-full bg-black/50 border border-white/20 text-white p-3 text-xs outline-none rounded focus:border-blue-500">
-                    </div>
-                    <button onclick="confirmMerchOrder()" class="btn-primary w-full rounded mt-4">Confirm Order</button>
                 </div>
             </div>
         </div>
@@ -1047,18 +964,19 @@
             <div class="absolute inset-0 bg-black/95 backdrop-blur-md" onclick="closeSuccessModal()"></div>
             <div class="relative z-10 w-full max-w-sm glass-panel p-8 text-center rounded-lg border border-green-500/30 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
                 <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
-                <h3 class="text-2xl font-display text-white uppercase mb-2">Order Submitted</h3>
-                <p class="text-xs text-gray-300 mb-6">Your transaction details have been securely recorded.</p>
+                <h3 id="success-title" class="text-2xl font-display text-white uppercase mb-2">Order Submitted</h3>
+                <p id="success-desc" class="text-xs text-gray-300 mb-6">Your transaction details have been securely recorded.</p>
                 
                 <div class="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded mb-6 text-left">
                     <p class="text-[10px] text-yellow-400 font-bold uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i> Important Notice</p>
-                    <p class="text-[11px] text-gray-300 leading-relaxed">
-                        <b class="text-white">Payment Verification</b> and <b class="text-white">QR Code Verification</b> will <b class="text-red-400">ONLY</b> be done at the time of your arrival at the College Registration Desk. Please keep your screenshot ready.<br><br>
-                        <span class="text-cyan-400">Team Events:</span> You can link your squad members in the Profile section <b>only after</b> your payment is verified by the admin.
+                    <p id="success-notice-text" class="text-[11px] text-gray-300 leading-relaxed">
+                        <!-- Dynamic text injected by JS depending on NIFT/Outsider -->
                     </p>
                 </div>
 
-                <button onclick="closeSuccessModal()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs rounded hover:bg-green-500 transition-colors shadow-lg shadow-green-900/20">Understood</button>
+                <div id="success-actions-container">
+                    <button onclick="closeSuccessModal()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs rounded hover:bg-green-500 transition-colors shadow-lg shadow-green-900/20">Understood</button>
+                </div>
             </div>
         </div>
         
@@ -1351,19 +1269,48 @@
 
         function toggleLogs() { const s = document.getElementById('logs-sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('translate-x-full')) { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('log-dot').classList.add('hidden'); } else { s.classList.add('translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
         
-        function openMerchModal(itemName, itemPrice) { 
-            // BLOCK MERCH FOR NOW
-            alert("Merch Store is coming soon!");
-            return;
-        }
-
-        function closeMerchModal() { document.getElementById('merch-modal').style.display = 'none'; }
-        
-        function showSuccessModal() {
+        function showSuccessModal(isAutoVerified = false) {
             closeModal(); // Close the payment modal
+            
+            const titleEl = document.getElementById('success-title');
+            const descEl = document.getElementById('success-desc');
+            const noticeText = document.getElementById('success-notice-text');
+            const actionsContainer = document.getElementById('success-actions-container');
+
+            if(isAutoVerified) {
+                titleEl.innerText = "Registration Active";
+                descEl.innerText = "Your events have been added successfully and are ready.";
+                noticeText.innerHTML = `
+                    <b class="text-white">Identity Verification</b> will be done at the time of your arrival at the entry gate using your college ID. No payment verification is required for this pass.<br><br>
+                    <span class="text-cyan-400 font-bold">Team Events:</span> You can link your squad members <b>immediately</b>!
+                `;
+                actionsContainer.innerHTML = `
+                    <button onclick="closeSuccessModalAndOpenSquad()" class="w-full bg-cyan-600 text-black font-bold uppercase py-3 text-xs rounded hover:bg-cyan-500 transition-colors shadow-lg shadow-cyan-900/20 mb-3 flex items-center justify-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4"></i> Go to Squad Uplink
+                    </button>
+                    <button onclick="closeSuccessModal()" class="w-full border border-white/20 text-white font-bold uppercase py-3 text-xs rounded hover:bg-white/10 transition-colors">Return to Home</button>
+                `;
+            } else {
+                titleEl.innerText = "Order Submitted";
+                descEl.innerText = "Your transaction details have been securely recorded.";
+                noticeText.innerHTML = `
+                    <b class="text-white">Payment Verification</b> and <b class="text-white">QR Code Verification</b> will <b class="text-red-400">ONLY</b> be done at the time of your arrival at the College Registration Desk. Please keep your screenshot ready.<br><br>
+                    <span class="text-cyan-400">Team Events:</span> You can link your squad members in the Profile section <b>only after</b> your payment is verified by the admin.
+                `;
+                actionsContainer.innerHTML = `
+                    <button onclick="closeSuccessModal()" class="w-full bg-green-600 text-white font-bold uppercase py-3 text-xs rounded hover:bg-green-500 transition-colors shadow-lg shadow-green-900/20">Understood</button>
+                `;
+            }
+
             document.getElementById('success-modal').classList.remove('hidden');
             document.getElementById('success-modal').style.display = 'flex';
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeSuccessModalAndOpenSquad() {
+            document.getElementById('success-modal').style.display = 'none';
+            document.getElementById('success-modal').classList.add('hidden');
+            openSquadModal(); 
         }
 
         function closeSuccessModal() {
@@ -1400,8 +1347,11 @@
             
             // FIX: Bulletproof text filtering for team events!
             const teamEvents = userDataDB.order.events.filter(e => {
-                const title = String(e.title || '').toLowerCase();
-                const members = String(e.members || '1').toLowerCase();
+                // VERY IMPORTANT: Get the full event details from the master list, because the DB only stores ID and Title
+                const masterEvent = eventsData.find(ev => ev.id === e.id) || e;
+                
+                const title = String(masterEvent.title || '').toLowerCase();
+                const members = String(masterEvent.members || '1').toLowerCase();
                 
                 return title.includes('valorant') || 
                        title.includes('battle') || 
@@ -1411,7 +1361,14 @@
                        title.includes('group') ||
                        title.includes('nukkad') ||
                        title.includes('tug') ||
+                       title.includes('futsal') ||
+                       title.includes('volleyball') ||
+                       title.includes('basketball') ||
+                       title.includes('throwball') ||
+                       title.includes('film') ||
+                       title.includes('graffiti') ||
                        members.includes('group') ||
+                       members.includes('duo') ||
                        members.includes('+') ||
                        members.includes('-') ||
                        parseInt(members) > 1;
@@ -1424,11 +1381,12 @@
             } else {
                 let html = '';
                 teamEvents.forEach((e, idx) => {
+                    const masterEvent = eventsData.find(ev => ev.id === e.id) || e;
                     const existingSquad = (userDataDB.squads && userDataDB.squads[e.id]) ? userDataDB.squads[e.id] : [];
                     
                     // --- DYNAMIC SLOT LOGIC ---
                     let maxTeamSize = 12; // default fallback
-                    let str = String(e.members || '').toUpperCase();
+                    let str = String(masterEvent.members || '').toUpperCase();
                     
                     if (str.includes('DUO')) { maxTeamSize = 2; }
                     else if (str.includes('-')) { 
@@ -1457,12 +1415,12 @@
                     membersHtml += '</div>';
 
                     // Escape quotes in title for function call safely
-                    const safeTitle = String(e.title || '').replace(/'/g, "\\'");
+                    const safeTitle = String(masterEvent.title || '').replace(/'/g, "\\'");
 
                     html += `
                     <div class="bg-white/5 border border-white/10 p-4 rounded mb-4">
                         <div class="flex justify-between items-center mb-2">
-                            <h4 class="text-white font-bold text-xs uppercase text-cyan-400">${e.title}</h4>
+                            <h4 class="text-white font-bold text-xs uppercase text-cyan-400">${masterEvent.title}</h4>
                             <span class="text-[9px] text-gray-500 uppercase font-mono tracking-widest">${slotsCount} Slots</span>
                         </div>
                         <div class="mb-3">
@@ -1502,105 +1460,93 @@
             }
 
             const originalBtnText = btnElement.innerText;
-            btnElement.innerText = "Verifying IDs...";
             btnElement.disabled = true;
 
-            const cleanEmail = currentUser.email.replace(/\./g, ',');
-            
-            // 1. Fetch all users to validate entered IDs
-            db.ref('users').once('value').then(snap => {
-                const allUsers = snap.val() || {};
-                const validMembers = [];
-                const invalidMembers = [];
-                
-                // Validate every ID inputted
-                inputtedMembers.forEach(memberId => {
-                    const foundUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
-                    // ID must exist AND payment must be verified by admin
-                    if (foundUser && foundUser.paymentStatus === 'Verified') {
-                        validMembers.push(foundUser);
-                    } else {
-                        invalidMembers.push(memberId);
-                    }
-                });
+            // --- CYBERPUNK ROTATING MESSAGES ---
+            const messages = [
+                "Scanning Mainframe...", 
+                "Verifying Pass Status...", 
+                "Authenticating IDs...", 
+                "Bypassing Security..."
+            ];
+            let mIdx = 0;
+            btnElement.innerText = messages[0];
+            const msgInterval = setInterval(() => { 
+                mIdx = (mIdx + 1) % messages.length; 
+                btnElement.innerText = messages[mIdx]; 
+            }, 400);
 
-                if (invalidMembers.length > 0) {
-                    alert(`ERROR: The following IDs are either invalid, not registered, or their payment is NOT verified yet:\n\n${invalidMembers.join('\n')}\n\nPlease ensure your teammates have successfully verified their passes with the Admin.`);
-                    btnElement.innerText = originalBtnText;
-                    btnElement.disabled = false;
-                    return; // Halt process
-                }
+            // Random delay between 1.2s and 2.5s for authentic feel
+            const randomDelay = Math.floor(Math.random() * 1300) + 1200;
+
+            setTimeout(() => {
+                clearInterval(msgInterval);
+                const cleanEmail = currentUser.email.replace(/\./g, ',');
                 
-                // IDs verified. Get list of just the ID strings
-                const memberIds = validMembers.map(u => u.spectrumId);
-                
-                // 2. Fetch current squad to find any removed members
-                db.ref(`users/${cleanEmail}/squads/${eventId}`).once('value').then(sSnap => {
-                    const oldMembers = sSnap.val() || [];
-                    const removedMembers = oldMembers.filter(m => !memberIds.includes(m));
+                // 1. Fetch all users to validate entered IDs
+                db.ref('users').once('value').then(snap => {
+                    const allUsers = snap.val() || {};
+                    const validMembers = [];
+                    const invalidMembers = [];
                     
-                    // 3. Save new squad to Leader's database profile
-                    db.ref(`users/${cleanEmail}/squads/${eventId}`).set(memberIds).then(() => {
-                        alert("Squad Roster Verified & Updated! Linked members will now see this in their 'My Events'.");
-                        
-                        // 4. Add the event to the linked members' profiles
-                        validMembers.forEach(u => {
-                            db.ref(`users/${u.email.replace(/\./g, ',')}/linked_events/${eventId}`).set({
-                                title: eventTitle,
-                                leaderId: userDataDB.spectrumId
-                            });
-                        });
-                        
-                        // 5. Remove the event from profiles of anyone who got kicked out of the squad
-                        removedMembers.forEach(memberId => {
-                            const rUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
-                            if (rUser) {
-                                db.ref(`users/${rUser.email.replace(/\./g, ',')}/linked_events/${eventId}`).remove();
-                            }
-                        });
+                    // Validate every ID inputted
+                    inputtedMembers.forEach(memberId => {
+                        const foundUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
+                        // ID must exist AND payment must be verified by admin
+                        if (foundUser && foundUser.paymentStatus === 'Verified') {
+                            validMembers.push(foundUser);
+                        } else {
+                            invalidMembers.push(memberId);
+                        }
+                    });
 
+                    if (invalidMembers.length > 0) {
+                        alert(`ERROR: The following IDs are either invalid, not registered, or their payment is NOT verified yet:\n\n${invalidMembers.join('\n')}\n\nPlease ensure your teammates have successfully verified their passes with the Admin.`);
                         btnElement.innerText = originalBtnText;
                         btnElement.disabled = false;
-                    }).catch(err => {
-                        alert("Error saving squad: " + err.message);
-                        btnElement.innerText = originalBtnText;
-                        btnElement.disabled = false;
+                        return; // Halt process
+                    }
+                    
+                    // IDs verified. Get list of just the ID strings
+                    const memberIds = validMembers.map(u => u.spectrumId);
+                    
+                    // 2. Fetch current squad to find any removed members
+                    db.ref(`users/${cleanEmail}/squads/${eventId}`).once('value').then(sSnap => {
+                        const oldMembers = sSnap.val() || [];
+                        const removedMembers = oldMembers.filter(m => !memberIds.includes(m));
+                        
+                        // 3. Save new squad to Leader's database profile
+                        db.ref(`users/${cleanEmail}/squads/${eventId}`).set(memberIds).then(() => {
+                            alert("Squad Roster Verified & Updated! Linked members will now see this in their 'My Events'.");
+                            
+                            // 4. Add the event to the linked members' profiles
+                            validMembers.forEach(u => {
+                                db.ref(`users/${u.email.replace(/\./g, ',')}/linked_events/${eventId}`).set({
+                                    title: eventTitle,
+                                    leaderId: userDataDB.spectrumId
+                                });
+                            });
+                            
+                            // 5. Remove the event from profiles of anyone who got kicked out of the squad
+                            removedMembers.forEach(memberId => {
+                                const rUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
+                                if (rUser) {
+                                    db.ref(`users/${rUser.email.replace(/\./g, ',')}/linked_events/${eventId}`).remove();
+                                }
+                            });
+
+                            btnElement.innerText = originalBtnText;
+                            btnElement.disabled = false;
+                        }).catch(err => {
+                            alert("Error saving squad: " + err.message);
+                            btnElement.innerText = originalBtnText;
+                            btnElement.disabled = false;
+                        });
                     });
                 });
-            });
+            }, randomDelay);
         }
 
-        function confirmMerchOrder() { 
-            const size = document.getElementById('merch-size').value; 
-            const address = document.getElementById('merch-address').value; 
-            if(!address) return alert("Delivery address required."); 
-            const cleanEmail = currentUser.email.replace(/\./g, ','); 
-            
-            // Push order to list immediately
-            db.ref('users/' + cleanEmail + '/merch_orders').push({ 
-                item: currentMerchItem.name, 
-                price: currentMerchItem.price, 
-                size: size, 
-                address: address, 
-                status: 'Payment Pending', 
-                timestamp: Date.now() 
-            }); 
-            
-            // Set up Payment View
-            finalTotal = currentMerchItem.price;
-            
-            // Update User State for Payment
-            db.ref('users/' + cleanEmail).update({ 
-                paymentStatus: "Pending", 
-                pendingAmount: finalTotal, 
-                verificationReason: "Merch: " + currentMerchItem.name 
-            }); 
-            
-            closeMerchModal(); 
-            openModal(); // Ensure main modal wrapper is open
-            showPayment(); // Go directly to payment
-        }
-        
         function updateNav(name) { const displayName = name ? name.split(' ')[0] : "Login"; document.getElementById('nav-user-text').innerText = displayName; }
         function activateNiftMode() { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('nift-message').classList.remove('hidden'); cart.pass = { name: "Nexus Prime (NIFT)", price: 0, type: "base" }; saveCart(); updateCartUI(); }
         function activateAddOnMode(user) { document.getElementById('pass-selection-container').classList.add('hidden'); document.getElementById('existing-user-message').classList.remove('hidden'); if(user.order && user.order.pass) { cart.pass = { name: user.order.pass, price: 0, type: (user.order.pass.includes('Neon') || user.order.pass.includes('Vogue')) ? 'special' : 'base' }; saveCart(); } updateCartUI(); }
@@ -1624,7 +1570,7 @@
             
             // --- TEMPORARY BLOCK FOR EDM ---
             if (id === 101) {
-                return alert("⛔ EDM Night bookings are temporarily paused. Please check back later!");
+                return alert("⛔ EDM Night pass purchase is temporarily paused. (Note: NIFT Students get direct entry with their ID, no separate pass is required).");
             }
 
             // --- STRICT ADD-ON LOGIC ---
@@ -1994,14 +1940,14 @@
                     pendingAmount: finalTotal, 
                     ...(screenshotUrl && {paymentScreenshot: screenshotUrl}) 
                 }); 
-                showSuccessModal(); 
+                showSuccessModal(false); 
                 isUpgrade = false; 
             } else { 
                 let status = isFree ? "Verified" : "Pending"; 
                 if(hasExistingPass && !isFree) status = "Pending"; 
                 payload.paymentStatus = status; 
                 db.ref('users/' + cleanEmail).update(payload); 
-                showSuccessModal(); 
+                showSuccessModal(status === "Verified"); 
                 clearCart(); 
             } 
         }
@@ -2024,37 +1970,45 @@
         }
 
         async function userRegister() { 
-            const e = document.getElementById('reg-email').value;
+            const e = document.getElementById('reg-email').value.toLowerCase().trim();
             const p = document.getElementById('reg-pass').value;
             const cp = document.getElementById('reg-confirm-pass').value;
-            const n = document.getElementById('reg-name').value;
-            const ph = document.getElementById('reg-phone').value;
-            const c = document.getElementById('reg-college').value;
-            const i = document.getElementById('reg-id').value;
+            const n = document.getElementById('reg-name').value.trim();
+            const ph = document.getElementById('reg-phone').value.trim();
+            const c = document.getElementById('reg-college').value.trim();
+            const i = document.getElementById('reg-id').value.trim();
             const idCardFile = document.getElementById('reg-id-card').files[0];
             const agreed = document.getElementById('reg-agree').checked;
             const btn = document.getElementById('btn-register-submit');
 
             if(!e || !p || !n || !ph || !c || !i) return alert("Incomplete Data. All fields are required.");
+            if(!/^\d{10}$/.test(ph)) return alert("Phone number must be exactly 10 digits.");
             if(p !== cp) return alert("Password Mismatch");
             if(!idCardFile) return alert("Please upload your College/School ID Card.");
             if(!agreed) return alert("You must agree to the Terms & Conditions and Refund Policy to register.");
 
-            btn.innerText = "Uploading ID...";
             btn.disabled = true;
             document.getElementById('reg-upload-status').classList.remove('hidden');
 
-            // Upload ID Card
+            // --- CYBERPUNK ROTATING MESSAGES ---
+            const messages = ["Encrypting Data...", "Uploading Documents...", "Generating Identity...", "Syncing with Mainframe..."];
+            let mIdx = 0;
+            btn.innerText = messages[0];
+            const msgInterval = setInterval(() => { 
+                mIdx = (mIdx + 1) % messages.length; 
+                btn.innerText = messages[mIdx]; 
+            }, 600);
+
+            // Upload ID Card (The upload time creates a natural delay)
             const idCardUrl = await uploadFileGeneric(idCardFile);
             
             if(!idCardUrl) {
+                clearInterval(msgInterval);
                 btn.innerText = "Create Identity";
                 btn.disabled = false;
                 document.getElementById('reg-upload-status').classList.add('hidden');
                 return alert("ID Card Upload Failed. Please try again.");
             }
-
-            btn.innerText = "Creating Account...";
 
             auth.createUserWithEmailAndPassword(e, p).then(crd => { 
                 crd.user.sendEmailVerification(); 
@@ -2071,6 +2025,7 @@
                     paymentStatus: "None" 
                 }); 
                 auth.signOut().then(() => { 
+                    clearInterval(msgInterval);
                     document.getElementById('verify-email-modal').classList.remove('hidden');
                     document.getElementById('verify-email-modal').style.display = 'flex';
                     lucide.createIcons();
@@ -2080,6 +2035,7 @@
                     document.getElementById('reg-upload-status').classList.add('hidden');
                 }); 
             }).catch(err => {
+                clearInterval(msgInterval);
                 alert(err.message);
                 btn.innerText = "Create Identity";
                 btn.disabled = false;
@@ -2089,26 +2045,47 @@
 
         function userLogin(){ 
             const btn = document.getElementById('btn-login-submit'); 
-            btn.innerText = "..."; 
-            const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value; 
-            auth.signInWithEmailAndPassword(e,p).then(c=>{ 
-                btn.innerText = "Verified"; 
-                if(!c.user.emailVerified) { 
-                    if (e.endsWith('@nift.ac.in')) { } else { 
-                        alert("Email Unverified!\n\nPlease check your SPAM or JUNK folder for the verification link."); 
+            btn.disabled = true; 
+            
+            // --- CYBERPUNK ROTATING MESSAGES ---
+            const messages = ["Establishing Secure Link...", "Decrypting Credentials...", "Querying Mainframe...", "Authenticating..."];
+            let mIdx = 0;
+            btn.innerText = messages[0];
+            const msgInterval = setInterval(() => { 
+                mIdx = (mIdx + 1) % messages.length; 
+                btn.innerText = messages[mIdx]; 
+            }, 400);
+
+            // Random delay between 800ms and 1800ms
+            const randomDelay = Math.floor(Math.random() * 1000) + 800;
+
+            setTimeout(() => {
+                clearInterval(msgInterval);
+                const e=document.getElementById('login-email').value.toLowerCase().trim();
+                const p=document.getElementById('login-pass').value; 
+                auth.signInWithEmailAndPassword(e,p).then(c=>{ 
+                    btn.innerText = "Verified"; 
+                    
+                    // CRITICAL SECURITY FIX: Enforce email verification for ALL users (including NIFT)
+                    if(!c.user.emailVerified) { 
+                        alert("Email Unverified!\n\nPlease check your inbox (and your SPAM or JUNK folder) for the verification link. You MUST verify your email before accessing the system."); 
                         auth.signOut(); 
                         btn.innerText = "Access System"; 
+                        btn.disabled = false;
                         return; 
                     } 
-                } 
-                closeModal(); 
-                btn.innerText = "Access System"; 
-            }).catch(err=>{ 
-                alert(err.message); 
-                btn.innerText = "Access System"; 
-            }); 
+                    
+                    closeModal(); 
+                    btn.innerText = "Access System"; 
+                    btn.disabled = false;
+                }).catch(err=>{ 
+                    alert(err.message); 
+                    btn.innerText = "Access System"; 
+                    btn.disabled = false;
+                }); 
+            }, randomDelay);
         }
-        function forgotPass(){ const email = document.getElementById('login-email').value; if(!email) return alert("Enter Email"); auth.sendPasswordResetEmail(email).then(() => alert("Reset Link Sent")).catch(err => alert(err.message)); }
+        function forgotPass(){ const email = document.getElementById('login-email').value.toLowerCase().trim(); if(!email) return alert("Enter Email"); auth.sendPasswordResetEmail(email).then(() => alert("Reset Link Sent")).catch(err => alert(err.message)); }
         function logout(){ auth.signOut().then(()=>{ clearCart(); window.location.reload(); }); }
         
         function handleAccountClick(){ if(!currentUser){ openModal(); document.getElementById('view-profile').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); } else { openModal(); document.getElementById('view-auth').classList.add('hidden'); document.getElementById('view-profile').classList.remove('hidden'); if(userDataDB) { document.getElementById('profile-name').innerText=userDataDB.name; document.getElementById('profile-email').innerText=currentUser.email; updateTicketUI(); } } }
@@ -2205,13 +2182,16 @@
             }, 50); 
         }
         
-        function toggleInfo(id) { document.getElementById(`info-${id}`).classList.toggle('hidden'); }
+        function toggleInfo(id) { 
+            const el = document.getElementById(`grid-info-${id}`);
+            if(el) el.classList.toggle('hidden'); 
+        }
 
         const eventsData = [
             // --- CORE FLAGSHIP EVENTS (ENTRY/SHOWS) ----
             { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'The biggest night of the fest. Featuring top DJs. Gold Pass Required.', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
-            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'Screenshot 2026-02-19 040708.png', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
-            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: '_MG_7174.JPG', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1469334023215-c574bc2e47bf?w=600&auto=format&fit=crop&q=80', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: 'https://images.unsplash.com/photo-1550614000439-56d8de233b86?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
             
             // --- ADVENTURE ---
             { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Capture the essence of the fest.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
@@ -2333,9 +2313,12 @@
                             <div class="col-span-2 flex items-center gap-1 truncate"><i data-lucide="map-pin" class="w-3 h-3 text-red-400"></i> ${e.venue}</div>
                         </div>
 
-                        <div id="info-${e.id}" class="hidden text-[10px] text-gray-300 mb-3 p-2 bg-white/5 rounded">
+                        <div id="grid-info-${e.id}" class="hidden text-[10px] text-gray-300 mb-3 p-2 bg-white/5 rounded">
                             <p class="mb-2 leading-relaxed">${e.desc}</p>
-                            <a href="rulebook.html?id=${e.id}" target="_blank" class="flex items-center gap-1 text-cyan-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a>
+                            ${e.id === 102 || e.id === 103 ? 
+                                `<a href="fashion.html" class="flex items-center gap-1 text-pink-400 hover:text-white transition-colors font-bold"><i data-lucide="external-link" class="w-3 h-3"></i> View Fashion Portal</a>` : 
+                                `<a href="rulebook.html?id=${e.id}" target="_blank" class="flex items-center gap-1 text-cyan-400 hover:text-white transition-colors"><i data-lucide="file-text" class="w-3 h-3"></i> View Rulebook</a>`
+                            }
                         </div>
                         
                         ${btnHtml}
