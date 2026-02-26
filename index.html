@@ -246,14 +246,15 @@
                 <a onclick="switchView('home'); toggleSidebar()" class="menu-link">Home</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Buy Tickets</a>
                 <a onclick="switchView('tickets'); toggleSidebar()" class="menu-link">Events</a>
+                <a onclick="alert('Merch Store is coming soon!'); toggleSidebar()" class="menu-link">Merch Store (Coming Soon)</a>
                 <a onclick="openSquadModal(); toggleSidebar()" class="menu-link text-cyan-400">Squad Uplink</a>
                 
                 <!-- NEW LINKS -->
                 <div class="h-px bg-white/10 my-4"></div>
                 
                 <a href="schedule.html" class="menu-link text-sm text-gray-300 hover:text-white">Schedule</a>
+                <a href="team.html" class="menu-link text-sm text-gray-300 hover:text-white">Team</a>
                 <a href="#about" onclick="switchView('home'); toggleSidebar()" class="menu-link text-sm text-gray-300 hover:text-white">Theme</a>
-                <a onclick="showToast('Team Roster Loading...')" class="menu-link text-sm text-gray-500 hover:text-white cursor-pointer">Team</a>
                 <a href="terms.html" target="_blank" class="menu-link text-sm">Terms & Conditions</a>
                 <a href="help.html" class="menu-link text-sm text-gray-500 hover:text-white">Get Help</a>
             </div>
@@ -364,7 +365,7 @@
                     <div class="grid md:grid-cols-2 gap-8">
                         <!-- FASHION SHOW -->
                         <div class="glass-panel p-0 group overflow-hidden relative reveal rounded-lg">
-                            <img src="Screenshot 2026-02-19 040708.png" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
+                            <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=800&q=80" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-blue-400 font-bold text-[10px] uppercase tracking-widest mb-2">Main Event</span>
                                 <h3 class="text-4xl font-serif text-white mb-2">VOGUE GALA</h3>
@@ -416,17 +417,17 @@
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 h-[600px] reveal max-w-7xl mx-auto">
                     <div class="col-span-2 row-span-2 relative overflow-hidden group">
-                        <img src="_DSC1083.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                         <div class="absolute inset-0 bg-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7050.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-2 relative overflow-hidden group">
-                        <img src="_MG_7174.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7189.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                 </div>
             </section>
@@ -494,8 +495,7 @@
                             <li><a href="#" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Home</a></li>
                             <li><a href="#" onclick="switchView('tickets')" class="hover:text-blue-400 transition-colors">Events</a></li>
                             <li><a href="schedule.html" class="hover:text-blue-400 transition-colors">Schedule</a></li>
-                            <li><a href="#about" onclick="switchView('home')" class="hover:text-blue-400 transition-colors">Theme</a></li>
-                            <li><a onclick="showToast('Team roster loading...')" class="hover:text-blue-400 transition-colors cursor-pointer">Our Team</a></li>
+                            <li><a href="team.html" class="hover:text-blue-400 transition-colors">Our Team</a></li>
                             <li><a href="fashion.html" class="hover:text-blue-400 transition-colors">Fashion Show</a></li>
                         </ul>
                     </div>
@@ -511,8 +511,8 @@
                             </li>
                             <li>
                                 <span class="block text-gray-500 text-[9px] uppercase">management</span>
-                                <span class="text-white hover:text-blue-400 cursor-pointer">Chandan</span>\
-                                <span class="text-white hover:text-blue-400 cursor-pointer">7860789521</span>
+                                <span class="text-white hover:text-blue-400 cursor-pointer">Chanthan</span>\
+                                <span class="text-white hover:text-blue-400 cursor-pointer">78607 89521</span>
                             </li>
                             <li>
                                 <span class="block text-gray-500 text-[9px] uppercase">Official Email</span>
@@ -1096,11 +1096,8 @@
             const eventsToShow = eventsData.filter(e => e.id !== 101 && e.id !== 102);
             let html = '';
             eventsToShow.forEach(e => {
-                // Logic for Zero Cost/On-Spot Events in Slideshow
+                // All events can now be registered online
                 let btnHtml = `<button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent hover:text-white hover:border-white transition-colors rounded">Register Now</button>`;
-                if (e.price === 0) {
-                    btnHtml = `<div class="w-full border border-white/5 bg-white/5 text-gray-500 text-[10px] font-bold uppercase py-2 rounded text-center cursor-default">On-Spot Reg</div>`;
-                }
 
                 html += `
                 <div class="slide-card min-w-[260px] glass-panel p-0 relative group hover:border-blue-500 transition-colors cursor-pointer overflow-hidden rounded-lg" onclick="switchView('tickets')">
@@ -1606,6 +1603,11 @@
                 return alert("Conflict: Fashion Show Participant cannot be combined with EDM Night ticket.");
             }
             
+            // NEW: Reminder for Free Events
+            if (price === 0 && !isNift && !hasExistingPass && !cart.pass) {
+                showToast("Reminder: A Base Pass is required to attend free events.");
+            }
+
             if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("Already acquired."); 
             const index = cart.events.findIndex(e => e.id === id); 
             if (index > -1) { cart.events.splice(index, 1); } else { if (cart.events.length >= 5) return alert("Max 5 events limit."); cart.events.push({ id, title, price, isPremium }); } 
@@ -2190,8 +2192,8 @@
         const eventsData = [
             // --- CORE FLAGSHIP EVENTS (ENTRY/SHOWS) ----
             { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'The biggest night of the fest. Featuring top DJs. Gold Pass Required.', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
-            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'Screenshot 2026-02-19 040708.png', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
-            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: '_MG_7050.JPG', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1469334023215-c574bc2e47bf?w=600&auto=format&fit=crop&q=80', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: 'https://images.unsplash.com/photo-1550614000439-56d8de233b86?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
             
             // --- ADVENTURE ---
             { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Capture the essence of the fest.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
@@ -2255,28 +2257,23 @@
             const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); 
             
             filtered.forEach(e => { 
-                let priceText = `₹${e.price}`; 
-                if(isNift) priceText = `FREE`; 
+                // UPDATED: Clearly state that Free events require a pass
+                let priceText = e.price === 0 ? "Free (Requires Pass)" : `₹${e.price}`; 
+                if(isNift) priceText = `FREE (NIFT)`; 
                 
                 let label = "Add to Pass";
                 let btnClass = "border-white/20 text-white hover:bg-white hover:text-black";
                 let isDisabled = false;
                 
-                // --- ZERO COST / ON-SPOT LOGIC ---
-                if (e.price === 0) {
-                    priceText = "Free Entry";
-                    label = "On-Spot Registration";
-                    btnClass = "bg-white/5 text-gray-500 border-white/5 cursor-not-allowed";
-                    isDisabled = true;
-                }
-                // --- REGULAR LOGIC ---
-                else if(cart.events.some(ev => ev.id == e.id)) { 
+                // Allow free events to be selected like regular events
+                if(cart.events.some(ev => ev.id == e.id)) { 
                     label = "Selected";
                     btnClass = "bg-gradient-primary text-white hover:brightness-110 shadow-[0_0_15px_rgba(37,99,235,0.5)] border-transparent"; 
                 } 
                 else if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { 
                     label = "Already Owned";
                     btnClass = "bg-green-500/20 text-green-500 cursor-default border-green-500/30"; 
+                    isDisabled = true;
                 } 
                 
                 let btnAction = isDisabled ? '' : `onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})"`;
