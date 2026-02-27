@@ -365,14 +365,14 @@
                     <div class="grid md:grid-cols-2 gap-8">
                         <!-- FASHION SHOW -->
                         <div class="glass-panel p-0 group overflow-hidden relative reveal rounded-lg">
-                            <img src="Screenshot 2026-02-19 040708.png" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
+                            <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefcce?w=800&q=80" class="w-full h-[500px] object-cover opacity-60 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-blue-400 font-bold text-[10px] uppercase tracking-widest mb-2">Main Event</span>
                                 <h3 class="text-4xl font-serif text-white mb-2">VOGUE GALA</h3>
                                 <p class="text-gray-400 text-xs mb-6 max-w-sm">Fashion Show Competition. The ultimate runway showdown. Distort reality with your design.</p>
                                 <div class="flex items-center gap-4 flex-wrap">
                                     <div class="bg-white/10 px-4 py-2 border border-white/10"><span class="text-yellow-400 font-bold text-lg">₹50k</span> <span class="text-[9px] text-gray-400 uppercase">Pool</span></div>
-                                    <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2999, true); checkUpsell();" class="btn-primary rounded">Register (₹2999)</button>
+                                    <button onclick="toggleEvent(102, 'Fashion Show (Participant)', 2999, true, checkUpsell)" class="btn-primary rounded">Register (₹2999)</button>
                                     <button onclick="window.location.href='fashion.html'" class="btn-outline rounded hover:bg-white/10">More Info</button>
                                 </div>
                             </div>
@@ -384,10 +384,10 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest mb-2">Pro Show</span>
                                 <h3 class="text-4xl font-display text-white mb-2">NEON PULSE</h3>
-                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Star-Studded EDM Night. Lose yourself in the sound. A night of pure auditory hallucination.</p>
+                                <p class="text-gray-400 text-xs mb-6 max-w-sm">Star-Studded EDM Night. Day 2 (10:00 PM - 11:30 PM).<br><span class="text-red-400 font-bold">⚠️ Outsiders must exit campus by 11:45 PM.</span></p>
                                 <div class="flex items-center gap-4">
-                                    <div class="bg-white/5 px-4 py-2 border border-white/5"><span class="text-gray-500 font-bold text-lg">Mar 1</span> <span class="text-[9px] text-gray-500 uppercase">Night</span></div>
-                                    <button onclick="alert('EDM Night bookings are temporarily paused. Check back later!')" class="bg-gray-800 text-gray-500 font-bold uppercase tracking-widest px-6 py-3 text-[10px] cursor-not-allowed rounded">Temporarily Paused</button>
+                                    <div class="bg-white/5 px-4 py-2 border border-white/5"><span class="text-gray-500 font-bold text-lg">Mar 1</span> <span class="text-[9px] text-gray-500 uppercase">10:00 PM</span></div>
+                                    <button onclick="switchView('tickets')" class="bg-blue-600 text-white font-bold uppercase tracking-widest px-6 py-3 text-[10px] hover:bg-blue-500 rounded">Get Passes</button>
                                 </div>
                             </div>
                         </div>
@@ -417,17 +417,17 @@
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 h-[600px] reveal max-w-7xl mx-auto">
                     <div class="col-span-2 row-span-2 relative overflow-hidden group">
-                        <img src="_MG_7189.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                         <div class="absolute inset-0 bg-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7174.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-2 relative overflow-hidden group">
-                        <img src="_DSC1083.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1506157786151-b8491531f436?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                     <div class="col-span-1 row-span-1 relative overflow-hidden group">
-                        <img src="_MG_7174.JPG" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=60" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                     </div>
                 </div>
             </section>
@@ -506,12 +506,12 @@
                         <ul class="space-y-4 text-gray-400 text-xs">
                             <li>
                                 <span class="block text-gray-500 text-[9px] uppercase">Web & Registration Head</span>
-                                <span class="text-white hover:text-blue-400 cursor-pointer">Yasar C H</span>\
+                                <span class="text-white hover:text-blue-400 cursor-pointer">Yasar C H</span><br>
                                 <span class="text-white hover:text-blue-400 cursor-pointer"> 8157980825 </span>
                             </li>
                             <li>
                                 <span class="block text-gray-500 text-[9px] uppercase">management</span>
-                                <span class="text-white hover:text-blue-400 cursor-pointer">Chanthan</span>\
+                                <span class="text-white hover:text-blue-400 cursor-pointer">Chanthan</span><br>
                                 <span class="text-white hover:text-blue-400 cursor-pointer">78607 89521</span>
                             </li>
                             <li>
@@ -611,7 +611,7 @@
                             <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> Entry for Both Days</li>
                             <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> <b>No Exit Restrictions</b></li>
                             <li class="flex gap-2"><i data-lucide="star" class="w-4 h-4 text-yellow-500"></i> Includes Flagship Audience Access</li>
-                            <li class="flex gap-2"><i data-lucide="unlock" class="w-4 h-4 text-cyan-400"></i> Unlocks EDM Pass <span class="text-[10px] text-red-400">(Temporarily Paused)</span></li>
+                            <li class="flex gap-2"><i data-lucide="unlock" class="w-4 h-4 text-cyan-400"></i> Unlocks EDM Pass</li>
                         </ul>
                         <div class="border-t border-white/5 pt-4 flex justify-between items-center">
                             <span class="text-3xl font-bold text-white">₹659</span>
@@ -629,12 +629,14 @@
                             <div class="w-10 h-10 bg-blue-900/30 rounded flex items-center justify-center text-blue-400"><i data-lucide="music" class="w-5 h-5"></i></div>
                             <div>
                                 <h3 class="text-white font-bold uppercase text-sm">EDM Pass (Neon Pulse)</h3>
-                                <p class="text-[9px] text-gray-400">Requires Gold Pass <span class="text-red-400 font-bold ml-1">(Temporarily Paused)</span></p>
+                                <p class="text-[9px] text-gray-400 mb-1">Requires Gold Pass • Day 2 (10:00 PM - 11:30 PM)</p>
+                                <span class="bg-pink-900/30 text-pink-400 border border-pink-500/50 text-[8px] px-2 py-0.5 rounded font-bold tracking-widest uppercase">Only 200 Outsider Passes Available</span>
+                                <p class="text-[9px] text-red-400 font-bold uppercase mt-1">⚠️ All outside students must exit college by 11:45 PM</p>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center mt-2">
                             <span class="text-xl font-bold text-gray-400">₹759</span>
-                            <button onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 759, true); checkUpsell();" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded text-[9px] font-bold uppercase hover:bg-blue-600 transition-colors">Add to Pass</button>
+                            <button id="btn-event-101" onclick="toggleEvent(101, 'EDM Night (Neon Pulse)', 759, true, checkUpsell)" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded text-[9px] font-bold uppercase hover:bg-blue-600 transition-colors">Add to Pass</button>
                         </div>
                      </div>
 
@@ -647,9 +649,9 @@
                                 <p class="text-[9px] text-gray-400">Add-on for General Pass</p>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center mt-2">
                             <span class="text-xl font-bold text-white">₹199</span>
-                            <button onclick="toggleEvent(103, 'Fashion Show (Audience)', 199, false); checkUpsell();" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded text-[9px] font-bold uppercase hover:bg-purple-600 transition-colors">Add to General</button>
+                            <button id="btn-event-103" onclick="toggleEvent(103, 'Fashion Show (Audience)', 199, false, checkUpsell)" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded text-[9px] font-bold uppercase hover:bg-purple-600 transition-colors">Add to General</button>
                         </div>
                      </div>
                 </div>
@@ -848,7 +850,7 @@
                     </div>
                 </div>
 
-                <!-- RECEIPT VIEW (UPDATED FOR EDITING) -->
+                <!-- RECEIPT VIEW -->
                 <div id="view-receipt" class="hidden space-y-6">
                     <h2 class="text-xl font-display text-white text-center">Transaction Summary</h2>
                     <div class="bg-white/5 border border-white/10 p-4 rounded text-xs space-y-3 font-mono">
@@ -1096,8 +1098,11 @@
             const eventsToShow = eventsData.filter(e => e.id !== 101 && e.id !== 102);
             let html = '';
             eventsToShow.forEach(e => {
-                // All events can now be registered online
                 let btnHtml = `<button class="w-full border border-gray-600 text-gray-500 text-[10px] font-bold uppercase py-2 hover:bg-transparent hover:text-white hover:border-white transition-colors rounded">Register Now</button>`;
+                
+                if (e.closed) {
+                    btnHtml = `<button disabled class="w-full border border-red-900/50 bg-red-900/20 text-red-500 text-[10px] font-bold uppercase py-2 rounded cursor-not-allowed">Registrations Closed</button>`;
+                }
 
                 html += `
                 <div class="slide-card min-w-[260px] glass-panel p-0 relative group hover:border-blue-500 transition-colors cursor-pointer overflow-hidden rounded-lg" onclick="switchView('tickets')">
@@ -1124,9 +1129,8 @@
         let currentUser=null, userDataDB=null, finalTotal=0, promoApplied=null, isNift=false, hasExistingPass=false;
         let cart = { pass: null, events: [] }; 
         let isUpgrade = false;
-        let upgradeTargetPass = ""; // New global variable for upgrade target
+        let upgradeTargetPass = ""; 
         let adminTriggerCount = 0;
-        let currentMerchItem = null;
         
         // UPI ROTATION LOGIC
         let upiList = ["chyasar2004-2@oksbi"]; // Default fallback
@@ -1145,11 +1149,10 @@
             } else { runTerminalIntro(); }
             loadCart(); filterEvents('all'); 
             
-            // --- UPI CONFIG LISTENER FIXED ---
+            // --- UPI CONFIG LISTENER ---
             db.ref('system_config/upi_id').on('value', (snapshot) => {
                 const val = snapshot.val();
                 if(val) {
-                    // Split comma-separated values, trim spaces, and filter empty strings
                     upiList = val.split(',').map(s => s.trim()).filter(s => s.length > 0);
                     if(upiList.length > 0) {
                         activeUPI = upiList[Math.floor(Math.random() * upiList.length)];
@@ -1202,6 +1205,12 @@
             });
         });
 
+        function refreshGridUI() {
+            const activeFilterBtn = document.querySelector('.filter-btn.active');
+            if(activeFilterBtn) activeFilterBtn.click();
+            else filterEvents('all');
+        }
+
         function updateQRImages() {
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=upi://pay?pa=${activeUPI}&pn=SpectrumFest`;
             document.getElementById('payment-qr-img').src = qrUrl;
@@ -1229,7 +1238,6 @@
         }
 
         function reportQR() { 
-            // Rotate UPI ID
             const currentIndex = upiList.indexOf(activeUPI);
             const nextIndex = (currentIndex + 1) % upiList.length;
             activeUPI = upiList[nextIndex];
@@ -1245,7 +1253,6 @@
             const o = document.getElementById('sidebar-overlay'); 
             const l = document.getElementById('logs-sidebar');
             
-            // If logs sidebar is open, close it (since overlay click triggers this)
             if (!l.classList.contains('translate-x-full')) {
                 toggleLogs();
                 return;
@@ -1267,7 +1274,7 @@
         function toggleLogs() { const s = document.getElementById('logs-sidebar'); const o = document.getElementById('sidebar-overlay'); if(s.classList.contains('translate-x-full')) { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('log-dot').classList.add('hidden'); } else { s.classList.add('translate-x-full'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); } }
         
         function showSuccessModal(isAutoVerified = false) {
-            closeModal(); // Close the payment modal
+            closeModal(); 
             
             const titleEl = document.getElementById('success-title');
             const descEl = document.getElementById('success-desc');
@@ -1313,7 +1320,7 @@
         function closeSuccessModal() {
             document.getElementById('success-modal').style.display = 'none';
             document.getElementById('success-modal').classList.add('hidden');
-            window.location.reload(); // Reload to refresh profile state
+            window.location.reload(); 
         }
         
         function closeVerifyEmailModal() {
@@ -1324,7 +1331,6 @@
         
         // SQUAD LOGIC
         function openSquadModal() {
-            // NEW: Automatically prompt user to log in if they aren't authenticated
             if(!currentUser) {
                 alert("Please log in to access the Squad Uplink.");
                 openModal();
@@ -1342,11 +1348,8 @@
                 return;
             }
             
-            // FIX: Bulletproof text filtering for team events!
             const teamEvents = userDataDB.order.events.filter(e => {
-                // VERY IMPORTANT: Get the full event details from the master list, because the DB only stores ID and Title
                 const masterEvent = eventsData.find(ev => ev.id === e.id) || e;
-                
                 const title = String(masterEvent.title || '').toLowerCase();
                 const members = String(masterEvent.members || '1').toLowerCase();
                 
@@ -1381,8 +1384,7 @@
                     const masterEvent = eventsData.find(ev => ev.id === e.id) || e;
                     const existingSquad = (userDataDB.squads && userDataDB.squads[e.id]) ? userDataDB.squads[e.id] : [];
                     
-                    // --- DYNAMIC SLOT LOGIC ---
-                    let maxTeamSize = 12; // default fallback
+                    let maxTeamSize = 12; 
                     let str = String(masterEvent.members || '').toUpperCase();
                     
                     if (str.includes('DUO')) { maxTeamSize = 2; }
@@ -1399,9 +1401,7 @@
                         if(nums && nums.length > 0) maxTeamSize = parseInt(nums[0]); 
                     }
                     
-                    if (maxTeamSize < 2) maxTeamSize = 2; // Safety net
-                    
-                    // The slots available to type in (Total Size minus the Captain)
+                    if (maxTeamSize < 2) maxTeamSize = 2; 
                     const slotsCount = maxTeamSize - 1; 
 
                     let membersHtml = '<div class="grid grid-cols-2 gap-2">';
@@ -1411,7 +1411,6 @@
                     }
                     membersHtml += '</div>';
 
-                    // Escape quotes in title for function call safely
                     const safeTitle = String(masterEvent.title || '').replace(/'/g, "\\'");
 
                     html += `
@@ -1445,7 +1444,7 @@
                 if(val) {
                     if (val === userDataDB.spectrumId) {
                         selfIncluded = true;
-                        input.value = ""; // Clear their own ID from the box
+                        input.value = ""; 
                     } else {
                         inputtedMembers.push(val);
                     }
@@ -1459,13 +1458,7 @@
             const originalBtnText = btnElement.innerText;
             btnElement.disabled = true;
 
-            // --- CYBERPUNK ROTATING MESSAGES ---
-            const messages = [
-                "Scanning Mainframe...", 
-                "Verifying Pass Status...", 
-                "Authenticating IDs...", 
-                "Bypassing Security..."
-            ];
+            const messages = ["Scanning Mainframe...", "Verifying Pass Status...", "Authenticating IDs...", "Bypassing Security..."];
             let mIdx = 0;
             btnElement.innerText = messages[0];
             const msgInterval = setInterval(() => { 
@@ -1473,23 +1466,19 @@
                 btnElement.innerText = messages[mIdx]; 
             }, 400);
 
-            // Random delay between 1.2s and 2.5s for authentic feel
             const randomDelay = Math.floor(Math.random() * 1300) + 1200;
 
             setTimeout(() => {
                 clearInterval(msgInterval);
                 const cleanEmail = currentUser.email.replace(/\./g, ',');
                 
-                // 1. Fetch all users to validate entered IDs
                 db.ref('users').once('value').then(snap => {
                     const allUsers = snap.val() || {};
                     const validMembers = [];
                     const invalidMembers = [];
                     
-                    // Validate every ID inputted
                     inputtedMembers.forEach(memberId => {
                         const foundUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
-                        // ID must exist AND payment must be verified by admin
                         if (foundUser && foundUser.paymentStatus === 'Verified') {
                             validMembers.push(foundUser);
                         } else {
@@ -1498,25 +1487,21 @@
                     });
 
                     if (invalidMembers.length > 0) {
-                        alert(`ERROR: The following IDs are either invalid, not registered, or their payment is NOT verified yet:\n\n${invalidMembers.join('\n')}\n\nPlease ensure your teammates have successfully verified their passes with the Admin.`);
+                        alert(`ERROR: The following IDs are invalid or their payment is NOT verified yet:\n\n${invalidMembers.join('\n')}\n\nPlease ensure teammates have verified passes.`);
                         btnElement.innerText = originalBtnText;
                         btnElement.disabled = false;
-                        return; // Halt process
+                        return; 
                     }
                     
-                    // IDs verified. Get list of just the ID strings
                     const memberIds = validMembers.map(u => u.spectrumId);
                     
-                    // 2. Fetch current squad to find any removed members
                     db.ref(`users/${cleanEmail}/squads/${eventId}`).once('value').then(sSnap => {
                         const oldMembers = sSnap.val() || [];
                         const removedMembers = oldMembers.filter(m => !memberIds.includes(m));
                         
-                        // 3. Save new squad to Leader's database profile
                         db.ref(`users/${cleanEmail}/squads/${eventId}`).set(memberIds).then(() => {
                             alert("Squad Roster Verified & Updated! Linked members will now see this in their 'My Events'.");
                             
-                            // 4. Add the event to the linked members' profiles
                             validMembers.forEach(u => {
                                 db.ref(`users/${u.email.replace(/\./g, ',')}/linked_events/${eventId}`).set({
                                     title: eventTitle,
@@ -1524,7 +1509,6 @@
                                 });
                             });
                             
-                            // 5. Remove the event from profiles of anyone who got kicked out of the squad
                             removedMembers.forEach(memberId => {
                                 const rUser = Object.values(allUsers).find(u => u.spectrumId === memberId);
                                 if (rUser) {
@@ -1556,63 +1540,104 @@
             }); 
             document.getElementById(elementId).classList.add('selected-pass'); 
             cart.pass = { name, price, type }; 
-            // Reset events if switching passes to avoid invalid combinations
             cart.events = [];
             saveCart(); 
             updateCartUI(); 
+            refreshGridUI();
         }
         
-        function toggleEvent(id, title, price, isPremium) { 
+        // ENHANCED TOGGLE FUNCTION WITH ASYNC SUPPORT
+        function toggleEvent(id, title, price, isPremium, callback) { 
             if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Transaction Verification in Progress. Please wait for admin approval before adding new events."); 
-            
-            // --- TEMPORARY BLOCK FOR EDM ---
-            if (id === 101) {
-                return alert("⛔ EDM Night pass purchase is temporarily paused. (Note: NIFT Students get direct entry with their ID, no separate pass is required).");
-            }
 
-            // --- STRICT ADD-ON LOGIC ---
-            
+            // BLOCK CLOSED EVENTS
+            const eventDef = eventsData.find(e => e.id === id);
+            if(eventDef && eventDef.closed) return alert("Registrations for this event are officially closed.");
+
             // 1. EDM RESTRICTION (Only with Gold Pass)
             if (id === 101) {
-                const passName = cart.pass ? cart.pass.name : (hasExistingPass ? userDataDB.order.pass : "");
-                const isGold = passName === 'Gold Pass' || passName === 'Premium Pass' || isNift; // Included Premium just in case old data exists
-                
-                if (!isGold) {
-                    return alert("⛔ Restricted: EDM Pass is available ONLY with the Gold Pass. Please select Gold Pass to proceed.");
-                }
+                const passName = cart.pass ? cart.pass.name : (hasExistingPass ? userDataDB?.order?.pass : "");
+                const isGold = passName === 'Gold Pass' || passName === 'Premium Pass' || isNift;
+                if (!isGold) return alert("⛔ Restricted: EDM Pass is available ONLY with the Gold Pass.");
             }
 
-            // 2. FASHION AUDIENCE RESTRICTION (Only with General Pass, Included in Gold)
+            // 2. FASHION AUDIENCE RESTRICTION (Only with General Pass)
             if (id === 103) {
-                const passName = cart.pass ? cart.pass.name : (hasExistingPass ? userDataDB.order.pass : "");
-                
-                if (passName === 'Gold Pass') {
-                    return alert("✨ Information: Audience access to Fashion Show is ALREADY INCLUDED in your Gold Pass! No need to buy this add-on.");
-                }
-                
-                if (passName !== 'General Pass' && !isNift && !hasExistingPass) {
-                    return alert("⚠️ Requirement: This add-on requires a General Pass.");
-                }
+                const passName = cart.pass ? cart.pass.name : (hasExistingPass ? userDataDB?.order?.pass : "");
+                if (passName === 'Gold Pass') return alert("✨ Information: Audience access to Fashion Show is ALREADY INCLUDED in your Gold Pass!");
+                if (passName !== 'General Pass' && !isNift && !hasExistingPass) return alert("⚠️ Requirement: This add-on requires a General Pass.");
             }
 
-            // NEW STRICT BLOCK: Mutually Exclusive - Fashion Participant (102) & EDM (101)
-            if (id === 101 && cart.events.some(e => e.id === 102)) {
+            // STRICT CONFLICT BLOCK - Combines cart events AND database events for validation
+            let existingEvts = (hasExistingPass && userDataDB.order && userDataDB.order.events) ? userDataDB.order.events : [];
+            let combinedEvts = [...cart.events, ...existingEvts];
+            
+            if (id === 101 && combinedEvts.some(e => e.id === 102)) {
                 return alert("Conflict: EDM Night cannot be combined with Fashion Show Participant registration.");
             }
-            if (id === 102 && cart.events.some(e => e.id === 101)) {
+            if (id === 102 && combinedEvts.some(e => e.id === 101)) {
                 return alert("Conflict: Fashion Show Participant cannot be combined with EDM Night ticket.");
             }
             
-            // NEW: Reminder for Free Events
             if (price === 0 && !isNift && !hasExistingPass && !cart.pass) {
                 showToast("Reminder: A Base Pass is required to attend free events.");
             }
 
-            if(hasExistingPass && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("Already acquired."); 
+            if(hasExistingPass && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(e => e.id == id)) return alert("Already acquired."); 
+            
             const index = cart.events.findIndex(e => e.id === id); 
-            if (index > -1) { cart.events.splice(index, 1); } else { if (cart.events.length >= 5) return alert("Max 5 events limit."); cart.events.push({ id, title, price, isPremium }); } 
+            
+            // --- SMART EDM 200 LIMIT CHECK (ASYNC) ---
+            if (id === 101 && index === -1 && !isNift) {
+                const btn = document.getElementById(`btn-event-${id}`);
+                if(btn) { btn.innerText = "Checking..."; btn.disabled = true; }
+                
+                db.ref('users').once('value').then(snap => {
+                    let count = 0;
+                    if(snap.exists()) {
+                        Object.values(snap.val()).forEach(u => {
+                            if (u.email && !u.email.toLowerCase().endsWith('@nift.ac.in') && (u.paymentStatus === 'Verified' || u.paymentStatus === 'Pending')) {
+                                if(u.order && u.order.events && u.order.events.some(ev => ev.id == 101)) count++;
+                            }
+                        });
+                    }
+                    
+                    if (count >= 200) {
+                        alert("🚨 EDM Passes for outside students are currently SOLD OUT! (Limit of 200 reached).");
+                    } else {
+                        if (cart.events.length >= 7) { alert("Max 7 events limit."); }
+                        else {
+                            cart.events.push({ id, title, price, isPremium });
+                            saveCart(); updateCartUI(); refreshGridUI(); 
+                            if(callback && typeof callback === 'function') callback();
+                        }
+                    }
+                }).catch(err => {
+                    console.log("Limit check bypassed due to rules:", err);
+                    if (cart.events.length >= 7) { alert("Max 7 events limit."); }
+                    else {
+                        cart.events.push({ id, title, price, isPremium });
+                        saveCart(); updateCartUI(); refreshGridUI(); 
+                        if(callback && typeof callback === 'function') callback();
+                    }
+                }).finally(() => {
+                    if(btn) btn.disabled = false;
+                    refreshGridUI();
+                });
+                return; // Early exit for async
+            }
+
+            // Normal Execution
+            if (index > -1) { 
+                cart.events.splice(index, 1); 
+            } else { 
+                if (cart.events.length >= 7) return alert("Max 7 events limit."); 
+                cart.events.push({ id, title, price, isPremium }); 
+            } 
             saveCart(); 
             updateCartUI(); 
+            refreshGridUI(); 
+            if(callback && typeof callback === 'function') callback();
         }
         
         function updateCartUI() { 
@@ -1621,11 +1646,9 @@
                 bar.classList.remove('translate-y-[200%]'); 
                 let total = cart.pass ? cart.pass.price : 0; 
                 
-                // NO FREE SLOT LOGIC ANYMORE (Based on prompt "Can participate in any event that has free registration" -> implying paid ones are paid)
                 cart.events.forEach((e) => { 
                     if (isNift) {
-                        if(e.id === 101 || e.id === 102 || e.id === 103) total += 0; 
-                        else total += 0;
+                        total += 0;
                     } else {
                         total += e.price;
                     }
@@ -1643,10 +1666,7 @@
         function checkUpsell() { 
             if(userDataDB && userDataDB.paymentStatus === 'Pending') return alert("Transaction Pending. Check Profile.");
             
-            // Only Fashion Show (Participant 102) is a standalone entry. 
             const hasStandalone = cart.events.some(e => e.id === 102); 
-            
-            // Allow if standalone events exist OR if pass exists OR Nift/Existing
             if (!cart.pass && !hasStandalone && !isNift && !hasExistingPass) { 
                 document.getElementById('pass-warning-modal').classList.remove('hidden'); 
                 document.getElementById('pass-warning-modal').style.display = 'flex'; 
@@ -1654,6 +1674,7 @@
             } 
             initiateCheckout(); 
         }
+
         function selectPassFromWarning(name, price, type) { 
             cart.pass = { name, price, type }; 
             const map = { 'General Pass': 'pass-gen', 'Gold Pass': 'pass-gold' }; 
@@ -1679,33 +1700,36 @@
                 updateCartUI(); 
             } 
         }
-        function clearCart() { cart = { pass: null, events: [] }; localStorage.removeItem('spectrum_cart'); updateCartUI(); }
+        function clearCart() { cart = { pass: null, events: [] }; promoApplied = null; localStorage.removeItem('spectrum_cart'); updateCartUI(); refreshGridUI(); }
         
-        // NEW REMOVE FUNCTIONS
         function removeEventFromCart(index) {
             cart.events.splice(index, 1);
             saveCart();
             updateCartUI();
-            initiateCheckout(); // Re-render
+            initiateCheckout(); 
+            refreshGridUI(); 
         }
 
         function removePassFromCart() {
-            // Removing pass also removes events since events require pass (unless already owned)
             if(confirm("Removing the pass will also remove added events. Continue?")) {
                 cart.pass = null;
                 cart.events = [];
                 saveCart();
                 updateCartUI();
-                initiateCheckout(); // Re-render
+                initiateCheckout(); 
+                refreshGridUI();
             }
         }
 
         function initiateCheckout() { 
+            promoApplied = null;
+            document.getElementById('promo-code').value = '';
+            document.getElementById('promo-msg').classList.add('hidden');
+
             let passPrice = cart.pass ? cart.pass.price : 0;
             let total = isNift ? 0 : (hasExistingPass ? 0 : passPrice); 
             let eventHtml = ""; 
             
-            // Render Pass
             if(cart.pass) {
                  const removeBtn = hasExistingPass ? '<span class="text-green-500 text-[9px] uppercase">Active</span>' : `<button onclick="removePassFromCart()" class="text-red-400 hover:text-white transition-colors p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
                  let displayPrice = isNift ? "FREE" : (hasExistingPass ? "Owned" : `₹${cart.pass.price}`);
@@ -1720,7 +1744,6 @@
                  </div>`;
             }
 
-            // Render Events
             cart.events.forEach((e, index) => { 
                 let cost = e.price; 
                 let label = `₹${e.price}`; 
@@ -1742,9 +1765,8 @@
             document.getElementById('rec-events-list').innerHTML = eventHtml; 
             document.getElementById('rec-total').innerText = `₹${total}`; 
             
-            // --- VALIDATION LOGIC ---
             const hasPass = !!cart.pass;
-            const hasStandalone = cart.events.some(e => e.id === 102); // Fashion Participant
+            const hasStandalone = cart.events.some(e => e.id === 102); 
             const isValid = hasPass || hasStandalone || isNift || hasExistingPass;
             
             const proceedBtn = document.getElementById('btn-proceed');
@@ -1796,7 +1818,6 @@
             if(!userDataDB) { container.innerHTML = 'No data.'; return; }
             let html = '';
             
-            // Render from Transaction History (New Way)
             if (userDataDB.transactions) {
                 Object.values(userDataDB.transactions).forEach(tx => {
                     const statusColor = tx.status === "Verified" ? "text-green-500" : "text-yellow-500";
@@ -1815,7 +1836,6 @@
                 });
             }
             
-            // Fallback for old data
             if(!html && userDataDB.order) {
                 html += `<div class="bg-white/5 border border-white/10 p-3 mb-2 rounded"><div class="flex justify-between"><span class="text-white font-bold uppercase text-xs">Pass: ${userDataDB.order.pass}</span><span class="text-green-500 text-[9px]">${userDataDB.paymentStatus}</span></div><p class="text-[9px] text-gray-500 mt-1">${new Date(userDataDB.order.timestamp).toLocaleDateString()}</p></div>`;
             }
@@ -1828,7 +1848,6 @@
             let html = '';
             let hasEvents = false;
 
-            // Direct purchases (Captain/Solo)
             if(userDataDB && userDataDB.order && userDataDB.order.events) { 
                 hasEvents = true;
                 userDataDB.order.events.forEach(ev => {
@@ -1836,7 +1855,6 @@
                 });
             }
 
-            // Linked Events (Added by another leader)
             if (userDataDB && userDataDB.linked_events) {
                 hasEvents = true;
                 Object.values(userDataDB.linked_events).forEach(ev => {
@@ -1871,7 +1889,6 @@
             if(!currentUser) { alert("Login Required"); document.getElementById('view-receipt').classList.add('hidden'); document.getElementById('view-auth').classList.remove('hidden'); return; } 
             if (finalTotal === 0) { completePayment(true); return; } 
             
-            // Ensure Modal is open and in correct state (Added this part)
             document.getElementById('auth-modal').classList.remove('hidden'); 
             document.getElementById('auth-modal').style.display='flex';
             document.getElementById('view-auth').classList.add('hidden');
@@ -1901,7 +1918,6 @@
             let finalEvents = cart.events; 
             if(hasExistingPass && userDataDB.order && userDataDB.order.events) { finalEvents = [...userDataDB.order.events, ...cart.events]; } 
             
-            // Fix for "Unknown" pass issue
             let passName = cart.pass ? cart.pass.name : (cart.events.some(e => e.id === 102) ? "Fashion Show Ticket" : (userDataDB?.order?.pass || "Visitor Access"));
 
             const payload = { 
@@ -1918,7 +1934,6 @@
                 pendingAmount: finalTotal 
             };
 
-            // Transaction History Object
             const transactionRecord = {
                 amount: finalTotal,
                 utr: utr,
@@ -1930,7 +1945,6 @@
 
             if (screenshotUrl) { payload.paymentScreenshot = screenshotUrl; transactionRecord.screenshot = screenshotUrl; }
             
-            // Save Transaction History
             db.ref('users/' + cleanEmail + '/transactions').push(transactionRecord);
 
             if (isUpgrade) { 
@@ -1956,7 +1970,6 @@
         
         function generateSpectrumID(name, phone) { const namePart = name.substring(0, 2).toUpperCase(); const phonePart = phone.slice(-3); const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; const randPart = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length)); return `SPEC${namePart}${phonePart}${randPart}`; }
         
-        // Generic Upload Function
         async function uploadFileGeneric(file) {
             const formData = new FormData();
             formData.append("file", file);
@@ -1992,7 +2005,6 @@
             btn.disabled = true;
             document.getElementById('reg-upload-status').classList.remove('hidden');
 
-            // --- CYBERPUNK ROTATING MESSAGES ---
             const messages = ["Encrypting Data...", "Uploading Documents...", "Generating Identity...", "Syncing with Mainframe..."];
             let mIdx = 0;
             btn.innerText = messages[0];
@@ -2001,7 +2013,6 @@
                 btn.innerText = messages[mIdx]; 
             }, 600);
 
-            // Upload ID Card (The upload time creates a natural delay)
             const idCardUrl = await uploadFileGeneric(idCardFile);
             
             if(!idCardUrl) {
@@ -2049,7 +2060,6 @@
             const btn = document.getElementById('btn-login-submit'); 
             btn.disabled = true; 
             
-            // --- CYBERPUNK ROTATING MESSAGES ---
             const messages = ["Establishing Secure Link...", "Decrypting Credentials...", "Querying Mainframe...", "Authenticating..."];
             let mIdx = 0;
             btn.innerText = messages[0];
@@ -2058,7 +2068,6 @@
                 btn.innerText = messages[mIdx]; 
             }, 400);
 
-            // Random delay between 800ms and 1800ms
             const randomDelay = Math.floor(Math.random() * 1000) + 800;
 
             setTimeout(() => {
@@ -2068,7 +2077,6 @@
                 auth.signInWithEmailAndPassword(e,p).then(c=>{ 
                     btn.innerText = "Verified"; 
                     
-                    // CRITICAL SECURITY FIX: Enforce email verification for ALL users (including NIFT)
                     if(!c.user.emailVerified) { 
                         alert("Email Unverified!\n\nPlease check your inbox (and your SPAM or JUNK folder) for the verification link. You MUST verify your email before accessing the system."); 
                         auth.signOut(); 
@@ -2118,7 +2126,6 @@
             
             document.getElementById('card-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${userDataDB.spectrumId}`;
 
-            // DYNAMIC UPGRADE LOGIC (Updated for General -> Gold)
             upgradeBtnContainer.innerHTML = ''; 
             upgradeBtnContainer.classList.add('hidden');
 
@@ -2165,7 +2172,6 @@
             const target = document.getElementById(`view-${id}`);
             if (!target) {
                 console.warn(`View view-${id} not found. Redirecting to home.`);
-                // If the requested view doesn't exist, safely default to home to prevent blank screen
                 switchView('home');
                 return;
             }
@@ -2191,12 +2197,13 @@
 
         const eventsData = [
             // --- CORE FLAGSHIP EVENTS (ENTRY/SHOWS) ----
-            { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'The biggest night of the fest. Featuring top DJs. Gold Pass Required.', day: 'Day 2', time: '7:00 PM', venue: 'Main Ground' }, 
-            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'Screenshot 2026-02-19 040708.png', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 101, club: 'entertainment', title: 'EDM Night (Neon Pulse)', price: 759, isPremium: true, img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'The biggest night of the fest. Gold Pass Required. 10:00 PM to 11:30 PM. ⚠️ OUTSIDERS MUST EXIT CAMPUS BY 11:45 PM.', day: 'Day 2', time: '10:00 PM', venue: 'Main Ground' }, 
+            { id: 102, club: 'entertainment', title: 'Fashion Show (Designer Team)', price: 2999, prize: '₹50,000', isPremium: true, img: 'https://images.unsplash.com/photo-1469334023215-c574bc2e47bf?w=600&auto=format&fit=crop&q=80', members: '8-12', desc: 'Walk the ramp and showcase your style. Prize Pool: ₹50,000.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
+            { id: 103, club: 'entertainment', title: 'Fashion Show (Audience)', price: 199, isPremium: true, img: 'https://images.unsplash.com/photo-1550614000439-56d8de233b86?w=600&auto=format&fit=crop&q=80', members: '1', desc: 'Watch the Vogue Gala. Included in Gold Pass.', day: 'Day 2', time: '6:00 PM', venue: 'Audi' },
             
             // --- ADVENTURE ---
-            { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Capture the essence of the fest.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
-            { id: 2, club: 'adventure', title: 'Short Film', price: 399, prize: '₹12,000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Storytelling through the lens.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area' },
+            { id: 1, club: 'adventure', title: 'Photography', price: 299, prize: '₹9,000', isPremium: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Capture the essence of the fest.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area', closed: true },
+            { id: 2, club: 'adventure', title: 'Short Film', price: 399, prize: '₹12,000', isPremium: true, img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Storytelling through the lens.', day: 'Day 1', time: '11:00 AM', venue: 'TS MFM Area', closed: true },
             { id: 3, club: 'adventure', title: 'Match the Picture', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1503602642458-232111445657?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Visual puzzle challenge.', day: 'Day 1', time: '3:00 PM', venue: 'Basketball Alley' },
             { id: 9, club: 'adventure', title: 'Mini Adventure', price: 99, prize: '₹4,500', isPremium: false, img: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Quick adventure challenges.', day: 'Day 1', time: '11:00 AM', venue: 'A Gate Stretch' },
 
@@ -2208,8 +2215,8 @@
             { id: 307, club: 'culture', title: 'Mr & Miss Spectrum', price: 0, prize: '₹15,000', isPremium: false, img: 'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Personality hunt. Only for NIFT Students.', day: 'Day 1', time: '8:00 PM', venue: 'Main Stage' },
 
             // --- ENVIRONMENTAL ---
-            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 799, prize: '₹24,000', isPremium: true, img: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Art on walls.', day: 'Day 1', time: '10:00 AM', venue: 'OAT' },
-            { id: 302, club: 'environment', title: 'Treasure Hunt (Env)', price: 499, prize: '₹5,000', isPremium: false, img: 'https://images.unsplash.com/photo-1508680196726-0e1cebbdcaf4?w=600&auto=format&fit=crop&q=80', members: '4-5', desc: 'Hunt for nature.', day: 'Day 2', time: '10:00 AM', venue: 'Whole Campus' },
+            { id: 301, club: 'environment', title: 'Graffiti Competition', price: 799, prize: '₹24,000', isPremium: true, img: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&auto=format&fit=crop&q=80', members: '2-4', desc: 'Art on walls.', day: 'Day 1', time: '10:00 AM', venue: 'OAT', closed: true },
+            { id: 302, club: 'environment', title: 'Treasure Hunt (Env)', price: 499, prize: '₹5,000', isPremium: false, img: 'https://images.unsplash.com/photo-1508680196726-0e1cebbdcaf4?w=600&auto=format&fit=crop&q=80', members: '4-5', desc: 'Hunt for nature.', day: 'Day 2', time: '10:00 AM', venue: 'Whole Campus', closed: true },
             { id: 303, club: 'environment', title: 'Eco Trivia', price: 99, prize: '₹2,200', isPremium: false, img: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Green knowledge test.', day: 'Day 2', time: '9:00 AM', venue: 'Classroom' },
             { id: 304, club: 'environment', title: 'Musical Chairs', price: 0, prize: 'Gift Hampers', isPremium: false, img: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Fun survival game.', day: 'Day 1', time: '3:00 PM', venue: 'Flag Area' },
             { id: 305, club: 'environment', title: 'Trumbling', price: 49, prize: '₹1,000', isPremium: false, img: 'https://images.unsplash.com/photo-1555505019-8c3f1c4abe5b?w=600&auto=format&fit=crop&q=80', members: 'Solo', desc: 'Balance game.', day: 'Day 1', time: '1:00 PM', venue: 'RC Area' },
@@ -2256,7 +2263,6 @@
             const filtered = cat==='all' ? eventsData : eventsData.filter(e => e.club === cat); 
             
             filtered.forEach(e => { 
-                // UPDATED: Clearly state that Free events require a pass
                 let priceText = e.price === 0 ? "Free (Requires Pass)" : `₹${e.price}`; 
                 if(isNift) priceText = `FREE (NIFT)`; 
                 
@@ -2264,18 +2270,21 @@
                 let btnClass = "border-white/20 text-white hover:bg-white hover:text-black";
                 let isDisabled = false;
                 
-                // Allow free events to be selected like regular events
-                if(cart.events.some(ev => ev.id == e.id)) { 
+                if (e.closed) {
+                    label = "Registrations Closed";
+                    btnClass = "bg-red-900/20 text-red-500 border-red-500/30 cursor-not-allowed";
+                    isDisabled = true;
+                } else if(cart.events.some(ev => ev.id == e.id)) { 
                     label = "Selected";
                     btnClass = "bg-gradient-primary text-white hover:brightness-110 shadow-[0_0_15px_rgba(37,99,235,0.5)] border-transparent"; 
-                } 
-                else if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { 
+                } else if(hasExistingPass && userDataDB && userDataDB.order && userDataDB.order.events && userDataDB.order.events.some(ev => ev.id == e.id)) { 
                     label = "Already Owned";
                     btnClass = "bg-green-500/20 text-green-500 cursor-default border-green-500/30"; 
                     isDisabled = true;
                 } 
                 
-                let btnAction = isDisabled ? '' : `onclick="toggleEvent(${e.id}, '${e.title}', ${e.price}, ${e.isPremium || false})"`;
+                let safeTitle = e.title.replace(/'/g, "\\'");
+                let btnAction = isDisabled ? '' : `onclick="toggleEvent(${e.id}, '${safeTitle}', ${e.price}, ${e.isPremium || false})"`;
                 
                 let btnHtml = `<button id="btn-event-${e.id}" ${btnAction} class="w-full mt-auto border ${btnClass} py-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded">${label}</button>`;
                 
@@ -2302,7 +2311,6 @@
                         <p class="text-[10px] text-gray-400 font-mono mb-2">${priceText}</p>
                         ${e.isPremium ? '<span class="text-cyan-400 text-[8px] font-bold uppercase tracking-widest mb-2 block">★ Flagship</span>' : ''}
                         
-                        <!-- NEW SCHEDULE INFO -->
                         <div class="grid grid-cols-2 gap-2 text-[9px] text-gray-400 font-mono border-t border-white/10 pt-2 mb-3">
                             <div class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3 text-blue-500"></i> ${e.day}</div>
                             <div class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3 text-cyan-500"></i> ${e.time}</div>
